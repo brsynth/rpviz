@@ -20,7 +20,7 @@ body {
     position: absolute;
     z-index: 11;
     background-color: #E8E9E8;
-    padding: 1%;
+    padding: 0 1% 0 1%;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
     border-top-right-radius: 0px;
