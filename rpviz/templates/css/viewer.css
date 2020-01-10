@@ -147,6 +147,11 @@ body {
     cursor: pointer;
 }
 
+#table_choice table tbody td.path_colour input {
+    border: 0px;
+    height: 1em;
+}
+
 #table_choice table tbody td.pinned {
     border: solid 1px #DDEEEE;
     background-color: #ff573344 ;

@@ -428,7 +428,7 @@ $(function(){
         let table_base = $('<table></table>');
         
         // Build the header
-        let field_names = ['Show', 'Pathway'];
+        let field_names = ['Show', 'Pathway', 'Colour'];
         let table_row = $('<tr></tr>');
         for (let i = 0; i < field_names.length; i++){
             let value = field_names[i];
@@ -441,8 +441,9 @@ $(function(){
         for (let path_id in pathways_info){
             let info = pathways_info[path_id];
             let table_row = $('<tr></tr>');
-            table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value='+path_id+'>')));
-            table_row.append($('<td class="path_id"></td>').html(path_id));
+            table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
+            table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
+            table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
             table_body.append(table_row);
         }
         table_base.append(table_body);
@@ -490,13 +491,13 @@ $(function(){
     $("td.path_id").hover(function(){
         // Nodes and edges covering to oinned + highlighted paths
         let pinned_paths = get_pinned_pathway_IDs();
-        let highlighted_path = $(this).text();
+        let highlighted_path = $(this).data('path_id');
         let path_ids = pinned_paths.concat([highlighted_path]);  // Add the hovered one
         highlight_pathways(path_ids);
         // Edges corresponding to the highlithted path
         highlight_pathway_more(highlighted_path);
     }, function(){
-        let highlighted_path = $(this).text();
+        let highlighted_path = $(this).data('path_id');
         highlight_pathway_more('__NONE__');
         let pinned_paths = get_pinned_pathway_IDs();
         if (pinned_paths.length > 0){
@@ -542,5 +543,32 @@ $(function(){
     $('#remove_cofactors_button').on('click', function(event){
         show_cofactors(false);
     });
+    
+    colour_pickers = document.querySelectorAll(".path_colour");
+    for (let i = 0; i < colour_pickers.length; i++){
+        colour_pickers[i].addEventListener("input", update_colour, false);
+    }
+    function update_colour(event) {
+        let path_id = $(this).data('path_id');
+        edges_col = get_edges_from_path_id(path_id);
+        edges_col.style({'line-color': event.target.value});
+        edges_col.style({'target-arrow-color': event.target.value});
+    }
+
+    /**
+     * Get the collection of edges involved in a given path_id
+     *
+     * @param path_id (str): pathway ID
+     */
+    function get_edges_from_path_id(path_id){
+        edges_col = cy.collection();
+        cy.edges().forEach(function(edge, index){
+            let edge_path_ids = edge.data('path_ids');
+            if (share_at_least_one(edge_path_ids, [path_id])){
+                edges_col = edges_col.union(edge);
+            }
+        });
+        return edges_col;
+    }
 
 });
