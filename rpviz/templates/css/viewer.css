@@ -15,6 +15,7 @@ body {
     box-shadow: 0 0 5px 0px black;
 }
 
+/* Left panel: pathway level interaction **************************************/
 #interaction {
     position: absolute;
     z-index: 11;
@@ -28,12 +29,28 @@ body {
     height: 1000px;
 }
 
+#interaction div.info-title {
+    font-weight: bold;
+    font-size: 1.8em;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    text-align: left;
+    padding-top: 5%;
+    padding-right: 5%;
+}
+
+#interaction div.info-name {
+    font-family: sans-serif;
+    text-align: left;
+    padding-right: 5%;
+}
+
 /* Central panel: the graph ***************************************************/
 #cy {
     float: left;
     width: 60%;
     height: 1000px;
-    margin-left: 15%;
+    margin-left: 17%;  /* +2 to compensate left pannel padding */
 }
 
 /* Right side panel: info *****************************************************/
@@ -41,7 +58,7 @@ body {
     float: right;
     border-radius: 5px;
     background-color: #E8E9E8;
-    width: 25%;
+    width: 23%;  /* -2 to compensate left panel padding */
     height: 1000px;
     position: relative;
 }
@@ -57,7 +74,7 @@ body {
 
 #info div.info-title {
     font-weight: bold;
-    font-size: 2em;
+    font-size: 1.8em;
     font-family: sans-serif;
     font-variant: small-caps;
     text-align: right;
@@ -123,7 +140,7 @@ body {
     border: solid 1px #DDEEEE;
     color: #336B6B;
     padding: 0 10px 0 10px;
-    text-align: left;
+    text-align: center;
     text-shadow: 1px 1px 1px #fff;
 }
 
@@ -149,6 +166,7 @@ body {
 
 #table_choice table tbody td.path_colour input {
     border: 0px;
+    width: 5em;
     height: 1em;
 }
 
