@@ -336,7 +336,7 @@ def annotate_cofactors(network, cofactor_file):
                 assert row[0].startswith('InChI')
             except AssertionError:
                 msg = 'Cofactor skipped, depiction is not a valid InChI for row: {}'.format(row)
-                logging.warning(msg)
+                logging.info(msg)
                 continue  # Skip row
             cof_inchis.add(row[0])
     # Match and annotate network elements
