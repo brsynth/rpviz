@@ -45,6 +45,10 @@ body {
     padding-right: 5%;
 }
 
+#interaction #pathway_selection {
+    overflow-y: auto;
+}
+
 /* Central panel: the graph ***************************************************/
 #cy {
     float: left;
@@ -61,6 +65,8 @@ body {
     width: 23%;  /* -2 to compensate left panel padding */
     height: 1000px;
     position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* Info panel *****************************************************************/
