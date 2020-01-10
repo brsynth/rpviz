@@ -140,7 +140,7 @@ body {
 
 #table_choice table tbody td.path_id:hover {
     border: solid 1px #DDEEEE;
-    background-color: #ff573344 ;
+    background-color: #FF7E4F44 ;
     padding: 0 10px 0 10px;
     text-shadow: 1px 1px 1px #fff;
     border-radius: 5px;
@@ -154,7 +154,7 @@ body {
 
 #table_choice table tbody td.pinned {
     border: solid 1px #DDEEEE;
-    background-color: #ff573344 ;
+    background-color: #FF7E4F44 ;
     padding: 0 10px 0 10px;
     text-shadow: 1px 1px 1px #fff;
     border-radius: 5px;
