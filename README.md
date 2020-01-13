@@ -221,4 +221,5 @@ error is logged and the execution is continued.
 - Add crosslinks for reactions
 - Add thermodynamics information for chemical, reaction (`network` dictionary) and pathways (`pathway_info` dictionary)
 - Add the pathway scores
+- Add the number of steps
 - Provide the good URLs for crosslinks, not those pointing to identifiers.org
