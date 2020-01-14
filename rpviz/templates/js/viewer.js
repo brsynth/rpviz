@@ -94,6 +94,12 @@ $(function(){
                         'text-background-opacity': 0.85,
                         'text-background-shape': 'roundrectangle',
                     })
+                // .selector("node[type='chemical'][svg]")
+                //     .css({
+                //         'background-image': 'data(svg)',
+                //         'background-fit': 'contain',
+                //         'background-size': '100%'
+                //     })
                 .selector('edge')
                     .css({
                         'curve-style': 'bezier',
@@ -328,6 +334,7 @@ $(function(){
         if (show){
             // Collect
             let node_id = node.data('id');
+            let svg = node.data('svg');
             let smiles = node.data('smiles');
             let inchi = node.data('inchi');
             let inchikey = node.data('inchikey');
@@ -343,6 +350,8 @@ $(function(){
             $("span.chem_info_inchi").html(inchi);
             $("span.chem_info_smiles").html(smiles);
             $("span.chem_info_iscofactor").html(cofactor);
+            // Inject SVG depiction as a background image
+            $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
             // Inject crosslinks
             $("div.chem_info_xlinks").html('');  // Reset div content
             if (xlinks.length > 0){
