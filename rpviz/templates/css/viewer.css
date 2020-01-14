@@ -45,7 +45,12 @@ body {
     padding-right: 5%;
 }
 
-#interaction #pathway_selection {
+#interaction {
+    overflow-y: auto;
+}
+
+#pathway_selection > div#table_choice {
+    max-height: 40em;
     overflow-y: auto;
 }
 
@@ -69,13 +74,22 @@ body {
     overflow-y: auto;
 }
 
-/* Info panel *****************************************************************/
 #panel_startup_legend {
     display: block;
 }
 
 #panel_chemical_info, #panel_reaction_info {
     display: none;
+}
+
+#panel_chemical_info .chem_info_pathids {
+    max-height: 20em;
+    overflow-y: auto;
+}
+
+#panel_reaction_info .reaction_info_pathids {
+    max-height: 20em;
+    overflow-y: auto;
 }
 
 #info div.info-title {
