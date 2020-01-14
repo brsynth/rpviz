@@ -14,7 +14,7 @@ import tarfile
 import argparse
 import tempfile
 
-from rpviz.utils import sbml_to_json, annotate_cofactors
+from rpviz.utils import sbml_to_json, annotate_cofactors, annotate_chemical_svg
 from rpviz.Viewer import Viewer
 
 if __name__ == '__main__':
@@ -61,8 +61,9 @@ if __name__ == '__main__':
     else:
         raise NotImplementedError()
 
-    # Annotate typical cofactors
-    network = annotate_cofactors(network, args.cofactor)
+    # Add annotations
+    network = annotate_cofactors(network, args.cofactor)  # Typical cofactors
+    network = annotate_chemical_svg(network)  # SVGs depiction for chemical
 
     # Build the Viewer
     viewer = Viewer(out_folder=args.output_folder, template_folder=args.template_folder)
