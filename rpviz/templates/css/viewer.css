@@ -113,6 +113,59 @@ body {
     margin: 5%;
 }
 
+/* Based on http://www.mademyday.de/css-height-equals-width-with-pure-css.html */
+#info div.img-box {
+    /* v1 */
+    box-shadow: 0 0 10px 0px black;
+    position: relative;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+
+    /* v2
+    position: relative;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    background-color: White;
+    border-left: 4px solid #4CAF50;
+    */
+}
+
+#info div.img-box::before {
+    /* v1 */
+    content: "";
+    display: block;
+    padding-top: 100%;
+
+    /* v2
+    content: "";
+    display: block;
+    padding-top: 50%;
+    */
+}
+
+#info div.img-box div.chem_info_svg {
+    /* v1 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-size: cover;
+
+    /* v2
+    position: absolute;
+    top: 0;
+    left: 25%;
+    bottom: 0;
+    right: 25%;
+    background-size: contain;
+    */
+}
+
 #info div.info-subtitle {
     font-family: sans-serif;
     padding-left: 2%;
