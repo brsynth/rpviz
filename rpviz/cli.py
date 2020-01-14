@@ -32,7 +32,7 @@ if __name__ == '__main__':
                         default=os.path.join(os.path.dirname(__file__), 'templates'),
                         help='Path to the folder containing templates')
     parser.add_argument('--cofactor',
-                        default=None,
+                        default=os.path.join(os.path.dirname(__file__), 'data', 'cofactor_inchi_201811.tsv'),
                         help='File listing structures to consider as cofactors.')
     args = parser.parse_args()
 
