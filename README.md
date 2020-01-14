@@ -53,12 +53,15 @@ Below an overview of the `network` object expected by the JS viewer:
                     "svg": "string",
                     "xlinks": [{"db_name":  "string", "entity_id": "string", "url": "string"}, ...],
                     "rsmiles": "string",
-                    "rule_id": "string",
-                    "fba_reaction": integer,
+                    "rule_ids": ["string"],
+                    "ec_numbers": ["string"],
+                    "thermo_dg_m_gibbs": float,
                     "smiles": null,
                     "inchi": null,
                     "inchikey": null,
                     "target_chemical": null,
+                    "sink_chemical": null,
+                    "thermo_dg_m_formation": null, 
                     "cofactor": null
                 }
             },
@@ -75,12 +78,15 @@ Below an overview of the `network` object expected by the JS viewer:
                     "svg": "string",
                     "xlinks": [{"db_name":  "string", "entity_id": "string", "url": "string"}, ...],
                     "rsmiles": null,
-                    "rule_id": null,
-                    "fba_reaction": null,
+                    "rule_ids": null,
+                    "ec_numbers": null,
+                    "thermo_dg_m_gibbs": null,
                     "smiles": "string",
                     "inchi": "string",
                     "inchikey": "string",
                     "target_chemical": integer,
+                    "sink_chemical": integer,
+                    "thermo_dg_m_formation": float, 
                     "cofactor": integer
                 }
             },
@@ -121,18 +127,21 @@ is involved. It should not contains duplicates. Example: `"path_ids": ["rp_3_1",
 the type of node.
 - `label`, (string), __required value__ -- The label to be printed for the node.
 - `all_labels`, (list of strings), __optional__ -- All possible labels for the node.
-- `svg`, (string), __required__ -- SVG depiction of the reaction.
+- `svg`, (string), __optional value__ -- SVG depiction of the reaction.
 - `xlinks` (list of dictionaries), __optional__ -- Crosslinks to the reaction. Each individual crosslink should
 be described in a dictionary having keys: "db_name", "entity_id", "url".   
 - `rsmiles`, (string), __optional__ -- The canonical reaction SMILES.
-- `rule_id`, (string), __optional__ -- The reaction rule ID. 
-- `fba_reaction`, (string), __optional__ -- Flag to designate the FVA output reaction that consume the target.
-Should be either 0 (this is not such reaction) or 1 (this is).
+- `rule_ids`, (list of strings), __optional__ -- The reaction rule IDs.
+- `ec_numbers`, (list of strings), __optional__ -- The EC numbers.
+- `thermo_dg_m_gibbs`, (float), __optional__ -- The dG Gibbs energy of the reaction (in mM concentration context).
 - `smiles`, (string), __not used__ -- Value should be `null` (meaningful for chemical node only).
 - `inchi`, (string),  __required value__ -- Value should be `null`.
 - `inchikey`, (string),  __required value__ -- Value should be `null`.
 - `target_chemical`, (string), __not used__ -- Value should be `null`.
+- `sink_chemical`, (string), __not used__ -- Value should be `null`.
+- `thermo_dg_m_formation`, (string), __not used__ -- Value should be `null`.
 - `cofactor`, (string), __not used__ -- Value should be `null`.
+
 
 #### chemical node
 
@@ -145,17 +154,21 @@ involved. It should not contains duplicates. Example: `"path_ids": ["rp_3_1", "r
 type of node.
 - `label`, (string), __required value__ -- The label to be printed for the node.
 - `all_labels`, (list of strings), __optional__ -- All possible labels for the node.
-- `svg`, (string),   __required value__ -- SVG depiction of the chemical.
+- `svg`, (string),   __optional value__ -- SVG depiction of the entity.
 - `xlinks` (list of dictionaries), __optional__ -- Crosslinks to the chemical. Each individual crosslink should
 be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `rsmiles`, (string), __not used__ -- Value should be `null` (meaningful for reaction node only).
-- `rule_id`, (string), __not used__ -- Value should be `null`.
-- `fba_reaction`, (string), __not used__ -- Value should be `null`.
+- `rule_ids`, (list of strings), __not used__ -- Value should be `null`.
+- `ec_numbers`, (list of strings), __not used__ -- Value should be `null`.
+- `thermo_dg_m_gibbs`, (float), __not used__ -- Value should be `null`.
 - `smiles`, (string), __required value__ -- The canonic SMILES.
 - `inchi`, (string),  __required value__ -- InChI.
 - `inchikey`, (string),  __required value__ -- InChIKey.
 - `target_chemical`, (string), __required__ -- Flag to designate the target. Value should be either 0 (not the
 target) or 1 (it is).
+- `sink_chemical`, (string), __optional value__ -- Flag to designate chemical that are available in the sink. Value
+should be either 0 (not in the sink) or (it is).
+- `thermo_dg_m_formation`, (string), __optional value__ -- The dG of formation of the chemical (in mM concentration context).
 - `cofactor`, (string), __required__ -- Flag to designate cofactor chemicals (eg: ATP, NADH, ...). Value should
 be either 0 (not a cofactor) or 1 (it is).
 
@@ -172,6 +185,7 @@ involved in.
 - `source`: the source node ID.
 - `target`: the target node ID.
 
+
 ### pathways_info
 
 The pathway_info JSON object purpose is to store information related to each pathways. Notice that order of 
@@ -183,11 +197,14 @@ the content:
         "path_id": "path_id1",
         "node_ids": ["node_id1", "node_id2", ...],
         "edge_ids": ["edge_id1", "edge_id2", ...],
+        "thermo_dg_m_gibbs": float,
+        "fba_target_flux":  float,
+        "nb_steps": interger,
         "scores": {
             "score_type_1": normalised integer,
             "score_type_2": normalised integer,
             ...
-        }
+        },
     },
     "path_id2": {...},
     ...
@@ -199,6 +216,9 @@ the content:
 Where:
 - `path_id` is the pathway ID,
 - `node_ids` and `edge_ids` lists the nodes and edges involved in this pathway,
+- `thermo_dg_m_gibbs` expresses the thermodynamics of the pathway
+- `fba_target_flux` is the FBA flux value of the pathway (based on the artificial FBA reaction consuming the target)
+- `nb_steps` is the number of reactions involved in the pathway
 - `scores` gives the pathway scores.
 
 
@@ -215,11 +235,25 @@ error is logged and the execution is continued.
 
 ## Known bugs and feature requests
 
-- Add EC number annotations into the JSON network outputted
+### Short term items:
+
+Add information into the JSON:
+- Add thermodynamics information for chemical and reaction (`network` dictionary) and at the level of pathways (`pathway_info` dictionary)
+- Add FBA target value for each pathway
+- Add the number of steps for each pathway
+- Add EC number annotations
 - Add annotation about if a chemical is in sink
-- Add crosslinks for sequences
-- Add crosslinks for reactions
-- Add thermodynamics information for chemical, reaction (`network` dictionary) and pathways (`pathway_info` dictionary)
-- Add the pathway scores
-- Add the number of steps
-- Provide the good URLs for crosslinks, not those pointing to identifiers.org
+- Fix the URLs for chemical crosslinks
+
+Request for more rpSBML examples:
+- Add rpSBML example with global score (at least for muconate on the Google Drive)
+
+Bug fix:
+- Deal with duplicated pathways (for instance, in the Galaxy448 results for muconate, on the Google Drive)
+
+### For later
+
+Add information into the JSON:
+- Build a dedicated section for sequence crosslinks
+- Add annotation about the rule diameter to reaction nodes
+- Add crosslinks to template reactions used for the rules
