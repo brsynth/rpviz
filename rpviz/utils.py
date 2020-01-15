@@ -64,7 +64,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     node_id = sorted(miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXR', '')))[0]
                 except KeyError:
-                    logging.error('Could not assign a valid ID, node reaction skipped')
+                    logging.warning('Could not assign a valid ID, node reaction skipped')
                     continue
             else:
                 node_id = brsynth_annot['smiles']
@@ -105,15 +105,15 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     assert brsynth_annot['smiles'] == reac_nodes[node_id]['rsmiles']
                 except AssertionError as e:
-                    logging.error(e)
+                    logging.warning(e)
                 try:
                     assert brsynth_annot['rule_id'] == reac_nodes[node_id]['rule_id']
                 except AssertionError as e:
-                    logging.error(e)
+                    logging.warning(e)
                 try:
                     assert brsynth_annot['smiles'] == reac_nodes[node_id]['rsmiles']
                 except AssertionError as e:
-                    logging.error(e)
+                    logging.warning(e)
             # Keep track for pathway info
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
                 pathways_info[rpsbml.modelName]['node_ids'].append(node_id)
@@ -127,7 +127,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     node_id = sorted(miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXM', '')))[0]
                 except KeyError:
-                    logging.error('Could not assign a valid id, chemical node skipped')
+                    logging.warning('Could not assign a valid id, chemical node skipped')
                     continue
             else:
                 node_id = brsynth_annot['inchikey']
@@ -173,7 +173,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         brsynth_annot['smiles'],
                         chem_nodes[node_id]['smiles']
                     )
-                    logging.error(msg)
+                    logging.warning(msg)
                 try:
                     assert brsynth_annot['inchi'] == chem_nodes[node_id]['inchi']
                 except AssertionError:
@@ -181,7 +181,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         brsynth_annot['inchi'],
                         chem_nodes[node_id]['inchi']
                     )
-                    logging.error(msg)
+                    logging.warning(msg)
                 try:
                     assert brsynth_annot['inchikey'] == chem_nodes[node_id]['inchikey']
                 except AssertionError:
@@ -189,7 +189,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         brsynth_annot['inchikey'],
                         chem_nodes[node_id]['inchikey']
                     )
-                    logging.error(msg)
+                    logging.warning(msg)
             # Keep track for pathway info
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
                 pathways_info[rpsbml.modelName]['node_ids'].append(node_id)
@@ -204,7 +204,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     reac_nodeid = sorted(reac_miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXR', '')))[0]
                 except KeyError:
-                    logging.error('Could not assign valid id')
+                    logging.warning('Could not assign valid id')
                     continue
             else:
                 reac_nodeid = reac_brsynth_annot['smiles']
@@ -218,7 +218,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     try:
                         spe_nodeid = sorted(spe_miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXM', '')))[0]
                     except KeyError:
-                        logging.error('Could not assign a valid ID, edge skipped')
+                        logging.warning('Could not assign a valid ID, edge skipped')
                         continue
                 else:
                     spe_nodeid = spe_brsynth_annot['inchikey']
@@ -240,11 +240,11 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     try:
                         assert spe_nodeid == edges_nodes[node_id]['source']
                     except AssertionError:
-                        logging.error('Unexpected error met, but execution still continued')
+                        logging.warning('Unexpected issue met, but execution still continued')
                     try:
                         assert reac_nodeid == edges_nodes[node_id]['target']
                     except AssertionError:
-                        logging.error('Unexpected error met, but execution still continued')
+                        logging.warning('Unexpected issue met, but execution still continued')
                 # Keep track for pathway info
                 if rpsbml.modelName not in pathways_info[rpsbml.modelName]['edge_ids']:
                     pathways_info[rpsbml.modelName]['edge_ids'].append(node_id)
@@ -258,7 +258,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     try:
                         spe_nodeid = sorted(spe_miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXM', '')))[0]
                     except KeyError:
-                        logging.error('Could not assign a valid ID, edge skipped')
+                        logging.warning('Could not assign a valid ID, edge skipped')
                         continue
                 else:
                     spe_nodeid = spe_brsynth_annot['inchikey']
@@ -279,11 +279,11 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     try:
                         assert reac_nodeid == edges_nodes[node_id]['source']
                     except AssertionError:
-                        logging.error('Unexpected error met, but execution still continued, mark A')
+                        logging.warning('Unexpected issue met, but execution still continued, mark A')
                     try:
                         assert spe_nodeid == edges_nodes[node_id]['target']
                     except AssertionError:
-                        logging.error('Unexpected error met, but execution still continued, mark B')
+                        logging.warning('Unexpected issue met, but execution still continued, mark B')
                 # Keep track for pathway info
                 if rpsbml.modelName not in pathways_info[rpsbml.modelName]['edge_ids']:
                     pathways_info[rpsbml.modelName]['edge_ids'].append(node_id)
@@ -369,10 +369,9 @@ def annotate_chemical_svg(network):
         if node['data']['type'] == 'chemical' and node['data']['inchi'] is not None:
             inchi = node['data']['inchi']
             try:
-                print(inchi)
                 mol = MolFromInchi(inchi)
-                if mol is None:
-                    raise BaseException('Mol is None')
+                # if mol is None:
+                #     raise BaseException('Mol is None')
                 Compute2DCoords(mol)
                 drawer = rdMolDraw2D.MolDraw2DSVG(200, 200)
                 drawer.DrawMolecule(mol)
@@ -381,8 +380,9 @@ def annotate_chemical_svg(network):
                 svg = 'data:image/svg+xml;charset=utf-8,' + parse.quote(svg_draft)
                 node['data']['svg'] = svg
             except BaseException as e:
-                msg = 'SVG depiction failed from inchi: {}'.format(inchi)
+                msg = 'SVG depiction failed from inchi: "{}"'.format(inchi)
                 logging.warning(msg)
+                logging.warning("Below the RDKit backtrace...")
                 logging.warning(e)
                 node['data']['svg'] = None
 
