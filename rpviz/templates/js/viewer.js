@@ -19,6 +19,7 @@ $(function(){
     panel_startup_info(true);
     panel_chemical_info(null, false);
     panel_reaction_info(null, false);
+    panel_pathway_info(null, false);
     init_network(true);
     render_layout();
     
@@ -145,10 +146,12 @@ $(function(){
             if (node.is('[type = "chemical"]')){
                 panel_startup_info(false);
                 panel_reaction_info(null, false);
+                panel_pathway_info(null, false);
                 panel_chemical_info(node, true);
             } else if (node.is('[type = "reaction"]')){
                 panel_startup_info(false);
                 panel_chemical_info(null, false);
+                panel_pathway_info(null, false);
                 panel_reaction_info(node, true);
             }
         });
@@ -412,6 +415,33 @@ $(function(){
             $("#panel_reaction_info").hide();
         }
     }
+    
+    /**
+     * Put pathway info into the information panel
+     *
+     * @param path_id (str): pathway ID
+     */
+    function panel_pathway_info(path_id, show=true){
+        if (show){
+            // Collect
+            let global_score = pathways_info[path_id]['scores']['globalScore'];
+            // If the score is not a number
+            if (isNaN(global_score)){
+                global_score = "NaN";
+            } else {
+                console.log(global_score);
+                global_score = parseFloat(global_score).toPrecision(5);
+            }
+            // Inject
+            $("span.pathway_info_path_id").html(path_id);
+            $("span.pathway_info_global_score").html(global_score);
+            // Show
+            $("#panel_pathway_info").show();
+        } else {
+            $("#panel_pathway_info").hide();
+        }
+    }
+     
 
     /**
      * Return true if the array have at least one common items
@@ -443,7 +473,7 @@ $(function(){
         let table_base = $('<table></table>');
         
         // Build the header
-        let field_names = ['Show', 'Pathway', 'Colour'];
+        let field_names = ['Show', 'Pathway', 'Colour', 'Info'];
         let table_row = $('<tr></tr>');
         for (let i = 0; i < field_names.length; i++){
             let value = field_names[i];
@@ -459,6 +489,7 @@ $(function(){
             table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
             table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
             table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
+            table_row.append($('<td class="path_info" data-path_id="' + path_id + '"><span>Data</span></td>'));
             table_body.append(table_row);
         }
         table_base.append(table_body);
@@ -530,6 +561,16 @@ $(function(){
             $(this).addClass('pinned');
         }
     });
+    
+    // When a pathway "info" is clicked
+    $("td.path_info").click(function(){
+        path_id = $(this).data('path_id');
+        panel_startup_info(false);
+        panel_chemical_info(null, false);
+        panel_reaction_info(null, false);
+        panel_pathway_info(path_id, true);
+        console.log(path_id);
+    });
         
     // Pathways selection
     $('#hide_all_pathways_button').on('click', function(event){
@@ -565,6 +606,8 @@ $(function(){
         colour_pickers[i].addEventListener("input", live_update_colour, false);
     }
     
+    
+    
     /**
      * Set the colour of all edges involved in a pathway
      *
@@ -578,7 +621,6 @@ $(function(){
             'target-arrow-color': event.target.value
         });
     }
-
 
     /**
      * Get the collection of edges involved in a given path_id
