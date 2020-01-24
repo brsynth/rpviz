@@ -429,7 +429,6 @@ $(function(){
             if (isNaN(global_score)){
                 global_score = "NaN";
             } else {
-                console.log(global_score);
                 global_score = parseFloat(global_score).toPrecision(5);
             }
             // Inject
@@ -489,7 +488,7 @@ $(function(){
             table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
             table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
             table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
-            table_row.append($('<td class="path_info" data-path_id="' + path_id + '"><span>Data</span></td>'));
+            table_row.append($('<td class="path_info" data-path_id="' + path_id + '"></td>'));
             table_body.append(table_row);
         }
         table_base.append(table_body);
@@ -569,7 +568,6 @@ $(function(){
         panel_chemical_info(null, false);
         panel_reaction_info(null, false);
         panel_pathway_info(path_id, true);
-        console.log(path_id);
     });
         
     // Pathways selection
@@ -605,8 +603,6 @@ $(function(){
     for (let i = 0; i < colour_pickers.length; i++){
         colour_pickers[i].addEventListener("input", live_update_colour, false);
     }
-    
-    
     
     /**
      * Set the colour of all edges involved in a pathway
