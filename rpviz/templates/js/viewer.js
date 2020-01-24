@@ -94,12 +94,22 @@ $(function(){
                         'text-background-opacity': 0.85,
                         'text-background-shape': 'roundrectangle',
                     })
-                // .selector("node[type='chemical'][svg]")
-                //     .css({
-                //         'background-image': 'data(svg)',
-                //         'background-fit': 'contain',
-                //         'background-size': '100%'
-                //     })
+                .selector("node[type='chemical'][target_chemical=1]")
+                    .css({
+                        'background-color': '#C60800',
+                        'border-color': '#C60800',
+                    })
+                .selector("node[type='chemical'][target_chemical=0]")
+                    .css({
+                        'background-color': '#52be80',
+                        'border-color': '#52be80',
+                    })
+                .selector("node[type='chemical'][svg]")
+                    .css({
+                        'background-image': 'data(svg)',
+                        'background-fit': 'contain',
+                        'border-width': 5,
+                    })
                 .selector('edge')
                     .css({
                         'curve-style': 'bezier',
@@ -109,10 +119,6 @@ $(function(){
                         'target-arrow-color': 'darkgray',
                         'arrow-scale' : 2
                     })                    
-                .selector("node[target_chemical=1]")
-                    .css({
-                        'background-color': '#C60800',
-                    })
                 .selector('.faded')
                     .css({
                         'opacity': 0.15,
