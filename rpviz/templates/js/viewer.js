@@ -500,13 +500,13 @@ $(function(){
     $("td.path_id").hover(function(){
         // Nodes and edges covering to oinned + highlighted paths
         let pinned_paths = get_pinned_pathway_IDs();
-        let highlighted_path = $(this).data('path_id');
-        let path_ids = pinned_paths.concat([highlighted_path]);  // Add the hovered one
+        let current_path = $(this).data('path_id');
+        let path_ids = pinned_paths.concat([current_path]);  // Add the hovered one
         highlight_pathways(path_ids);
         // Edges corresponding to the highlithted path
-        highlight_pathway_more(highlighted_path);
+        highlight_pathway_more(current_path);
     }, function(){
-        let highlighted_path = $(this).data('path_id');
+        let current_path = $(this).data('path_id');
         highlight_pathway_more('__NONE__');
         let pinned_paths = get_pinned_pathway_IDs();
         if (pinned_paths.length > 0){
