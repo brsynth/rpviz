@@ -553,16 +553,26 @@ $(function(){
         show_cofactors(false);
     });
     
+    // Manal colour handling
     colour_pickers = document.querySelectorAll(".path_colour");
     for (let i = 0; i < colour_pickers.length; i++){
-        colour_pickers[i].addEventListener("input", update_colour, false);
+        colour_pickers[i].addEventListener("input", live_update_colour, false);
     }
-    function update_colour(event) {
+    
+    /**
+     * Set the colour of all edges involved in a pathway
+     *
+     * @param event: event related to a pathway
+     */
+    function live_update_colour(event) {
         let path_id = $(this).data('path_id');
-        edges_col = get_edges_from_path_id(path_id);
-        edges_col.style({'line-color': event.target.value});
-        edges_col.style({'target-arrow-color': event.target.value});
+        edges = get_edges_from_path_id(path_id);
+        edges_col.style({
+            'line-color': event.target.value,
+            'target-arrow-color': event.target.value
+        });
     }
+
 
     /**
      * Get the collection of edges involved in a given path_id
