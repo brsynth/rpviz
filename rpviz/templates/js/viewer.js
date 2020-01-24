@@ -63,8 +63,8 @@ $(function(){
             cytoscape.stylesheet()
                 .selector("node[type='reaction']")
                     .css({
-                        'height': 50,
-                        'width': 60,
+                        'height': 60,
+                        'width': 90,
                         'background-color': 'white',
                         'border-width': 5,
                         'border-color': 'darkgray',
@@ -81,8 +81,8 @@ $(function(){
                         'background-color': '#52be80',
                         'background-fit':'contain',
                         'shape': 'roundrectangle',
-                        'width': 50,
-                        'height': 50,
+                        'width': 80,
+                        'height': 80,
                         'label': 'data(short_label)',
                         'font-size': '22px',
                         'font-weight': 'bold',
