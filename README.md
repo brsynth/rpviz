@@ -21,7 +21,7 @@ Below are instructions to set up a conda environment. This is still in developme
 ```bash
 conda create -n rpviz
 source activate rpviz
-conda install -y -c rdkit rdkit
+conda install -y -c rdkit rdkit=2019.03.1.0
 conda install -y -c bioconda python-libsbml
 conda install -y -c bioconda pubchempy
 conda install -y -c conda-forge lxml
