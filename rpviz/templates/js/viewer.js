@@ -472,7 +472,7 @@ $(function(){
         let table_base = $('<table></table>');
         
         // Build the header
-        let field_names = ['Show', 'Pathway', 'Colour', 'Info'];
+        let field_names = ['Show', 'Pathway', 'Info', 'Colour', 'Value'];
         let table_row = $('<tr></tr>');
         for (let i = 0; i < field_names.length; i++){
             let value = field_names[i];
@@ -487,8 +487,9 @@ $(function(){
             let table_row = $('<tr></tr>');
             table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
             table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
-            table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
             table_row.append($('<td class="path_info" data-path_id="' + path_id + '"></td>'));
+            table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
+            table_row.append($('<td class="path_value" data-path_id="' + path_id + '"></td>'));
             table_body.append(table_row);
         }
         table_base.append(table_body);
@@ -674,6 +675,31 @@ $(function(){
             }
         }
     }
+
+    /**
+     * 
+     * Fill table values
+     * 
+     * @param score_label (str): the score label to use within the path info
+     */
+    function put_pathway_values(score_label='globalScore'){
+        for (let path_id in pathways_info){
+            // Collect the value
+            let score = pathways_info[path_id]['scores'][score_label];
+            let score_rounded = 0;
+            if (! isNaN(score)){
+                score = parseFloat(score).toPrecision(3);
+            } else {
+                score = 'NaN';
+            }
+            // Push it into the pathway table
+            let path_td = $('td.path_value[data-path_id=' + path_id + ']');
+            path_td.html(score);
+            
+        }
+    }
+
     colourise_pathways();
+    put_pathway_values();   
 
 });
