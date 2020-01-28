@@ -24,6 +24,7 @@ $(function(){
     render_layout();
     colourise_pathways();
     put_pathway_values();
+    make_pathway_table_sortable();  // Should be called only after the table has been populated with values
     
     // Extract some useful collection
     cofactor_collection = cy.elements('node[cofactor = 1]');
@@ -474,11 +475,13 @@ $(function(){
         let table_base = $('<table></table>');
         
         // Build the header
-        let field_names = ['Show', 'Pathway', 'Info', 'Colour', 'Value'];
+        let field_names = ['Pathway', 'Show', 'Info', 'Colour', 'Value'];
+        let field_classes = ['path_id_head', 'path_checkbox_head', 'path_info_head', 'path_colour_head', 'path_value_head'];  // This is needed for tablesort
         let table_row = $('<tr></tr>');
         for (let i = 0; i < field_names.length; i++){
             let value = field_names[i];
-            table_row.append($('<th></th>').html(value));
+            let class_ = field_classes[i];
+            table_row.append($('<th class="' + class_ + '"></th>').html(value));
         }
         table_base.append($('<thead></thead>').append(table_row));
         
@@ -487,8 +490,8 @@ $(function(){
         for (let path_id in pathways_info){
             let info = pathways_info[path_id];
             let table_row = $('<tr></tr>');
-            table_row.append($('<td class="checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
             table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
+            table_row.append($('<td class="path_checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
             table_row.append($('<td class="path_info" data-path_id="' + path_id + '"></td>'));
             table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
             table_row.append($('<td class="path_value" data-path_id="' + path_id + '"></td>'));
@@ -496,8 +499,24 @@ $(function(){
         }
         table_base.append(table_body);
 
-        //Finally
+        // Append the content to the HTML
         $("#table_choice").append(table_base);
+        
+    }
+
+    /**
+     * Make the pathway table sortable
+     */
+    function make_pathway_table_sortable(){
+        $("#table_choice > table").tablesorter({
+            theme : 'default',
+            sortList: [[0,0],[4,0]],  // Sort on the first column and fourth column in ascending order
+            headers : {  // Disable sorting for these columns
+                '.path_checkbox_head, .path_info_head, .path_colour_head': {
+                    sorter: false
+                }
+            }
+        });
     }
     
     /**
