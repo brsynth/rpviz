@@ -612,7 +612,7 @@ $(function(){
     function live_update_colour(event) {
         let path_id = $(this).data('path_id');
         edges = get_edges_from_path_id(path_id);
-        edges_col.style({
+        edges.style({
             'line-color': event.target.value,
             'target-arrow-color': event.target.value
         });
