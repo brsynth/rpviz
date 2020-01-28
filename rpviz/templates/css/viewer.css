@@ -184,8 +184,8 @@ body {
 }
 
 #info .raw-text {
-    // overflow-x: scroll;
-    // white-space: nowrap;
+    /* overflow-x: scroll; */
+    /* white-space: nowrap; */
     white-space: normal;
     word-wrap: break-word;
     margin-left: 2%;
@@ -255,7 +255,6 @@ body {
     /* display: inline-block; */
     /* height: 1em; */
     margin: auto;
-    align: center;
     content: "";
     background-image: url('\
         data:image/svg+xml,\
