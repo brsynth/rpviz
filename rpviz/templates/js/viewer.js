@@ -633,5 +633,47 @@ $(function(){
         });
         return edges_col;
     }
+    
+    /**
+     *
+     * Colourise pathways
+     *
+     * @param score_label (str): the score label to use within the path info
+     */
+    function colourise_pathways(score_label='globalScore'){
+        let score_values = [];
+        // Collect valid scores
+        for (let path_id in pathways_info){
+            let score = pathways_info[path_id]['scores'][score_label];
+            if (! isNaN(score)){
+                let score_value = parseFloat(score);
+                score_values.push(score_value);
+            }
+        }
+        // Set up scale
+        let min_score = Math.min(...score_values);
+        let max_score = Math.max(...score_values);
+        let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
+        // Colourise
+        for (let path_id in pathways_info){
+            let score = pathways_info[path_id]['scores'][score_label];
+            if (! isNaN(score)){
+                // Get the score
+                let score_value = parseFloat(score);
+                let score_hex = colour_maker(score_value).hex();
+                // Colourise the associated edges
+                let edges = get_edges_from_path_id(path_id);
+                edges.style({
+                    'line-color': score_hex,
+                    'target-arrow-color': score_hex
+                });
+                // Colourise the associated color picker
+                let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
+                colour_input.val(score_hex);
+                console.log(colour_input);
+            }
+        }
+    }
+    colourise_pathways();
 
 });
