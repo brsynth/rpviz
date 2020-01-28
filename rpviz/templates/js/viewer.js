@@ -363,7 +363,12 @@ $(function(){
             $("span.chem_info_smiles").html(smiles);
             $("span.chem_info_iscofactor").html(cofactor);
             // Inject SVG depiction as a background image
-            $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
+            if (svg !== null){
+                $('div.img-box').show();
+                $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
+            } else {
+                $('div.img-box').hide();
+            }
             // Inject crosslinks
             $("div.chem_info_xlinks").html('');  // Reset div content
             if (xlinks.length > 0){
@@ -692,7 +697,6 @@ $(function(){
                 // Colourise the associated color picker
                 let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
                 colour_input.val(score_hex);
-                console.log(colour_input);
             }
         }
     }
