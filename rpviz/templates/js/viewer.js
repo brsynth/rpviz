@@ -108,7 +108,7 @@ $(function(){
                         'background-color': '#52be80',
                         'border-color': '#52be80',
                     })
-                .selector("node[type='chemical'][svg]")
+                .selector("node[type='chemical'][?svg]")  // The beauty of it: "?" will match only non null values
                     .css({
                         'background-image': 'data(svg)',
                         'background-fit': 'contain',
