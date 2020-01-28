@@ -115,7 +115,7 @@ $(function(){
                     .css({
                         'curve-style': 'bezier',
                         'line-color': 'darkgray',
-                        'width': '4px',
+                        'width': '5px',
                         'target-arrow-shape': 'triangle',
                         'target-arrow-color': 'darkgray',
                         'arrow-scale' : 2
