@@ -22,6 +22,8 @@ $(function(){
     panel_pathway_info(null, false);
     init_network(true);
     render_layout();
+    colourise_pathways();
+    put_pathway_values();
     
     // Extract some useful collection
     cofactor_collection = cy.elements('node[cofactor = 1]');
@@ -698,8 +700,5 @@ $(function(){
             
         }
     }
-
-    colourise_pathways();
-    put_pathway_values();   
 
 });
