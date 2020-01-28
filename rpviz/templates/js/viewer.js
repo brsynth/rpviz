@@ -311,7 +311,7 @@ $(function(){
      *
      * @param path_id (array): the unique path ID to highlight more
      */
-    function highlight_pathway_more(path_id){
+    function highlight_pathway_even_more(path_id){
         if (path_id == '__NONE__'){
             cy.edges().removeClass('highlighted_more');
         } else {
@@ -362,7 +362,7 @@ $(function(){
             $("span.chem_info_inchi").html(inchi);
             $("span.chem_info_smiles").html(smiles);
             $("span.chem_info_iscofactor").html(cofactor);
-            // Inject SVG depiction as a background image
+            // Inject SVG depiction as a background image (if any)
             if (svg !== null){
                 $('div.img-box').show();
                 $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
@@ -567,10 +567,10 @@ $(function(){
         let path_ids = pinned_paths.concat([current_path]);  // Add the hovered one
         highlight_pathways(path_ids);
         // Edges corresponding to the highlithted path
-        highlight_pathway_more(current_path);
+        highlight_pathway_even_more(current_path);
     }, function(){
         let current_path = $(this).data('path_id');
-        highlight_pathway_more('__NONE__');
+        highlight_pathway_even_more('__NONE__');
         let pinned_paths = get_pinned_pathway_IDs();
         if (pinned_paths.length > 0){
             highlight_pathways(pinned_paths);
