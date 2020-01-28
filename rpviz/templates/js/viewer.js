@@ -510,7 +510,7 @@ $(function(){
     function make_pathway_table_sortable(){
         $("#table_choice > table").tablesorter({
             theme : 'default',
-            sortList: [[0,0],[4,0]],  // Sort on the first column and fourth column in ascending order
+            sortList: [[4,1],[0,0]],  // Sort on the fourth column (descending) and then on the first column (ascending order)
             headers : {  // Disable sorting for these columns
                 '.path_checkbox_head, .path_info_head, .path_colour_head': {
                     sorter: false
