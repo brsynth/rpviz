@@ -429,7 +429,7 @@ $(function(){
             if (isNaN(global_score)){
                 global_score = "NaN";
             } else {
-                global_score = parseFloat(global_score).toPrecision(5);
+                global_score = parseFloat(global_score).toPrecision(3);
             }
             // Inject
             $("span.pathway_info_path_id").html(path_id);
