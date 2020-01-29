@@ -572,6 +572,8 @@ $(function(){
             } else {
                 $("div.reaction_info_pathids").append('None<br/>');
             }
+            // Selenzyme crosslink
+            $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
             // Show
             $("#panel_reaction_info").show();
         } else {
