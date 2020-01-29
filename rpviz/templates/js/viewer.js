@@ -342,6 +342,11 @@ $(function(){
                 panel_reaction_info(node, true);
             }
         });
+
+        cy.on('tap', 'edge', function(evt){
+            let edge = evt.target;
+            console.log(edge.data());
+        });
         
     }
     
