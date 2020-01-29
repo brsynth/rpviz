@@ -36,19 +36,29 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
 
     # glob.escape() prevents issues with brackets in the inputted path
     for sbml_path in glob.glob(glob.escape(input_folder) + '/*.xml'):
-        filename = sbml_path.split('/')[-1].replace('.sbml.xml', '')
+        filename = sbml_path.split('/')[-1].replace('.sbml', '').replace('.rpsbml', '').replace('.xml', '')
         rpsbml = rpSBML.rpSBML(filename)
         rpsbml.readSBML(sbml_path)
+        groups = rpsbml.model.getPlugin('groups')
+        rp_pathway = groups.getGroup(pathway_id)
+        brsynth_annot = rpsbml.readBRSYNTHAnnotation(rp_pathway.getAnnotation())
+        norm_scores = [i for i in brsynth_annot if i[:5]=='norm_']
+        norm_scores.append('global_score')
+        scores = {}
+        for name_score in norm_scores:
+            scores[name_score] = brsynth_annot[name_score]['value'] 
         ############## pathway_id ##############
         pathways_info[rpsbml.modelName] = {
             'path_id': rpsbml.modelName,
             'node_ids': [],
             'edge_ids': [],
-            'scores': {}
+            'scores': scores,
+            'nb_steps': rp_pathway.num_members,
+            'fba_target_flux': brsynth_annot['fba_RP1_sink__restricted_biomass']['value'], #TODO
+            'thermo_dg_m_gibbs': brsynth_annot['dfG_prime_m']['dfG_prime_m']['value'], #TODO
         }
-        groups = rpsbml.model.getPlugin('groups')
-        rp_pathway = groups.getGroup(pathway_id)
         try:
+            #TODO: need to use BRSYNTH annotation
             pathways_info[rpsbml.modelName]['scores']['globalScore'] = rp_pathway.getAnnotation()\
                 .getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild('global_score')\
                 .getAttrValue(0)
@@ -64,8 +74,11 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     node_id = sorted(miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXR', '')))[0]
                 except KeyError:
-                    logging.warning('Could not assign a valid ID, node reaction skipped')
-                    continue
+                    try:
+                        node_id = sorted(miriam_annot['kegg'], key=lambda x: int(x.replace('R', '')))[0]
+                    except KeyError:
+                        logging.error('Could not assign a valid ID, node reaction skipped')
+                        continue
             else:
                 node_id = brsynth_annot['smiles']
             # Build a new node if not met yet
@@ -87,11 +100,18 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         })
                 node['rsmiles'] = brsynth_annot['smiles']
                 node['rule_id'] = brsynth_annot['rule_id']
-                node['fba_reaction'] = '0'
+                try:
+                    node['ec_numbers'] = miriam_annot['ec-code']
+                except KeyError:
+                    node['ec_numbers'] = None
+                node['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
+                #node['fba_reaction'] = '0'
                 node['smiles'] = None
                 node['inchi'] = None
                 node['inchikey'] = None
                 node['target_chemical'] = None
+                node['sink_chemical'] = None
+                node['thermo_dg_m_formation'] = None
                 node['cofactor'] = None
                 # Store
                 reac_nodes[brsynth_annot['smiles']] = node
@@ -101,7 +121,6 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     reac_nodes[node_id]['path_ids'].append(rpsbml.modelName)
                 if brsynth_annot['rule_id'] not in reac_nodes[node_id]['all_labels']:
                     reac_nodes[node_id]['all_labels'].append(brsynth_annot['rule_id'])
-                # TODO: manage xref, without adding duplicates
                 try:
                     assert brsynth_annot['smiles'] == reac_nodes[node_id]['rsmiles']
                 except AssertionError as e:
@@ -118,6 +137,14 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
                 pathways_info[rpsbml.modelName]['node_ids'].append(node_id)
         ################# CHEMICALS #########################
+        ## compile all the species that are sink molecules
+        #
+        largest_rp_reac_id = sorted([i.getIdRef() for i in rp_pathway.getListOfMembers()], key=lambda x: int(x.replace('RP', '')), reverse=True)[0]
+        reactants = [i.species for i in rpsbml.model.getReaction(largest_rp_reac_id).getListOfReactants()]
+        central_species = [i.getIdRef() for i in groups.getGroup('central_species').getListOfMembers()]
+        sink_molecules = [i for i in reactants if i in central_species]
+        for r in reactants:
+            if r in central_species
         for species_name in rpsbml.readUniqueRPspecies():
             species = rpsbml.model.getSpecies(species_name)
             brsynth_annot = rpsbml.readBRSYNTHAnnotation(species.getAnnotation())
@@ -127,8 +154,11 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 try:
                     node_id = sorted(miriam_annot['metanetx'], key=lambda x: int(x.replace('MNXM', '')))[0]
                 except KeyError:
-                    logging.warning('Could not assign a valid id, chemical node skipped')
-                    continue
+                    try:
+                        node_id = sorted(miriam_annot['chebi'], key=lambda x: int(x.replace('CHEBI:', '')))[0]
+                    except KeyError:
+                        logging.error('Could not assign a valid id, chemical node skipped')
+                        continue
             else:
                 node_id = brsynth_annot['inchikey']
             # Make a new node in the chemical has never been met yet
@@ -150,15 +180,23 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         })
                 node['rsmiles'] = None
                 node['rule_id'] = None
-                node['fba_reaction'] = None
+                node['ec_numbers'] = None
+                node['thermo_dg_m_gibbs'] = None 
+                #node['fba_reaction'] = None
                 node['smiles'] = brsynth_annot['smiles']
                 node['inchi'] = brsynth_annot['inchi']
                 node['inchikey'] = brsynth_annot['inchikey']
-                if species_name[:6] == 'TARGET':  # TODO: keep this in mind
+                #TODO: need a better way if not TARGET in name
+                if species_name[:6] == 'TARGET':  
                     node['target_chemical'] = 1
                 else:
                     node['target_chemical'] = 0
                 node['cofactor'] = 0
+                #check the highest RP{\d} reactants and ignore cofactors
+                if node_id in sink_molecules:
+                    node['sink_chemical'] = 1
+                else:
+                    node['sink_chemical'] = 0
                 # Store
                 chem_nodes[node_id] = node
             # Else update already existing node
