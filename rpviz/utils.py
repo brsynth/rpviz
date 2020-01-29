@@ -14,7 +14,8 @@ import logging
 
 from collections import OrderedDict
 
-from rpviz import rpSBML
+#from rpviz import rpSBML
+import rpSBML
 
 
 def sbml_to_json(input_folder, pathway_id='rp_pathway'):
@@ -45,8 +46,8 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         norm_scores = [i for i in brsynth_annot if i[:5]=='norm_']
         norm_scores.append('global_score')
         scores = {}
-        for name_score in norm_scores:
-            scores[name_score] = brsynth_annot[name_score]['value'] 
+        for i in norm_scores:
+            scores[i] = brsynth_annot[i]
         ############## pathway_id ##############
         pathways_info[rpsbml.modelName] = {
             'path_id': rpsbml.modelName,
@@ -54,16 +55,9 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
             'edge_ids': [],
             'scores': scores,
             'nb_steps': rp_pathway.num_members,
-            'fba_target_flux': brsynth_annot['fba_RP1_sink__restricted_biomass']['value'], #TODO
-            'thermo_dg_m_gibbs': brsynth_annot['dfG_prime_m']['dfG_prime_m']['value'], #TODO
+            'fba_target_flux': brsynth_annot['fba_RP1_sink__restricted_biomass']['value'],
+            'thermo_dg_m_gibbs': brsynth_annot['dfG_prime_m']['value'],
         }
-        try:
-            #TODO: need to use BRSYNTH annotation
-            pathways_info[rpsbml.modelName]['scores']['globalScore'] = rp_pathway.getAnnotation()\
-                .getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild('global_score')\
-                .getAttrValue(0)
-        except ValueError:
-            logging.warning('Could not extract pathway score')
         ################ REACTIONS #######################
         for reaction_name in rpsbml.readRPpathwayIDs():
             reaction = rpsbml.model.getReaction(reaction_name)
@@ -143,8 +137,6 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         reactants = [i.species for i in rpsbml.model.getReaction(largest_rp_reac_id).getListOfReactants()]
         central_species = [i.getIdRef() for i in groups.getGroup('central_species').getListOfMembers()]
         sink_molecules = [i for i in reactants if i in central_species]
-        for r in reactants:
-            if r in central_species
         for species_name in rpsbml.readUniqueRPspecies():
             species = rpsbml.model.getSpecies(species_name)
             brsynth_annot = rpsbml.readBRSYNTHAnnotation(species.getAnnotation())
