@@ -495,9 +495,21 @@ $(function(){
             let xlinks = node.data('xlinks');
             let path_ids = node.data('path_ids');
             // Inject
-            $("span.chem_info_inchikey").html(inchikey);
-            $("span.chem_info_inchi").html(inchi);
-            $("span.chem_info_smiles").html(smiles);
+            if (inchikey == ""){
+                $("span.chem_info_inchikey").html("NA");
+            } else {
+                $("span.chem_info_inchikey").html(inchikey);
+            }
+            if (inchi == ""){
+                $("span.chem_info_inchi").html("NA");
+            } else {
+                $("span.chem_info_inchi").html(inchi);
+            }
+            if (smiles == ""){
+                $("span.chem_info_smiles").html("NA");
+            } else {
+                $("span.chem_info_smiles").html(smiles);
+            }
             $("span.chem_info_iscofactor").html(cofactor);
             // Inject SVG depiction as a background image (if any)
             if (svg !== null){
