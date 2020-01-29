@@ -51,6 +51,7 @@ body {
 
 #pathway_selection > div#table_choice {
     max-height: 40em;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
