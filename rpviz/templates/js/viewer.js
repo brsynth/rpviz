@@ -128,11 +128,9 @@ $(function(){
                         'opacity': 0.15,
                         'text-opacity': 0.25
                     })
-                .selector('.highlighted_more')
+                .selector('.highlighted_even_more')
                     .css({
-                        'width': '7px',
-                        'line-color': 'gray',
-                        'target-arrow-color': 'gray',
+                        'width': '9px'
                     })
                 .selector('node:selected')
                     .css({
@@ -313,15 +311,15 @@ $(function(){
      */
     function highlight_pathway_even_more(path_id){
         if (path_id == '__NONE__'){
-            cy.edges().removeClass('highlighted_more');
+            cy.edges().removeClass('highlighted_even_more');
         } else {
             // Edges
             cy.edges().forEach(function(edge, index){
                 let edge_paths = edge.data('path_ids');
                 if (share_at_least_one(edge_paths, [path_id])){
-                    edge.addClass('highlighted_more');
+                    edge.addClass('highlighted_even_more');
                 } else {
-                    edge.removeClass('highlighted_more');
+                    edge.removeClass('highlighted_even_more');
                 }
             });
         }
