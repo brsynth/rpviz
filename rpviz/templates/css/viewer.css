@@ -192,6 +192,15 @@ body {
     margin-left: 2%;
 }
 
+#info .link {
+    text-align: right;
+}
+
+#info .link span {
+    font-size: 0.9em;
+    font-family: sans-serif;
+}
+
 #info .raw-text a,
 #info .raw-text a:visited
 {
