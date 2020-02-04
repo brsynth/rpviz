@@ -397,6 +397,7 @@ function panel_pathway_info(path_id, show=true){
         let global_score = pathways_info[path_id]['scores']['globalScore'];
         let thermo_value = pathways_info[path_id]['thermo_dg_m_gibbs'];
         let fba_value = pathways_info[path_id]['fba_target_flux'];
+        let nb_steps = pathways_info[path_id]['nb_steps'];
         // Refine the global score value
         if (isNaN(global_score)){
             global_score = "NaN";
@@ -420,6 +421,7 @@ function panel_pathway_info(path_id, show=true){
         $("span.pathway_info_global_score").html(global_score);
         $("span.pathway_info_thermo").html(thermo_value);
         $("span.pathway_info_target_flux").html(fba_value);
+        $("span.pathway_info_nb_steps").html(nb_steps);
         // Show
         $("#panel_pathway_info").show();
     } else {
