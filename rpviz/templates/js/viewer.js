@@ -345,6 +345,7 @@ function panel_reaction_info(node, show=true){
         let rsmiles = node.data('rsmiles');
         let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
         let path_ids = node.data('path_ids');
+        let thermo_value = node.data('thermo_dg_m_gibbs');
         // Inject
         $("span.reaction_info_rsmiles").html(rsmiles);
         $("div.reaction_info_ruleid").html(rule_id);
@@ -357,6 +358,13 @@ function panel_reaction_info(node, show=true){
         } else {
             $("div.reaction_info_pathids").append('None<br/>');
         }
+        // Thermodynamic value
+        if (isNaN(thermo_value)){
+            thermo_value = "NaN";
+        } else {
+            thermo_value = parseFloat(thermo_value).toFixed(3);
+        }
+        $("span.reaction_info_thermo").html(thermo_value);
         // Selenzyme crosslink
         $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
         // Show
@@ -388,7 +396,7 @@ function panel_pathway_info(path_id, show=true){
         // Collect
         let global_score = pathways_info[path_id]['scores']['globalScore'];
         let thermo_value = pathways_info[path_id]['thermo_dg_m_gibbs'];
-        // If the score is not a number
+        // Refine the global score value
         if (isNaN(global_score)){
             global_score = "NaN";
         } else {
@@ -403,7 +411,7 @@ function panel_pathway_info(path_id, show=true){
         // Inject
         $("span.pathway_info_path_id").html(path_id);
         $("span.pathway_info_global_score").html(global_score);
-        $("span.pathway_info_dg").html(thermo_value);
+        $("span.pathway_info_thermo").html(thermo_value);
         // Show
         $("#panel_pathway_info").show();
     } else {
