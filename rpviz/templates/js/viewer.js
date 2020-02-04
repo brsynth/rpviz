@@ -391,7 +391,7 @@ function panel_pathway_info(path_id, show=true){
         if (isNaN(global_score)){
             global_score = "NaN";
         } else {
-            global_score = parseFloat(global_score).toPrecision(3);
+            global_score = parseFloat(global_score).toFixed(3);
         }
         // Inject
         $("span.pathway_info_path_id").html(path_id);
