@@ -387,15 +387,23 @@ function panel_pathway_info(path_id, show=true){
     if (show){
         // Collect
         let global_score = pathways_info[path_id]['scores']['globalScore'];
+        let thermo_value = pathways_info[path_id]['thermo_dg_m_gibbs'];
         // If the score is not a number
         if (isNaN(global_score)){
             global_score = "NaN";
         } else {
             global_score = parseFloat(global_score).toFixed(3);
         }
+        // Refines thermodynamic value
+        if (isNaN(thermo_value)){
+            thermo_value = "NaN";
+        } else {
+            thermo_value = parseFloat(thermo_value).toFixed(3);
+        }
         // Inject
         $("span.pathway_info_path_id").html(path_id);
         $("span.pathway_info_global_score").html(global_score);
+        $("span.pathway_info_dg").html(thermo_value);
         // Show
         $("#panel_pathway_info").show();
     } else {
