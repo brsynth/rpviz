@@ -326,11 +326,16 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
     for edge in edges_nodes.values():
         network['elements']['edges'].append({'data': edge})
 
-    # Finally, sort path IDs everywhere
-    for node in network['elements']['nodes']:
-        node['data']['path_ids'] = sorted(node['data']['path_ids'], key=lambda x: [int(s) for s in x.split('_')[1:]])
-    for node in network['elements']['edges']:
-        node['data']['path_ids'] = sorted(node['data']['path_ids'], key=lambda x: [int(s) for s in x.split('_')[1:]])
+    # Finally, sort node and edge IDs everywhere
+    try: 
+        network_backup = network.copy()
+        for node in network['elements']['nodes']:
+            node['data']['path_ids'] = sorted(node['data']['path_ids'], key=lambda x: [int(s) for s in x.split('_')[1:]])
+        for node in network['elements']['edges']:
+            node['data']['path_ids'] = sorted(node['data']['path_ids'], key=lambda x: [int(s) for s in x.split('_')[1:]])
+    except ValueError:
+        logging.warning('Cannot reorder pathway IDs into node and edge items, skipped')
+        network = network_backup.copy()
 
     # Finally, sort pathway_info by pathway ID
     try:
@@ -338,8 +343,8 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         path_ids_ordered = sorted(pathways_info.keys(), key=lambda x: [int(s) for s in x.split('_')[1:]])
         for path_id in path_ids_ordered:
             pathways_info_ordered[path_id] = pathways_info[path_id]
-    except Exception:
-        logging.warning('Cannot reorder pathway_info according to pathway IDs.')
+    except ValueError:
+        logging.warning('Cannot reorder pathway_info according to pathway IDs, skipped.')
         pathways_info_ordered = pathways_info
 
     return network, pathways_info_ordered
