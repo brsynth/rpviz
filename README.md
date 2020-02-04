@@ -253,6 +253,9 @@ Bug fix:
 
 ### For later
 
+Based on short term items:
+- Provide `thermo_dg_m_formation` for chemicals
+
 Add information into the JSON:
 - Build a dedicated section for sequence crosslinks
 - Add annotation about the rule diameter to reaction nodes
