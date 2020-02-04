@@ -255,6 +255,10 @@ Bug fix:
 
 Based on short term items:
 - Provide `thermo_dg_m_formation` for chemicals
+- Provide `ec_numbers` for reactions
+- Set `ec_numbers` default value to `[]`
+- Fix the `sink_chemical` values (always `0` atm)
+- Fix the crosslinks for chemicals (most of links are wrong atm)
 
 Add information into the JSON:
 - Build a dedicated section for sequence crosslinks
