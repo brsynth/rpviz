@@ -155,9 +155,102 @@ class PathwayHandler {
 };
 
 // Utils ///////////////////////////
-    
+
 /**
- * Collect pinned pathways IDs
+ * Build the pathway table
+ *
+ * Derived from: http://jsfiddle.net/manishmmulani/7MRx6
+ */
+function build_pathway_table(){
+    console.assert(pathways_info);
+    
+    // Table skeleton
+    let table_base = $('<table></table>');
+    
+    // Build the header
+    let field_names = ['Pathway', 'Show', 'Info', 'Colour', 'Value'];
+    let field_classes = ['path_id_head', 'path_checkbox_head', 'path_info_head', 'path_colour_head', 'path_value_head'];  // This is needed for tablesort
+    let table_row = $('<tr></tr>');
+    for (let i = 0; i < field_names.length; i++){
+        let value = field_names[i];
+        let class_ = field_classes[i];
+        table_row.append($('<th class="' + class_ + '"></th>').html(value));
+    }
+    table_base.append($('<thead></thead>').append(table_row));
+    
+    // Build the body
+    let table_body = $('<tbody></tbody>');
+    for (let path_id in pathways_info){
+        let info = pathways_info[path_id];
+        let table_row = $('<tr></tr>');
+        table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
+        table_row.append($('<td class="path_checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
+        table_row.append($('<td class="path_info" data-path_id="' + path_id + '"></td>'));
+        table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
+        table_row.append($('<td class="path_value" data-path_id="' + path_id + '"></td>'));
+        table_body.append(table_row);
+    }
+    table_base.append(table_body);
+
+    // Append the content to the HTML
+    $("#table_choice").append(table_base);
+    
+}
+
+/**
+ *
+ * Colourise pathways
+ *
+ * @param score_label (str): the score label to use within the path info
+ */
+function colourise_pathways(score_label='globalScore'){
+    let score_values = [];
+    // Collect valid scores
+    for (let path_id in pathways_info){
+        let score = pathways_info[path_id]['scores'][score_label];
+        if (! isNaN(score)){
+            let score_value = parseFloat(score);
+            score_values.push(score_value);
+        }
+    }
+    // Set up scale
+    let min_score = Math.min(...score_values);
+    let max_score = Math.max(...score_values);
+    let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
+    // Colourise
+    for (let path_id in pathways_info){
+        let score = pathways_info[path_id]['scores'][score_label];
+        if (! isNaN(score)){
+            // Get the score
+            let score_value = parseFloat(score);
+            let score_hex = colour_maker(score_value).hex();
+            // Colourise the associated edges
+            let edges = get_edges_from_path_id(path_id);
+            edges.style({
+                'line-color': score_hex,
+                'target-arrow-color': score_hex
+            });
+            // Colourise the associated color picker
+            let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
+            colour_input.val(score_hex);
+        }
+    }
+}
+
+/**
+ * Collect checked pathways
+ */
+function get_checked_pathways(){
+    let selected_paths=[];
+    $('input[name=path_checkbox]:checked').each(function(){
+        let path_id = $(this).val();
+        selected_paths.push(path_id);
+    });
+    return selected_paths;
+}
+
+/**
+ * Get pinned pathways IDs
  */
 function get_pinned_pathway_IDs(){
     let pinned_paths = [];
@@ -166,6 +259,148 @@ function get_pinned_pathway_IDs(){
         pinned_paths.push(path_id);
     });
     return pinned_paths
+}
+
+    /**
+     * Put chemical info into the information panel
+     */
+    function panel_chemical_info(node, show=false){
+        if (show){
+            // Collect
+            let node_id = node.data('id');
+            let svg = node.data('svg');
+            let smiles = node.data('smiles');
+            let inchi = node.data('inchi');
+            let inchikey = node.data('inchikey');
+            if (node.data('cofactor') == 1){
+                var cofactor = 'True';
+            } else {
+                var cofactor = 'False';
+            }
+            let xlinks = node.data('xlinks');
+            let path_ids = node.data('path_ids');
+            // Inject
+            if (inchikey == ""){
+                $("span.chem_info_inchikey").html("NA");
+                $("span.chem_info_inchikey_search").html("");
+            } else {
+                $("span.chem_info_inchikey").html(inchikey);
+                $("span.chem_info_inchikey_search").html('<a target="_blank" href="http://www.google.com/search?q=' + encodeURI(inchikey) + '">Look for identical structure using Google</a>');
+            }
+            if (inchi == ""){
+                $("span.chem_info_inchi").html("NA");
+                $("span.chem_info_inchi_search").html("");
+            } else {
+                $("span.chem_info_inchi").html(inchi);
+                $("span.chem_info_inchi_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(inchi) + '">Look for identical structure using PubChem</a>');
+            }
+            if (smiles == ""){
+                $("span.chem_info_smiles").html("NA");
+                $("span.chem_info_smiles_search").html("");
+            } else {
+                $("span.chem_info_smiles").html(smiles);
+                $("span.chem_info_smiles_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(smiles) + '">Look for identical structure using PubChem</a>');
+            }
+            $("span.chem_info_iscofactor").html(cofactor);
+            // Inject SVG depiction as a background image (if any)
+            if (svg !== null){
+                $('div.img-box').show();
+                $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
+            } else {
+                $('div.img-box').hide();
+            }
+            // Inject crosslinks
+            $("div.chem_info_xlinks").html('');  // Reset div content
+            if (xlinks.length > 0){
+                for (let i = 0; i < xlinks.length; i++){
+                    $("div.chem_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
+                    $("div.chem_info_xlinks").append('<br/>');
+                }
+            } else {
+                $("div.chem_info_xlinks").append('None<br/>');
+            }
+            // Inject path IDs
+            $("div.chem_info_pathids").html('');  // Reset div content
+            if (path_ids.length > 0){
+                for (let i = 0; i < path_ids.length; i++){
+                    $("div.chem_info_pathids").append(path_ids[i] + '<br/>');
+                }
+            } else {
+                $("div.chem_info_pathids").append('None<br/>');
+            }
+            // Show
+            $("#panel_chemical_info").show();
+        } else {
+            $("#panel_chemical_info").hide();
+        }
+    }
+    
+/**
+ * Put reaction info into the information panel
+ */
+function panel_reaction_info(node, show=true){
+    if (show){
+        // Collect
+        let node_id = node.data('id');
+        let rsmiles = node.data('rsmiles');
+        let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
+        let path_ids = node.data('path_ids');
+        // Inject
+        $("span.reaction_info_rsmiles").html(rsmiles);
+        $("div.reaction_info_ruleid").html(rule_id);
+        // Inject path IDs
+        $("div.reaction_info_pathids").html('');  // Reset div content
+        if (path_ids.length > 0){
+            for (let i = 0; i < path_ids.length; i++){
+                $("div.reaction_info_pathids").append(path_ids[i] + '<br/>');
+            }
+        } else {
+            $("div.reaction_info_pathids").append('None<br/>');
+        }
+        // Selenzyme crosslink
+        $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
+        // Show
+        $("#panel_reaction_info").show();
+    } else {
+        $("#panel_reaction_info").hide();
+    }
+}
+
+/**
+ * Write some default text message on the info panel
+ */
+function panel_startup_info(show=true){  // node
+    if (show){
+        $("#panel_startup_legend").show();
+    } else {
+        $("#panel_startup_legend").hide();
+    }
+    
+}
+
+/**
+ * Put pathway info into the information panel
+ *
+ * @param path_id (str): pathway ID
+ */
+function panel_pathway_info(path_id, show=true){
+    if (show){
+        // Collect
+        let global_score = pathways_info[path_id]['scores']['globalScore'];
+        // If the score is not a number
+        if (isNaN(global_score)){
+            global_score = "NaN";
+        } else {
+            global_score = parseFloat(global_score).toPrecision(3);
+        }
+        // Inject
+        $("span.pathway_info_path_id").html(path_id);
+        $("span.pathway_info_global_score").html(global_score);
+        // Show
+        $("#panel_pathway_info").show();
+    } else {
+        $("#panel_pathway_info").hide();
+    }
 }
 
 /**
@@ -184,6 +419,54 @@ function share_at_least_one(array1, array2){
         }
     }
     return false;
+}
+
+/**
+ * Make labels for chemicals
+ *
+ * @param max_length (int): string size cutoff before label truncation
+ */
+function make_chemical_labels(max_length=6)
+{
+    let nodes = cy.nodes().filter('[type = "chemical"]');
+    for (let i = 0; i < nodes.size(); i++){
+        let node = nodes[i];
+        let label = node.data('label');
+        if ((typeof label != 'undefined') && (label != 'None') && (label != '')){
+            if (label.length > max_length){
+                short_label = label.substr(0, max_length-2)+'..';
+            } else {
+                short_label = label;
+            }
+        } else {
+            short_label = '';
+        }
+        node.data('short_label', short_label);
+    }
+}
+
+/**
+ * Make labels for reactions
+ *
+ * @param max_length (int): string size cutoff before label truncation
+ */
+function make_reaction_labels(max_length=10)
+{
+    let nodes = cy.nodes().filter('[type = "reaction"]');
+    for (let i = 0; i < nodes.size(); i++){
+        let node = nodes[i];
+        let label = node.data('label');
+        if ((typeof label != 'undefined') && (label != 'None') && (label != '')){
+            if (label.length > max_length){
+                short_label = label.substr(0, max_length-2)+'..';
+            } else {
+                short_label = label;
+            }
+        } else {
+            short_label = '';
+        }
+        node.data('short_label', short_label);
+    }
 }
 
 // Live ///////////////////////////
@@ -363,54 +646,6 @@ $(function(){
         });
         lay.run();
     }
-    
-    /**
-     * Make compound labels
-     *
-     * @param max_length (int): string size cutoff before label truncation
-     */
-    function make_chemical_labels(max_length=6)
-    {
-        let nodes = cy.nodes().filter('[type = "chemical"]');
-        for (let i = 0; i < nodes.size(); i++){
-            let node = nodes[i];
-            let label = node.data('label');
-            if ((typeof label != 'undefined') && (label != 'None') && (label != '')){
-                if (label.length > max_length){
-                    short_label = label.substr(0, max_length-2)+'..';
-                } else {
-                    short_label = label;
-                }
-            } else {
-                short_label = '';
-            }
-            node.data('short_label', short_label);
-        }
-    }
-    
-    /**
-     * Make reaction labels
-     *
-     * @param max_length (int): string size cutoff before label truncation
-     */
-    function make_reaction_labels(max_length=10)
-    {
-        let nodes = cy.nodes().filter('[type = "reaction"]');
-        for (let i = 0; i < nodes.size(); i++){
-            let node = nodes[i];
-            let label = node.data('label');
-            if ((typeof label != 'undefined') && (label != 'None') && (label != '')){
-                if (label.length > max_length){
-                    short_label = label.substr(0, max_length-2)+'..';
-                } else {
-                    short_label = label;
-                }
-            } else {
-                short_label = '';
-            }
-            node.data('short_label', short_label);
-        }
-    }
         
     /** Load a metabolic network
      *
@@ -463,189 +698,6 @@ $(function(){
             render_layout();
         }
     }
-    
-    /**
-     * Write some default text message on the info panel
-     */
-    function panel_startup_info(show=true){  // node
-        if (show){
-            $("#panel_startup_legend").show();
-        } else {
-            $("#panel_startup_legend").hide();
-        }
-        
-    }
-    
-    /**
-     * Put chemical info into the information panel
-     */
-    function panel_chemical_info(node, show=false){
-        if (show){
-            // Collect
-            let node_id = node.data('id');
-            let svg = node.data('svg');
-            let smiles = node.data('smiles');
-            let inchi = node.data('inchi');
-            let inchikey = node.data('inchikey');
-            if (node.data('cofactor') == 1){
-                var cofactor = 'True';
-            } else {
-                var cofactor = 'False';
-            }
-            let xlinks = node.data('xlinks');
-            let path_ids = node.data('path_ids');
-            // Inject
-            if (inchikey == ""){
-                $("span.chem_info_inchikey").html("NA");
-                $("span.chem_info_inchikey_search").html("");
-            } else {
-                $("span.chem_info_inchikey").html(inchikey);
-                $("span.chem_info_inchikey_search").html('<a target="_blank" href="http://www.google.com/search?q=' + encodeURI(inchikey) + '">Look for identical structure using Google</a>');
-            }
-            if (inchi == ""){
-                $("span.chem_info_inchi").html("NA");
-                $("span.chem_info_inchi_search").html("");
-            } else {
-                $("span.chem_info_inchi").html(inchi);
-                $("span.chem_info_inchi_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(inchi) + '">Look for identical structure using PubChem</a>');
-            }
-            if (smiles == ""){
-                $("span.chem_info_smiles").html("NA");
-                $("span.chem_info_smiles_search").html("");
-            } else {
-                $("span.chem_info_smiles").html(smiles);
-                $("span.chem_info_smiles_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(smiles) + '">Look for identical structure using PubChem</a>');
-            }
-            $("span.chem_info_iscofactor").html(cofactor);
-            // Inject SVG depiction as a background image (if any)
-            if (svg !== null){
-                $('div.img-box').show();
-                $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
-            } else {
-                $('div.img-box').hide();
-            }
-            // Inject crosslinks
-            $("div.chem_info_xlinks").html('');  // Reset div content
-            if (xlinks.length > 0){
-                for (let i = 0; i < xlinks.length; i++){
-                    $("div.chem_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
-                    $("div.chem_info_xlinks").append('<br/>');
-                }
-            } else {
-                $("div.chem_info_xlinks").append('None<br/>');
-            }
-            // Inject path IDs
-            $("div.chem_info_pathids").html('');  // Reset div content
-            if (path_ids.length > 0){
-                for (let i = 0; i < path_ids.length; i++){
-                    $("div.chem_info_pathids").append(path_ids[i] + '<br/>');
-                }
-            } else {
-                $("div.chem_info_pathids").append('None<br/>');
-            }
-            // Show
-            $("#panel_chemical_info").show();
-        } else {
-            $("#panel_chemical_info").hide();
-        }
-    }
-    
-    /**
-     * Put reaction info into the information panel
-     */
-    function panel_reaction_info(node, show=true){
-        if (show){
-            // Collect
-            let node_id = node.data('id');
-            let rsmiles = node.data('rsmiles');
-            let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
-            let path_ids = node.data('path_ids');
-            // Inject
-            $("span.reaction_info_rsmiles").html(rsmiles);
-            $("div.reaction_info_ruleid").html(rule_id);
-            // Inject path IDs
-            $("div.reaction_info_pathids").html('');  // Reset div content
-            if (path_ids.length > 0){
-                for (let i = 0; i < path_ids.length; i++){
-                    $("div.reaction_info_pathids").append(path_ids[i] + '<br/>');
-                }
-            } else {
-                $("div.reaction_info_pathids").append('None<br/>');
-            }
-            // Selenzyme crosslink
-            $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
-            // Show
-            $("#panel_reaction_info").show();
-        } else {
-            $("#panel_reaction_info").hide();
-        }
-    }
-    
-    /**
-     * Put pathway info into the information panel
-     *
-     * @param path_id (str): pathway ID
-     */
-    function panel_pathway_info(path_id, show=true){
-        if (show){
-            // Collect
-            let global_score = pathways_info[path_id]['scores']['globalScore'];
-            // If the score is not a number
-            if (isNaN(global_score)){
-                global_score = "NaN";
-            } else {
-                global_score = parseFloat(global_score).toPrecision(3);
-            }
-            // Inject
-            $("span.pathway_info_path_id").html(path_id);
-            $("span.pathway_info_global_score").html(global_score);
-            // Show
-            $("#panel_pathway_info").show();
-        } else {
-            $("#panel_pathway_info").hide();
-        }
-    }
-    
-    /**
-     * Build the pathway table
-     *
-     * Derived from: http://jsfiddle.net/manishmmulani/7MRx6
-     */
-    function build_pathway_table(){
-        console.assert(pathways_info);
-        
-        // Table skeleton
-        let table_base = $('<table></table>');
-        
-        // Build the header
-        let field_names = ['Pathway', 'Show', 'Info', 'Colour', 'Value'];
-        let field_classes = ['path_id_head', 'path_checkbox_head', 'path_info_head', 'path_colour_head', 'path_value_head'];  // This is needed for tablesort
-        let table_row = $('<tr></tr>');
-        for (let i = 0; i < field_names.length; i++){
-            let value = field_names[i];
-            let class_ = field_classes[i];
-            table_row.append($('<th class="' + class_ + '"></th>').html(value));
-        }
-        table_base.append($('<thead></thead>').append(table_row));
-        
-        // Build the body
-        let table_body = $('<tbody></tbody>');
-        for (let path_id in pathways_info){
-            let info = pathways_info[path_id];
-            let table_row = $('<tr></tr>');
-            table_row.append($('<td class="path_id" data-path_id="' + path_id + '"></td>').html(path_id));
-            table_row.append($('<td class="path_checkbox"></td>').append($('<input type="checkbox" name="path_checkbox" value=' + path_id + '>')));
-            table_row.append($('<td class="path_info" data-path_id="' + path_id + '"></td>'));
-            table_row.append($('<td class="path_colour" data-path_id="' + path_id + '"><input type="color" name="head" value="#A9A9A9"></td>'));
-            table_row.append($('<td class="path_value" data-path_id="' + path_id + '"></td>'));
-            table_body.append(table_row);
-        }
-        table_base.append(table_body);
-
-        // Append the content to the HTML
-        $("#table_choice").append(table_base);
-        
-    }
 
     /**
      * Make the pathway table sortable
@@ -660,18 +712,6 @@ $(function(){
                 }
             }
         });
-    }
-    
-    /**
-     * Collect checked pathways
-     */
-    function get_checked_pathways(){
-        let selected_paths=[];
-        $('input[name=path_checkbox]:checked').each(function(){
-            let path_id = $(this).val();
-            selected_paths.push(path_id);
-        });
-        return selected_paths;
     }
     
     // When a pathway is checked
@@ -777,46 +817,6 @@ $(function(){
             }
         });
         return edges_col;
-    }
-    
-    /**
-     *
-     * Colourise pathways
-     *
-     * @param score_label (str): the score label to use within the path info
-     */
-    function colourise_pathways(score_label='globalScore'){
-        let score_values = [];
-        // Collect valid scores
-        for (let path_id in pathways_info){
-            let score = pathways_info[path_id]['scores'][score_label];
-            if (! isNaN(score)){
-                let score_value = parseFloat(score);
-                score_values.push(score_value);
-            }
-        }
-        // Set up scale
-        let min_score = Math.min(...score_values);
-        let max_score = Math.max(...score_values);
-        let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
-        // Colourise
-        for (let path_id in pathways_info){
-            let score = pathways_info[path_id]['scores'][score_label];
-            if (! isNaN(score)){
-                // Get the score
-                let score_value = parseFloat(score);
-                let score_hex = colour_maker(score_value).hex();
-                // Colourise the associated edges
-                let edges = get_edges_from_path_id(path_id);
-                edges.style({
-                    'line-color': score_hex,
-                    'target-arrow-color': score_hex
-                });
-                // Colourise the associated color picker
-                let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
-                colour_input.val(score_hex);
-            }
-        }
     }
 
     /**
