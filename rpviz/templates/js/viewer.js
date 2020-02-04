@@ -8,21 +8,21 @@
 
 class PathwayHandler {
 
-    cy;
-    all_path_ids = new Set();
-    path_to_edges = new Object();
-    path_to_nodes = new Object();
-    pinned_path_ids = new Set();
-    pinned_edge_ids = new Set();  // DEBUG: Should not be used
-    pinned_node_ids = new Set();  // DEBUG: Should not be used
-
     /**
      * 
      * @param {cytoscape.js object} cy
      * @param {json structure} pathways_info 
      */
     constructor(cy, pathways_info){
+        // List of the class attributes
         this.cy = cy;
+        this.all_path_ids = new Set()
+        this.path_to_edges = new Object()
+        this.path_to_nodes = new Object()
+        this.pinned_path_ids = new Set()
+        this.pinned_edge_ids = new Set()  // DEBUG: Should not be used
+        this.pinned_node_ids = new Set()  // DEBUG: Should not be used
+        
         for (let path_id in pathways_info){
             if (this.all_path_ids.has(path_id)){
                 console.log('path_id already referenced: ' + path_id);
