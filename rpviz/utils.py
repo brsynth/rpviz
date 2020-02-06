@@ -17,6 +17,8 @@ from collections import OrderedDict
 #from rpviz import rpSBML
 import rpSBML
 
+miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'metanetx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/'}, 'species': {'metanetx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
+
 
 def sbml_to_json(input_folder, pathway_id='rp_pathway'):
     """Parse the collection of rpSBML files and outputs as dictionaries the network and pathway info
@@ -45,19 +47,35 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         brsynth_annot = rpsbml.readBRSYNTHAnnotation(rp_pathway.getAnnotation())
         norm_scores = [i for i in brsynth_annot if i[:5]=='norm_']
         norm_scores.append('global_score')
+        ############## pathway_id ##############
         scores = {}
         for i in norm_scores:
             scores[i] = brsynth_annot[i]
-        ############## pathway_id ##############
+        target_flux_list = [i for i in brsynth_annot if i[:16]=='fba_obj_RP1_sink']
+        if len(target_flux_list)==0:
+            target_flux = 0.0
+        elif len(target_flux_list)==1:
+            target_flux = brsynth_annot[target_flux_list[0]]['value']
+        else:
+            #multiple values
+            for i in target_flux_list:
+                if len(i.split('__'))==2:
+                    print
+            tmp = [i.split('__') for i in target_flux_list]
+            target_flux = []
         pathways_info[rpsbml.modelName] = {
             'path_id': rpsbml.modelName,
             'node_ids': [],
             'edge_ids': [],
             'scores': scores,
             'nb_steps': rp_pathway.num_members,
-            'fba_target_flux': brsynth_annot['fba_RP1_sink__restricted_biomass']['value'],
-            'thermo_dg_m_gibbs': brsynth_annot['dfG_prime_m']['value'],
+            'fba_target_flux': target_flux,
+            'thermo_dg_m_gibbs': None,
         }
+        try:
+            pathways_info[rpsbml.modelName]['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
+        except KeyError:
+            pass
         ################ REACTIONS #######################
         for reaction_name in rpsbml.readRPpathwayIDs():
             reaction = rpsbml.model.getReaction(reaction_name)
@@ -90,7 +108,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                         node['xlinks'].append({
                             'db_name': xref,
                             'entity_id': ref,
-                            'url': 'http://identifiers.org/'+xref+'/'+ref
+							'url': 'http://identifiers.org/'+miriam_header['reaction'][xref]+str(ref)
                         })
                 node['rsmiles'] = brsynth_annot['smiles']
                 node['rule_id'] = brsynth_annot['rule_id']
@@ -98,7 +116,10 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     node['ec_numbers'] = miriam_annot['ec-code']
                 except KeyError:
                     node['ec_numbers'] = None
-                node['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
+                try:
+                    node['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
+                except KeyError:
+                    node['thermo_dg_m_gibbs'] = None
                 #node['fba_reaction'] = '0'
                 node['smiles'] = None
                 node['inchi'] = None
@@ -136,7 +157,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         largest_rp_reac_id = sorted([i.getIdRef() for i in rp_pathway.getListOfMembers()], key=lambda x: int(x.replace('RP', '')), reverse=True)[0]
         reactants = [i.species for i in rpsbml.model.getReaction(largest_rp_reac_id).getListOfReactants()]
         central_species = [i.getIdRef() for i in groups.getGroup('central_species').getListOfMembers()]
-        sink_molecules = [i for i in reactants if i in central_species]
+        sink_molecules_inchikey = [rpsbml.readBRSYNTHAnnotation(rpsbml.model.getSpecies(i).getAnnotation())['inchikey'] for i in reactants if i in central_species]
         for species_name in rpsbml.readUniqueRPspecies():
             species = rpsbml.model.getSpecies(species_name)
             brsynth_annot = rpsbml.readBRSYNTHAnnotation(species.getAnnotation())
@@ -165,10 +186,16 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 node['xlinks'] = []
                 for xref in miriam_annot:
                     for ref in miriam_annot[xref]:
+                        if xref=='kegg' and ref[0]=='C':
+                            url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_c']+ref
+                        elif xref=='kegg' and ref[0]=='D':
+                            url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_d']+ref
+                        else:
+                            url_str = 'http://identifiers.org/'+miriam_header['species'][xref]+ref
                         node['xlinks'].append({
                             'db_name': xref,
                             'entity_id': ref,
-                            'url': 'http://identifiers.org/' + xref + '/' + ref
+                            'url': url_str
                         })
                 node['rsmiles'] = None
                 node['rule_id'] = None
@@ -185,7 +212,8 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                     node['target_chemical'] = 0
                 node['cofactor'] = 0
                 #check the highest RP{\d} reactants and ignore cofactors
-                if node_id in sink_molecules:
+                #TODO: not great but most time inchikey is the key
+                if node_id in sink_molecules_inchikey:
                     node['sink_chemical'] = 1
                 else:
                     node['sink_chemical'] = 0
