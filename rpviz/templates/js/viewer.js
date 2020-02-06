@@ -20,8 +20,6 @@ class PathwayHandler {
         this.path_to_edges = new Object()
         this.path_to_nodes = new Object()
         this.pinned_path_ids = new Set()
-        this.pinned_edge_ids = new Set()  // DEBUG: Should not be used
-        this.pinned_node_ids = new Set()  // DEBUG: Should not be used
         
         for (let path_id in pathways_info){
             if (this.all_path_ids.has(path_id)){
@@ -33,46 +31,10 @@ class PathwayHandler {
                 info = pathways_info[path_id];
                 this.path_to_edges[path_id] = info['edge_ids'];
                 this.path_to_nodes[path_id] = info['node_ids'];
+                // Set specific data field in the cytoscape object
+                cy.elements().data('pinned', 0);
             }
         }
-    }
-
-    /**
-     * Append path IDs to be pinned
-     * 
-     * @param {Array} path_ids 
-     */
-    add_pinned_paths(path_ids){
-        for (let i = 0; i < path_ids.length;  i++){
-            // Update path ids
-            this.pinned_path_ids.add(path_ids[i]);
-            // Update edge ids
-            path_ids.forEach((path_id) => {
-                let edge_ids = this.path_to_edges[path_id];
-                edge_ids.forEach((edge_id) => {
-                    this.pinned_edge_ids.add(edge_id);
-                }, this);
-            }, this);
-            // Update node ids
-            path_ids.forEach((path_id) => {
-                let node_ids = this.path_to_nodes[path_id];
-                node_ids.forEach((node_id) => {
-                    this.pinned_node_ids.add(node_id);
-                });
-            }, this);
-        }
-        return
-    }
-
-    /**
-     * Remove path IDs to be pinned
-     * 
-     * @param {Array} path_ids 
-     */
-    remove_pinned_paths(path_ids){
-        path_ids.forEach((path_id) => {
-            this.pinned_path_ids.delete(path_id);
-        }, this);
     }
 
     /**
@@ -83,75 +45,131 @@ class PathwayHandler {
     }
 
     /**
-     * Update the visibility of pinned pathways
-     */
-    update_pinned_paths_visibility(){
-        if (this.pinned_path_ids.size == 0){
-            // "Highlight" everything if nothing is pinned
-            this.cy.elements('.faded').removeClass('faded');
-        } else {
-            // Collect elements to highlight
-            let elements_to_highlight = new Set();
-            this.pinned_path_ids.forEach((path_id) => {
-                let edge_ids = this.path_to_edges[path_id];
-                edge_ids.forEach((edge_id) => {
-                    elements_to_highlight.add(edge_id)
-                });
-                let node_ids = this.path_to_nodes[path_id];
-                node_ids.forEach((node_id) => {
-                    elements_to_highlight.add(node_id);
-                });
-            }, this);
-            // Fade in / out elements
-            this.cy.elements().forEach((element) => {
-                if (elements_to_highlight.has(element.id())){
-                    element.removeClass('faded');
-                } else {
-                    element.addClass('faded');
-                }
-            });
-        }
-        return
-    }
-
-    /**
-     * Highlight "even more" a particular set of pathways
+     * Add one or more pinned pathways
      * 
      * @param {Array} path_ids
      */
-    highlight_pathways(path_ids=[]){
-        if (path_ids.length == 0){
-            this.cy.elements('.highlighted').removeClass('highlighted');
-        } else {
-            // Collect
-            let edges_to_highlight = new Set();
-            let nodes_to_highlight = new Set();
-            path_ids.forEach((path_id) => {
-                let edge_ids = this.path_to_edges[path_id];
-                edge_ids.forEach((edge_id) => {
-                    edges_to_highlight.add(edge_id)
-                });
-                let node_ids = this.path_to_nodes[path_id];
-                node_ids.forEach((node_id) => {
-                    nodes_to_highlight.add(node_id)
-                });
+    add_pinned_paths(path_ids){
+        // Update path ids
+        path_ids.forEach((path_id) => {
+            this.pinned_path_ids.add(path_id);
+        }, this);
+        // Update the "pinned" status of nodes and edges
+        path_ids.forEach((path_id) => {
+            let node_ids = this.path_to_nodes[path_id];
+            let edge_ids = this.path_to_edges[path_id];
+            let element_ids = new Set([...node_ids, ...edge_ids]);
+            element_ids.forEach((ele_id) => {
+                let element = this.cy.getElementById(ele_id);
+                element.data('pinned', 1);
             }, this);
-            // Clean
-            if (this.pinned_path_ids.size == 0){
-                this.cy.elements().addClass('faded');
-            }
-            // Highlight
-            nodes_to_highlight.forEach((element_id) => {
-                let element = this.cy.getElementById(element_id);
-                element.removeClass('faded');
-            }, this);
-            edges_to_highlight.forEach((element_id) => {
-                let element = this.cy.getElementById(element_id);
-                element.removeClass('faded');
-                element.addClass('highlighted');
-            }, this);
-        }
+        }, this);
+        return true
     }
+
+    /**
+     * Remove one or more pinned pathways
+     * 
+     * @param {Array} path_ids: list of pathway IDs
+     */
+    remove_pinned_paths(path_ids){
+        // Update path ids
+        path_ids.forEach((path_id) => {
+            this.pinned_path_ids.delete(path_id);
+        }, this);
+        // Update the "pinned" status of nodes and edges
+        path_ids.forEach((path_id) => {
+            let node_ids = this.path_to_nodes[path_id];
+            let edge_ids = this.path_to_edges[path_id];
+            let element_ids = new Set([...node_ids, ...edge_ids]);
+            element_ids.forEach((element_id) => {
+                if (! this.involved_in_any_pinned_path(element_id)){  // knowing we already removed the path_id from the list pinned path 
+                    this.cy.getElementById(element_id).data('pinned', 0);
+                }
+            }, this);
+        }, this);
+        return true
+    }
+
+    /**
+     * To know if an element is involved in at least one pinned path
+     * 
+     * @param {string} element_id: cytoscape element ID
+     */
+    involved_in_any_pinned_path(element_id){
+        let path_ids = this.cy.getElementById(element_id).data('path_ids')  // returns a list
+        for (let i = 0; i < path_ids.length; i++){
+            if (this.pinned_path_ids.has(path_ids[i])){
+                return true
+            }
+        }
+        return false
+    }
+
+    /** 
+     * Update the visibility of pinned elements
+     */
+    update_pinned_elements(){
+        // If no any element pinned, unfade everything
+        if (this.cy.elements('[pinned = 1]').length == 0){
+            this.cy.elements().forEach((element) => {
+                element.removeClass('faded');
+            })
+            return true;
+        }
+        // Otherwise, separate the grain from the bran
+        this.cy.elements('[pinned = 1]').forEach((element) => {
+            element.removeClass('faded');
+        });
+        this.cy.elements('[pinned = 0]').forEach((element) => {
+            element.addClass('faded');
+        });
+    }
+
+    /**
+     * Highlight "even more" a particular set of pathways, new algo
+     * 
+     * @param {Array} path_ids 
+     */
+    highlight_pathways(path_ids=[]){
+        // No pathway to highlight
+        if (path_ids.length == 0){
+            this.cy.edges('[highlighted = 1]').forEach((edge) => {
+                edge.data('highlighted', 0);
+                edge.removeClass('highlighted');
+            });
+            this.cy.nodes('[highlighted = 1]').forEach((node) => {
+                node.data('highlighted', 0);
+            });
+            this.update_pinned_elements();
+            return true;
+        }
+
+        // No pinned pathways
+        if (this.pinned_path_ids.size == 0){
+            this.cy.elements().addClass('faded');
+        }
+
+        //
+        path_ids.forEach((path_id) => {
+            let edge_ids = this.path_to_edges[path_id];
+            let node_ids = this.path_to_nodes[path_id];
+            let element_ids = new Set([...node_ids, ...edge_ids]);
+            element_ids.forEach((element_id) => {
+                let element = this.cy.getElementById(element_id);
+                element.data('highlighted', 1);
+            }, this);
+        }, this);
+
+        this.cy.edges('[highlighted = 1]').forEach((edge) => {
+            edge.addClass('highlighted');
+            edge.removeClass('faded');
+        });
+        this.cy.nodes('[highlighted = 1]').forEach((node) => {
+            node.removeClass('faded');
+        });
+    }
+
 };
 
 // Utils ///////////////////////////
@@ -774,7 +792,6 @@ $(function(){
         path_handler.highlight_pathways([path_id]);
     }, function(){
         path_handler.highlight_pathways([]);
-        path_handler.update_pinned_paths_visibility();
     });
     
     /**
@@ -782,13 +799,15 @@ $(function(){
      */
     $("td.path_id").click(function(){
         let path_id = $(this).data('path_id');
+        // Removing
         if ($(this).hasClass('pinned')){
-            path_handler.remove_pinned_paths([path_id]);
-            path_handler.update_pinned_paths_visibility();
             $(this).removeClass('pinned');
+            path_handler.remove_pinned_paths([path_id]);
+            path_handler.update_pinned_elements();
+        // Adding
         } else {
             path_handler.add_pinned_paths([path_id]);
-            path_handler.update_pinned_paths_visibility();
+            path_handler.update_pinned_elements();
             $(this).addClass('pinned');
         }
     });
@@ -819,7 +838,7 @@ $(function(){
         selected_paths = get_checked_pathways();
         show_pathways(selected_paths);
         // Update hilighted pathways to update their cofactor nodes status
-        path_handler.update_pinned_paths_visibility();
+        path_handler.update_pinned_elements();
     });
     $('#remove_cofactors_button').on('click', function(event){
         show_cofactors(false);
