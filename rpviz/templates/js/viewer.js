@@ -580,7 +580,7 @@ $(function(){
                 .selector("node[type='reaction']")
                     .css({
                         'height': 60,
-                        'width': 90,
+                        'width': 120,
                         'background-color': 'white',
                         'border-width': 5,
                         'border-color': 'darkgray',
@@ -590,7 +590,7 @@ $(function(){
                         'text-halign': 'center',
                         'text-opacity': 1,
                         'color': '#575757',
-                        'font-size': '12px',
+                        'font-size': '20px',
                     })
                 .selector("node[type='chemical']")
                     .css({
@@ -600,9 +600,9 @@ $(function(){
                         'width': 80,
                         'height': 80,
                         'label': 'data(short_label)',
-                        'font-size': '22px',
-                        'font-weight': 'bold',
-                        'text-valign': 'bottom',
+                        'font-size': '20px',
+                        // 'font-weight': 'bold',
+                        'text-valign': 'top',
                         'text-halign': 'center',
                         'text-margin-y': 8,
                         'text-opacity': 1,
