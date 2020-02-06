@@ -203,7 +203,7 @@ function build_pathway_table(){
  *
  * @param score_label (str): the score label to use within the path info
  */
-function colourise_pathways(score_label='globalScore'){
+function colourise_pathways(score_label='global_score'){
     let score_values = [];
     // Collect valid scores
     for (let path_id in pathways_info){
@@ -516,7 +516,7 @@ $(function(){
     render_layout();
     put_pathway_values('global_score');
     make_pathway_table_sortable();  // Should be called only after the table has been populated with values
-    colourise_pathways();
+    colourise_pathways('global_score');
 
     // Pathway Handler stuff
     window.path_handler = new PathwayHandler(cy, pathways_info);
