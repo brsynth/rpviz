@@ -411,7 +411,7 @@ function panel_startup_info(show=true){  // node
 function panel_pathway_info(path_id, show=true){
     if (show){
         // Collect
-        let global_score = pathways_info[path_id]['scores']['globalScore'];
+        let global_score = pathways_info[path_id]['scores']['global_score'];
         let thermo_value = pathways_info[path_id]['thermo_dg_m_gibbs'];
         let fba_value = pathways_info[path_id]['fba_target_flux'];
         let nb_steps = pathways_info[path_id]['nb_steps'];
