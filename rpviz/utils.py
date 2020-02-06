@@ -17,7 +17,7 @@ from collections import OrderedDict
 #from rpviz import rpSBML
 import rpSBML
 
-miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'metanetx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/'}, 'species': {'metanetx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
+miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'metanetx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec-code': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/'}, 'species': {'metanetx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
 
 
 def sbml_to_json(input_folder, pathway_id='rp_pathway'):
@@ -105,11 +105,13 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 node['xlinks'] = []
                 for xref in miriam_annot:
                     for ref in miriam_annot[xref]:
-                        node['xlinks'].append({
-                            'db_name': xref,
-                            'entity_id': ref,
-							'url': 'http://identifiers.org/'+miriam_header['reaction'][xref]+str(ref)
-                        })
+                        try:
+                            node['xlinks'].append({
+                                'db_name': xref,
+                                'entity_id': ref,
+                                'url': 'http://identifiers.org/'+miriam_header['reaction'][xref]+str(ref)})
+                        except KeyError:
+                            pass
                 node['rsmiles'] = brsynth_annot['smiles']
                 node['rule_id'] = brsynth_annot['rule_id']
                 try:
@@ -185,18 +187,26 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 node['svg'] = ''
                 node['xlinks'] = []
                 for xref in miriam_annot:
+                    if xref=='reactome':
+                        continue
+                    if xref=='metacyc':
+                        continue
                     for ref in miriam_annot[xref]:
-                        if xref=='kegg' and ref[0]=='C':
-                            url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_c']+ref
-                        elif xref=='kegg' and ref[0]=='D':
-                            url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_d']+ref
-                        else:
-                            url_str = 'http://identifiers.org/'+miriam_header['species'][xref]+ref
-                        node['xlinks'].append({
-                            'db_name': xref,
-                            'entity_id': ref,
-                            'url': url_str
-                        })
+                        try:
+                            if not all([xref=='bigg', len(ref.split('_'))>1]):
+                                #print(xref)
+                                if xref=='kegg' and ref[0]=='C':
+                                    url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_c']+ref
+                                elif xref=='kegg' and ref[0]=='D':
+                                    url_str = 'http://identifiers.org/'+miriam_header['species']['kegg_d']+ref
+                                else:
+                                    url_str = 'http://identifiers.org/'+miriam_header['species'][xref]+ref
+                                node['xlinks'].append({
+                                    'db_name': xref,
+                                    'entity_id': ref,
+                                    'url': url_str})
+                        except KeyError:
+                            pass
                 node['rsmiles'] = None
                 node['rule_id'] = None
                 node['ec_numbers'] = None
