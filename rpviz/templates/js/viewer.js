@@ -225,7 +225,7 @@ function colourise_pathways(score_label='global_score'){
             let score_value = parseFloat(score);
             let score_hex = colour_maker(score_value).hex();
             // Colourise the associated edges
-            let edges = get_edges_from_path_id(path_id);
+            let edges = get_edges_from_path_id(path_id, cy);
             edges.style({
                 'line-color': score_hex,
                 'target-arrow-color': score_hex
@@ -247,6 +247,23 @@ function get_checked_pathways(){
         selected_paths.push(path_id);
     });
     return selected_paths;
+}
+
+/**
+ * Get the collection of edges involved in a given path_id
+ *
+ * @param path_id (str): pathway ID
+ * @param cy (cytoscape object): Cytoscape object
+ */
+function get_edges_from_path_id(path_id, cy){
+    edges_col = cy.collection();
+    cy.edges().forEach(function(edge, index){
+        let edge_path_ids = edge.data('path_ids');
+        if (share_at_least_one(edge_path_ids, [path_id])){
+            edges_col = edges_col.union(edge);
+        }
+    });
+    return edges_col;
 }
 
 /**
@@ -822,27 +839,11 @@ $(function(){
      */
     function live_update_colour(event) {
         let path_id = $(this).data('path_id');
-        edges = get_edges_from_path_id(path_id);
+        edges = get_edges_from_path_id(path_id, cy);
         edges.style({
             'line-color': event.target.value,
             'target-arrow-color': event.target.value
         });
-    }
-
-    /**
-     * Get the collection of edges involved in a given path_id
-     *
-     * @param path_id (str): pathway ID
-     */
-    function get_edges_from_path_id(path_id){
-        edges_col = cy.collection();
-        cy.edges().forEach(function(edge, index){
-            let edge_path_ids = edge.data('path_ids');
-            if (share_at_least_one(edge_path_ids, [path_id])){
-                edges_col = edges_col.union(edge);
-            }
-        });
-        return edges_col;
     }
 
     /**
@@ -855,7 +856,6 @@ $(function(){
         for (let path_id in pathways_info){
             // Collect the value
             let score = pathways_info[path_id]['scores'][score_label];
-            let score_rounded = 0;
             if (! isNaN(score)){
                 score = parseFloat(score).toFixed(3);
             } else {
