@@ -19,6 +19,7 @@ class PathwayHandler {
         this.all_path_ids = new Set()
         this.path_to_edges = new Object()
         this.path_to_nodes = new Object()
+        this.path_to_scores = new Object()
         this.pinned_path_ids = new Set()
         
         for (let path_id in pathways_info){
@@ -31,6 +32,8 @@ class PathwayHandler {
                 info = pathways_info[path_id];
                 this.path_to_edges[path_id] = info['edge_ids'];
                 this.path_to_nodes[path_id] = info['node_ids'];
+                // Extract scores
+                this.path_to_scores[path_id] = info['scores'];
                 // Set specific data field in the cytoscape object
                 cy.elements().data('pinned', 0);
             }
@@ -170,6 +173,76 @@ class PathwayHandler {
         });
     }
 
+    /**
+     * Colourise pathways
+     * 
+     * @param {Array} path_ids: dictionary provided as a JSON
+     * @param {String} score_label: the score label to use within available scores
+     */
+    colourise_pathways(path_ids, score_label='global_score'){
+        let score_values = Object();
+        // Collect and refine scores
+        for (let i = 0; i < path_ids.length; i++){
+            let path_id = path_ids[i];
+            let score = this.path_to_scores[path_id][score_label];
+            if (! isNaN(score)){
+                let score_value = parseFloat(score);
+                score_values[path_id] = score_value;
+            }
+        }
+        // Sort path IDs by their values
+        let items = Object.keys(score_values).map(function(key) {
+            return [key, score_values[key]];
+        });
+        items.sort(function(first, second) {  // by inceasing order
+            return first[1] - second[1];
+        });
+        // Set up the scale
+        let list_of_values = [];
+        for (let i = 0; i < items.length; i++){
+            list_of_values.push(items[i][1]);
+        }
+        let min_score = Math.min(...list_of_values);
+        let max_score = Math.max(...list_of_values);
+        let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
+        // Finally colourise
+        for (let i = 0; i < items.length; i++){
+            // Get values
+            let path_id = items[i][0];
+            let score = items[i][1];
+            // Get colour according to scale 
+            let score_hex = colour_maker(score).hex();
+            // Apply colour on edges
+            let edge_ids = this.path_to_edges[path_id];
+            edge_ids.forEach((edge_id) => {
+                this.cy.getElementById(edge_id).style({
+                    'line-color': score_hex,
+                    'target-arrow-color': score_hex
+                })
+            }, this);
+            // Apply colour on colour picker
+            let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
+            colour_input.val(score_hex);
+        }
+        return true;
+    }
+
+    /**
+     * Reset all pathway colours to a same colour
+     * 
+     * @param {String} colour_hex: the hexadecimal colour to apply
+     */
+    reset_pathway_colours(colour_hex='#A9A9A9'){
+        // Reset edge colours
+        this.cy.edges().style({
+            'line-color': colour_hex,
+            'target-arrow-color': colour_hex
+        });
+        // Reset colour pickers
+        $('td.path_colour > input').val(colour_hex);
+        return true;
+    }
+
 };
 
 // Utils ///////////////////////////
@@ -216,7 +289,6 @@ function build_pathway_table(){
 }
 
 /**
- *
  * Colourise pathways
  *
  * @param score_label (str): the score label to use within the path info
@@ -556,7 +628,8 @@ $(function(){
 
     // Pathway Handler stuff
     window.path_handler = new PathwayHandler(cy, pathways_info);
-    
+    // path_handler.colourise_pathways(['rp_1_1', 'rp_2_1'], 'global_score');
+
     /**
      * Initialise the network, but hide everything
      *
@@ -791,6 +864,7 @@ $(function(){
         let path_id = $(this).data('path_id');
         path_handler.highlight_pathways([path_id]);
     }, function(){
+        let path_id = $(this).data('path_id');
         path_handler.highlight_pathways([]);
     });
     
@@ -804,10 +878,16 @@ $(function(){
             $(this).removeClass('pinned');
             path_handler.remove_pinned_paths([path_id]);
             path_handler.update_pinned_elements();
+            let pinned_paths = path_handler.get_pinned_paths();
+            path_handler.reset_pathway_colours();
+            path_handler.colourise_pathways(pinned_paths);
         // Adding
         } else {
             path_handler.add_pinned_paths([path_id]);
             path_handler.update_pinned_elements();
+            let pinned_paths = path_handler.get_pinned_paths();
+            path_handler.reset_pathway_colours();
+            path_handler.colourise_pathways(pinned_paths);
             $(this).addClass('pinned');
         }
     });
