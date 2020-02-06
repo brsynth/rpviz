@@ -278,79 +278,79 @@ function get_pinned_pathway_IDs(){
     return pinned_paths
 }
 
-    /**
-     * Put chemical info into the information panel
-     */
-    function panel_chemical_info(node, show=false){
-        if (show){
-            // Collect
-            let node_id = node.data('id');
-            let svg = node.data('svg');
-            let smiles = node.data('smiles');
-            let inchi = node.data('inchi');
-            let inchikey = node.data('inchikey');
-            if (node.data('cofactor') == 1){
-                var cofactor = 'True';
-            } else {
-                var cofactor = 'False';
-            }
-            let xlinks = node.data('xlinks');
-            let path_ids = node.data('path_ids');
-            // Inject
-            if (inchikey == ""){
-                $("span.chem_info_inchikey").html("NA");
-                $("span.chem_info_inchikey_search").html("");
-            } else {
-                $("span.chem_info_inchikey").html(inchikey);
-                $("span.chem_info_inchikey_search").html('<a target="_blank" href="http://www.google.com/search?q=' + encodeURI(inchikey) + '">Look for identical structure using Google</a>');
-            }
-            if (inchi == ""){
-                $("span.chem_info_inchi").html("NA");
-                $("span.chem_info_inchi_search").html("");
-            } else {
-                $("span.chem_info_inchi").html(inchi);
-                $("span.chem_info_inchi_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(inchi) + '">Look for identical structure using PubChem</a>');
-            }
-            if (smiles == ""){
-                $("span.chem_info_smiles").html("NA");
-                $("span.chem_info_smiles_search").html("");
-            } else {
-                $("span.chem_info_smiles").html(smiles);
-                $("span.chem_info_smiles_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(smiles) + '">Look for identical structure using PubChem</a>');
-            }
-            $("span.chem_info_iscofactor").html(cofactor);
-            // Inject SVG depiction as a background image (if any)
-            if (svg !== null){
-                $('div.img-box').show();
-                $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
-            } else {
-                $('div.img-box').hide();
-            }
-            // Inject crosslinks
-            $("div.chem_info_xlinks").html('');  // Reset div content
-            if (xlinks.length > 0){
-                for (let i = 0; i < xlinks.length; i++){
-                    $("div.chem_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
-                    $("div.chem_info_xlinks").append('<br/>');
-                }
-            } else {
-                $("div.chem_info_xlinks").append('None<br/>');
-            }
-            // Inject path IDs
-            $("div.chem_info_pathids").html('');  // Reset div content
-            if (path_ids.length > 0){
-                for (let i = 0; i < path_ids.length; i++){
-                    $("div.chem_info_pathids").append(path_ids[i] + '<br/>');
-                }
-            } else {
-                $("div.chem_info_pathids").append('None<br/>');
-            }
-            // Show
-            $("#panel_chemical_info").show();
+/**
+ * Put chemical info into the information panel
+ */
+function panel_chemical_info(node, show=false){
+    if (show){
+        // Collect
+        let node_id = node.data('id');
+        let svg = node.data('svg');
+        let smiles = node.data('smiles');
+        let inchi = node.data('inchi');
+        let inchikey = node.data('inchikey');
+        if (node.data('cofactor') == 1){
+            var cofactor = 'True';
         } else {
-            $("#panel_chemical_info").hide();
+            var cofactor = 'False';
         }
+        let xlinks = node.data('xlinks');
+        let path_ids = node.data('path_ids');
+        // Inject
+        if (inchikey == ""){
+            $("span.chem_info_inchikey").html("NA");
+            $("span.chem_info_inchikey_search").html("");
+        } else {
+            $("span.chem_info_inchikey").html(inchikey);
+            $("span.chem_info_inchikey_search").html('<a target="_blank" href="http://www.google.com/search?q=' + encodeURI(inchikey) + '">Look for identical structure using Google</a>');
+        }
+        if (inchi == ""){
+            $("span.chem_info_inchi").html("NA");
+            $("span.chem_info_inchi_search").html("");
+        } else {
+            $("span.chem_info_inchi").html(inchi);
+            $("span.chem_info_inchi_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(inchi) + '">Look for identical structure using PubChem</a>');
+        }
+        if (smiles == ""){
+            $("span.chem_info_smiles").html("NA");
+            $("span.chem_info_smiles_search").html("");
+        } else {
+            $("span.chem_info_smiles").html(smiles);
+            $("span.chem_info_smiles_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(smiles) + '">Look for identical structure using PubChem</a>');
+        }
+        $("span.chem_info_iscofactor").html(cofactor);
+        // Inject SVG depiction as a background image (if any)
+        if (svg !== null){
+            $('div.img-box').show();
+            $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
+        } else {
+            $('div.img-box').hide();
+        }
+        // Inject crosslinks
+        $("div.chem_info_xlinks").html('');  // Reset div content
+        if (xlinks.length > 0){
+            for (let i = 0; i < xlinks.length; i++){
+                $("div.chem_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
+                $("div.chem_info_xlinks").append('<br/>');
+            }
+        } else {
+            $("div.chem_info_xlinks").append('None<br/>');
+        }
+        // Inject path IDs
+        $("div.chem_info_pathids").html('');  // Reset div content
+        if (path_ids.length > 0){
+            for (let i = 0; i < path_ids.length; i++){
+                $("div.chem_info_pathids").append(path_ids[i] + '<br/>');
+            }
+        } else {
+            $("div.chem_info_pathids").append('None<br/>');
+        }
+        // Show
+        $("#panel_chemical_info").show();
+    } else {
+        $("#panel_chemical_info").hide();
     }
+}
     
 /**
  * Put reaction info into the information panel
