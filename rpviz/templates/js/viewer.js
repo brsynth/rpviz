@@ -676,18 +676,23 @@ $(function(){
         
     }
     
-    /** Trigger a layout rendering
+    /**
+     * Trigger a layout rendering
+     * 
+     * @param {cytoscape collection} element_collection: a collection of elements.
      */
-    function render_layout(){
+    function render_layout(element_collection){
+        // Playing with zoom to get the best fit
         cy.minZoom(1e-50);
         cy.on('layoutstop', function(e){
             cy.minZoom(cy.zoom());
         });
-        let lay = cy.layout({
+        // Layout
+        let layout = element_collection.layout({
             name: 'breadthfirst',
             roots: cy.elements("node[target_chemical = 1]")
         });
-        lay.run();
+        layout.run();
     }
         
     /** Load a metabolic network
@@ -734,12 +739,11 @@ $(function(){
      */
     function show_cofactors(show=true){
         if (show){
-            cy.add(cofactor_collection);
-            render_layout();
+            cy.elements().style("display", "element");
         } else {
-            cy.remove(cofactor_collection);
-            render_layout();
+            cy.elements('node[cofactor = 1]').style("display", "none");
         }
+        render_layout(cy.elements().not(':hidden'));
     }
 
     /**
