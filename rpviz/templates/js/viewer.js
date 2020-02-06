@@ -375,6 +375,7 @@ function panel_chemical_info(node, show=false){
     if (show){
         // Collect
         let node_id = node.data('id');
+        let label = node.data('label');
         let svg = node.data('svg');
         let smiles = node.data('smiles');
         let inchi = node.data('inchi');
@@ -387,6 +388,7 @@ function panel_chemical_info(node, show=false){
         let xlinks = node.data('xlinks');
         let path_ids = node.data('path_ids');
         // Inject
+        $("span.chem_info_label").html(label);
         if (inchikey == ""){
             $("span.chem_info_inchikey").html("NA");
             $("span.chem_info_inchikey_search").html("");
@@ -410,7 +412,7 @@ function panel_chemical_info(node, show=false){
         }
         $("span.chem_info_iscofactor").html(cofactor);
         // Inject SVG depiction as a background image (if any)
-        if (svg !== null){
+        if (svg !== null && svg !== ""){
             $('div.img-box').show();
             $('div.chem_info_svg').css('background-image', "url('" + svg + "')");
         } else {
