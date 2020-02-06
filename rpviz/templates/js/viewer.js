@@ -530,19 +530,14 @@ $(function(){
     panel_reaction_info(null, false);
     panel_pathway_info(null, false);
     init_network(true);
-    render_layout();
+    render_layout(cy.elements());
+    show_cofactors(false);
     put_pathway_values('global_score');
     make_pathway_table_sortable();  // Should be called only after the table has been populated with values
     colourise_pathways('global_score');
 
     // Pathway Handler stuff
     window.path_handler = new PathwayHandler(cy, pathways_info);
-    
-    // Extract some useful collection
-    cofactor_collection = cy.elements('node[cofactor = 1]');
-    cofactor_collection.merge(cofactor_collection.connectedEdges());
-    
-    show_cofactors(false);
     
     /**
      * Initialise the network, but hide everything
