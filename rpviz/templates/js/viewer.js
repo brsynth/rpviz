@@ -514,7 +514,7 @@ $(function(){
     panel_pathway_info(null, false);
     init_network(true);
     render_layout();
-    put_pathway_values();
+    put_pathway_values('global_score');
     make_pathway_table_sortable();  // Should be called only after the table has been populated with values
     colourise_pathways();
 
@@ -851,7 +851,7 @@ $(function(){
      * 
      * @param score_label (str): the score label to use within the path info
      */
-    function put_pathway_values(score_label='globalScore'){
+    function put_pathway_values(score_label='global_score'){
         for (let path_id in pathways_info){
             // Collect the value
             let score = pathways_info[path_id]['scores'][score_label];
