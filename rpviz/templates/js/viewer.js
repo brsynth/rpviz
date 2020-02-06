@@ -857,7 +857,7 @@ $(function(){
             let score = pathways_info[path_id]['scores'][score_label];
             let score_rounded = 0;
             if (! isNaN(score)){
-                score = parseFloat(score).toPrecision(3);
+                score = parseFloat(score).toFixed(3);
             } else {
                 score = 'NaN';
             }
