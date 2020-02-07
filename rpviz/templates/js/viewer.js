@@ -724,19 +724,24 @@ $(function(){
                     })
                 .selector("node[type='chemical'][target_chemical=1]")
                     .css({
-                        'background-color': '#C60800',
-                        'border-color': '#C60800',
+                        'background-color': '#B22222',
+                        'border-color': '#B22222',
                     })
                 .selector("node[type='chemical'][target_chemical=0]")
                     .css({
-                        'background-color': '#52be80',
-                        'border-color': '#52be80',
+                        'background-color': '#235789',
+                        'border-color': '#235789',
+                    })
+                    .selector("node[type='chemical'][sink_chemical=1]")
+                    .css({
+                        'background-color': '#68956D',
+                        'border-color': '#68956D'
                     })
                 .selector("node[type='chemical'][?svg]")  // The beauty of it: "?" will match only non null values
                     .css({
                         'background-image': 'data(svg)',
                         'background-fit': 'contain',
-                        'border-width': 5,
+                        'border-width': 8,
                     })
                 .selector('edge')
                     .css({
