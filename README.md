@@ -10,8 +10,15 @@ Input file expected by the viewer:
 ## Execute
 
 From a given -- and compatible -- rpSBML tar file:
-```
+```bash
 python -m rpviz.cli rpSBML.tar outfolder
+```
+
+## Example
+
+```bash
+conda activate rpviz
+python -m rpviz.cli '../data/Galaxy1015-[rpGlobalScore].tar' ../data/outfolder_test_42
 ```
 
 ## Setting up
