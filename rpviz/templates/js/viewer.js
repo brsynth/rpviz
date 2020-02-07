@@ -467,6 +467,13 @@ function panel_reaction_info(node, show=true){
         let thermo_value = node.data('thermo_dg_m_gibbs');
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
+        // Reaction name
+        if (ec_numbers.length == 0){
+            $("span.reaction_info_name").html(rule_id);
+        } else {
+            $("span.reaction_info_name").html(ec_numbers[0]);
+        }
+        // Rule ID
         $("div.reaction_info_ruleid").html(rule_id);
         // EC numbers
         $("div.reaction_info_ecnumbers").html('');  // Reset div content
