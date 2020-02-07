@@ -190,6 +190,10 @@ class PathwayHandler {
      */
     colourise_pathways(path_ids, score_label='global_score'){
         let score_values = Object();
+        // Shortand for all pathways
+        if (path_ids == '__ALL__'){
+            path_ids = [...this.all_path_ids];  // all_path_ids is a Set
+        }
         // Collect and refine scores
         for (let i = 0; i < path_ids.length; i++){
             let path_id = path_ids[i];
@@ -294,46 +298,6 @@ function build_pathway_table(){
 
     // Append the content to the HTML
     $("#table_choice").append(table_base);
-    
-}
-
-/**
- * Colourise pathways
- *
- * @param score_label (str): the score label to use within the path info
- */
-function colourise_pathways(score_label='global_score'){
-    let score_values = [];
-    // Collect valid scores
-    for (let path_id in pathways_info){
-        let score = pathways_info[path_id]['scores'][score_label];
-        if (! isNaN(score)){
-            let score_value = parseFloat(score);
-            score_values.push(score_value);
-        }
-    }
-    // Set up scale
-    let min_score = Math.min(...score_values);
-    let max_score = Math.max(...score_values);
-    let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
-    // Colourise
-    for (let path_id in pathways_info){
-        let score = pathways_info[path_id]['scores'][score_label];
-        if (! isNaN(score)){
-            // Get the score
-            let score_value = parseFloat(score);
-            let score_hex = colour_maker(score_value).hex();
-            // Colourise the associated edges
-            let edges = get_edges_from_path_id(path_id, cy);
-            edges.style({
-                'line-color': score_hex,
-                'target-arrow-color': score_hex
-            });
-            // Colourise the associated color picker
-            let colour_input = $('td.path_colour[data-path_id=' + path_id + '] > input')
-            colour_input.val(score_hex);
-        }
-    }
 }
 
 /**
@@ -650,11 +614,10 @@ $(function(){
     show_cofactors(false);
     put_pathway_values('global_score');
     make_pathway_table_sortable();  // Should be called only after the table has been populated with values
-    colourise_pathways('global_score');
 
     // Pathway Handler stuff
     window.path_handler = new PathwayHandler(cy, pathways_info);
-    // path_handler.colourise_pathways(['rp_1_1', 'rp_2_1'], 'global_score');
+    path_handler.colourise_pathways('__ALL__', 'global_score');
 
     /**
      * Initialise the network, but hide everything
