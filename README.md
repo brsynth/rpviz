@@ -1,5 +1,5 @@
-# apprpviz
-Apps for remote access to the pathway visualizer.
+# rpviz
+Visualisation of pathways predicted from the RetroPath Suite.
 
 ## Important
 
@@ -38,6 +38,8 @@ conda install -y -c conda-forge networkx
 conda install -y -c conda-forge beautifulsoup4
 conda install -y -c conda-forge matplotlib
 ```
+
+**Important**: one also needs to download the rpSBML library and make it accessible from the pathway visualiser CLI.
 
 ## JSON objects
 
@@ -254,9 +256,13 @@ Add information into the JSON:
 
 ## Authors
 
-- **Thomas Duigou**
-- Melchior du Lac
+- Thomas Duigou
+- Melchior du Lac 
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+
+
+
