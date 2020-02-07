@@ -217,7 +217,7 @@ class PathwayHandler {
         }
         let min_score = Math.min(...list_of_values);
         let max_score = Math.max(...list_of_values);
-        let colour_maker = chroma.scale(['blue', 'red']).domain([min_score, max_score]);
+        let colour_maker = chroma.scale('RdYlBu').domain([max_score, min_score]);
         // Finally colourise
         for (let i = 0; i < items.length; i++){
             // Get values
