@@ -428,6 +428,7 @@ function panel_reaction_info(node, show=true){
         let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
         let path_ids = node.data('path_ids');
         let ec_numbers = node.data('ec_numbers');
+        let xlinks = node.data('xlinks');
         let thermo_value = node.data('thermo_dg_m_gibbs');
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
@@ -447,6 +448,16 @@ function panel_reaction_info(node, show=true){
             for (let i = 0; i < ec_numbers.length; i++){
                 $("div.reaction_info_ecnumbers").append(ec_numbers[i] + '<br/>');
             }
+        }
+        // Inject crosslinks
+        $("div.reaction_info_xlinks").html('');  // Reset div content
+        if (xlinks.length > 0){
+            for (let i = 0; i < xlinks.length; i++){
+                $("div.reaction_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
+                $("div.reaction_info_xlinks").append('<br/>');
+            }
+        } else {
+            $("div.reaction_info_xlinks").append('None<br/>');
         }
         // Inject path IDs
         $("div.reaction_info_pathids").html('');  // Reset div content
