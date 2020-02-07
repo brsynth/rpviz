@@ -173,8 +173,17 @@ class PathwayHandler {
         });
     }
 
+    /** Colourise one pathway
+     * 
+     * @param {String} path_id: pathway ID
+     * @param {string} colour_hex: colour in HTML hexadecical notation
+     */
+    colourise_one_pathwat(path_id, colour_hex){
+        return true;
+    }
+
     /**
-     * Colourise pathways
+     * Colourise a list pathways
      * 
      * @param {Array} path_ids: dictionary provided as a JSON
      * @param {String} score_label: the score label to use within available scores
@@ -454,10 +463,20 @@ function panel_reaction_info(node, show=true){
         let rsmiles = node.data('rsmiles');
         let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
         let path_ids = node.data('path_ids');
+        let ec_numbers = node.data('ec_numbers');
         let thermo_value = node.data('thermo_dg_m_gibbs');
-        // Inject
+        // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         $("div.reaction_info_ruleid").html(rule_id);
+        // EC numbers
+        $("div.reaction_info_ecnumbers").html('');  // Reset div content
+        if (ec_numbers.length == 0){
+            $("div.reaction_info_ecnumbers").append('None<br/>');
+        } else {
+            for (let i = 0; i < ec_numbers.length; i++){
+                $("div.reaction_info_ecnumbers").append(ec_numbers[i] + '<br/>');
+            }
+        }
         // Inject path IDs
         $("div.reaction_info_pathids").html('');  // Reset div content
         if (path_ids.length > 0){
@@ -865,6 +884,7 @@ $(function(){
     $("td.path_id").hover(function(){
         let path_id = $(this).data('path_id');
         path_handler.highlight_pathways([path_id]);
+
     }, function(){
         let path_id = $(this).data('path_id');
         path_handler.highlight_pathways([]);
