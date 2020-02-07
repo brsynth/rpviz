@@ -99,8 +99,12 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
                 node['id'] = node_id
                 node['path_ids'] = [rpsbml.modelName]
                 node['type'] = 'reaction'
-                node['label'] = brsynth_annot['rule_id']
-                node['all_labels'] = [brsynth_annot['rule_id']]
+                if ('ec-code' in miriam_annot) and (len(miriam_annot['ec-code'])):
+                    node['label'] = miriam_annot['ec-code'][0]  # Expected to be a list
+                    node['all_labels'] = miriam_annot['ec-code'] + [brsynth_annot['rule_id']]
+                else:
+                    node['label'] = brsynth_annot['rule_id']
+                    node['all_labels'] = [brsynth_annot['rule_id']]
                 node['svg'] = ''
                 node['xlinks'] = []
                 for xref in miriam_annot:
