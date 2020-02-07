@@ -389,21 +389,21 @@ function panel_chemical_info(node, show=false){
         let path_ids = node.data('path_ids');
         // Inject
         $("span.chem_info_label").html(label);
-        if (inchikey == ""){
+        if (inchikey == "" || inchikey == null){
             $("span.chem_info_inchikey").html("NA");
             $("span.chem_info_inchikey_search").html("");
         } else {
             $("span.chem_info_inchikey").html(inchikey);
             $("span.chem_info_inchikey_search").html('<a target="_blank" href="http://www.google.com/search?q=' + encodeURI(inchikey) + '">Look for identical structure using Google</a>');
         }
-        if (inchi == ""){
+        if (inchi == ""|| inchi == null){
             $("span.chem_info_inchi").html("NA");
             $("span.chem_info_inchi_search").html("");
         } else {
             $("span.chem_info_inchi").html(inchi);
             $("span.chem_info_inchi_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(inchi) + '">Look for identical structure using PubChem</a>');
         }
-        if (smiles == ""){
+        if (smiles == ""|| smiles == null){
             $("span.chem_info_smiles").html("NA");
             $("span.chem_info_smiles_search").html("");
         } else {
