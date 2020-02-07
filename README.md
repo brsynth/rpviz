@@ -235,32 +235,21 @@ error is logged and the execution is continued.
 
 ## Known bugs and feature requests
 
-### Short term items:
+### Future release TODO
 
-Add information into the JSON:
-- Add thermodynamics information for chemical and reaction (`network` dictionary) and at the level of pathways (`pathway_info` dictionary)
-- Add FBA target value for each pathway
-- Add the number of steps for each pathway
-- Add EC number annotations
-- Add annotation about if a chemical is in sink
-- Fix the URLs for chemical crosslinks
-
-Request for more rpSBML examples:
-- Add rpSBML example with global score (at least for muconate on the Google Drive)
-
-Bug fix:
-- Deal with duplicated pathways (for instance, in the Galaxy448 results for muconate, on the Google Drive)
-
-### For later
-
-Based on short term items:
-- Provide `thermo_dg_m_formation` for chemicals
-- Provide `ec_numbers` for reactions
-- Set `ec_numbers` default value to `[]`
-- Fix the `sink_chemical` values (always `0` atm)
-- Fix the crosslinks for chemicals (most of links are wrong atm)
+Fix information into the JSON:
+- Fix the URLs for erroneous reaction and chemical crosslinks
 
 Add information into the JSON:
 - Build a dedicated section for sequence crosslinks
 - Add annotation about the rule diameter to reaction nodes
 - Add crosslinks to template reactions used for the rules
+
+## Authors
+
+- **Thomas Duigou**
+- Melchior du Lac
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
