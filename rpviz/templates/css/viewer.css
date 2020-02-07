@@ -245,7 +245,7 @@ body {
 #table_choice table tbody td.path_colour input {
     border: 0px;
     width: 5em;
-    height: 1em;
+    /* height: 5px; */
 }
 #table_choice table tbody td.pinned {
     border: solid 1px #DDEEEE;

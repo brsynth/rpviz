@@ -29,7 +29,7 @@ class PathwayHandler {
                 // Path ID itselft
                 this.all_path_ids.add(path_id);
                 // List involved edges and nodes
-                info = pathways_info[path_id];
+                let info = pathways_info[path_id];
                 this.path_to_edges[path_id] = info['edge_ids'];
                 this.path_to_nodes[path_id] = info['node_ids'];
                 // Extract scores
