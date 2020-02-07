@@ -1,10 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Now 7 2019
 
-@author: Thomas
-
-"""
+"""cli.py: CLI for generating the JSON file expected by the pathway visualiser."""
+ 
+__author__ = 'Thomas Duigou'
+__license__ = 'MIT'
 
 
 import os

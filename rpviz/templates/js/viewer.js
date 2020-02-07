@@ -1,10 +1,8 @@
 /*jshint esversion: 6 */
-
-//__author__: Thomas Duigou (thomas.duigou@inra.fr)
-//__date__: 2019.12.09
-//__license : MIT
-//__note__ : based on Scope Viewer and Annaelle Baudier's work
-
+/*
+__author__ = 'Thomas Duigou'
+__license__ = 'MIT'
+*/
 
 class PathwayHandler {
 

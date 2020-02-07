@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Meaningful description"""
-
+"""cli.py: CLI for generating the JSON file expected by the pathway visualiser."""
+ 
 __author__ = 'Thomas Duigou'
 __license__ = 'MIT'
-__date__ = '2019.11.21'
-__note__ = 'Based on Anaelle work'
 
 
 import os
