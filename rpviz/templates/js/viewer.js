@@ -880,16 +880,10 @@ $(function(){
             $(this).removeClass('pinned');
             path_handler.remove_pinned_paths([path_id]);
             path_handler.update_pinned_elements();
-            let pinned_paths = path_handler.get_pinned_paths();
-            path_handler.reset_pathway_colours();
-            path_handler.colourise_pathways(pinned_paths);
         // Adding
         } else {
             path_handler.add_pinned_paths([path_id]);
             path_handler.update_pinned_elements();
-            let pinned_paths = path_handler.get_pinned_paths();
-            path_handler.reset_pathway_colours();
-            path_handler.colourise_pathways(pinned_paths);
             $(this).addClass('pinned');
         }
     });
