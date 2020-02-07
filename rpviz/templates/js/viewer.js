@@ -585,10 +585,9 @@ function share_at_least_one(array1, array2){
 /**
  * Make labels for chemicals
  *
- * @param max_length (int): string size cutoff before label truncation
+ * @param {Integer} max_length: string size cutoff before label truncation
  */
-function make_chemical_labels(max_length=6)
-{
+function make_chemical_labels(max_length=6){
     let nodes = cy.nodes().filter('[type = "chemical"]');
     for (let i = 0; i < nodes.size(); i++){
         let node = nodes[i];
@@ -609,10 +608,9 @@ function make_chemical_labels(max_length=6)
 /**
  * Make labels for reactions
  *
- * @param max_length (int): string size cutoff before label truncation
+ * @param {Integer} max_length: string size cutoff before label truncation
  */
-function make_reaction_labels(max_length=10)
-{
+function make_reaction_labels(max_length=10){
     let nodes = cy.nodes().filter('[type = "reaction"]');
     for (let i = 0; i < nodes.size(); i++){
         let node = nodes[i];
@@ -673,7 +671,7 @@ $(function(){
         
         // Create node labels
         make_chemical_labels(6);
-        make_reaction_labels(10);
+        make_reaction_labels(12);
         
         // Hide them 'by default'
         if (! show_graph){
