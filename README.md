@@ -21,6 +21,18 @@ conda activate rpviz
 python -m rpviz.cli 'sample/Galaxy1015-[rpGlobalScore].tar' sample/outfolder_test_42
 ```
 
+## Build the docker
+
+```
+docker build -t brsynth/rpvisualiser-rest -f Dockerfile .
+```
+
+## Run the REST service
+
+```
+docker run -p 8875:8888 brsynth/rpvisualiser-rest
+```
+
 ## Setting up
 
 Below are instructions to set up a conda environment. This is still in development.
@@ -262,6 +274,7 @@ Add information into the JSON:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
 
 
 
