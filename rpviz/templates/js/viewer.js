@@ -431,7 +431,7 @@ function panel_reaction_info(node, show=true){
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
-        if (ec_numbers.length == 0){
+        if (ec_numbers == null || ec_numbers.length == 0){
             $("span.reaction_info_name").html(rule_id);
         } else {
             $("span.reaction_info_name").html(ec_numbers[0]);
@@ -440,7 +440,7 @@ function panel_reaction_info(node, show=true){
         $("div.reaction_info_ruleid").html(rule_id);
         // EC numbers
         $("div.reaction_info_ecnumbers").html('');  // Reset div content
-        if (ec_numbers.length == 0){
+        if (ec_numbers == null || ec_numbers.length == 0){
             $("div.reaction_info_ecnumbers").append('None<br/>');
         } else {
             for (let i = 0; i < ec_numbers.length; i++){
@@ -449,7 +449,7 @@ function panel_reaction_info(node, show=true){
         }
         // Inject crosslinks
         $("div.reaction_info_xlinks").html('');  // Reset div content
-        if (xlinks.length > 0){
+        if (xlinks != null && xlinks.length > 0){
             for (let i = 0; i < xlinks.length; i++){
                 $("div.reaction_info_xlinks").append('<a target="_blank" href="' + xlinks[i]['url'] + '">' + xlinks[i]['db_name'] + ':' + xlinks[i]['entity_id'] + '</a>');
                 $("div.reaction_info_xlinks").append('<br/>');
