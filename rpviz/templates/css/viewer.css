@@ -30,7 +30,7 @@ body {
     border-bottom-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 10px;
-    width: 15%;
+    width: 20%;
     height: 1000px;
 }
 
@@ -65,7 +65,7 @@ body {
     float: left;
     width: 60%;
     height: 1000px;
-    margin-left: 17%;  /* +2 to compensate left pannel padding */
+    margin-left: 22%;  /* +2 to compensate left pannel padding */
 }
 
 /* Right side panel: info *****************************************************/
@@ -73,7 +73,7 @@ body {
     float: right;
     border-radius: 5px;
     background-color: #E8E9E8;
-    width: 23%;  /* -2 to compensate left panel padding */
+    width: 18%;  /* -2 to compensate left panel padding */
     height: 1000px;
     position: relative;
     overflow-x: hidden;
