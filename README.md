@@ -18,7 +18,7 @@ python -m rpviz.cli rpSBML.tar outfolder
 
 ```bash
 conda activate rpviz
-python -m rpviz.cli '../data/Galaxy1015-[rpGlobalScore].tar' ../data/outfolder_test_42
+python -m rpviz.cli 'sample/Galaxy1015-[rpGlobalScore].tar' sample/outfolder_test_42
 ```
 
 ## Setting up
