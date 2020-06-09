@@ -49,7 +49,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway'):
         ############## pathway_id ##############
         scores = {}
         for i in norm_scores:
-            scores[i] = brsynth_annot[i]
+            scores[i] = brsynth_annot[i]['value']
         target_flux_list = [i for i in brsynth_annot if i[:16]=='fba_obj_RP1_sink']
         if len(target_flux_list)==0:
             target_flux = 0.0
