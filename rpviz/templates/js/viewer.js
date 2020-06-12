@@ -619,7 +619,7 @@ $(function(){
     panel_reaction_info(null, false);
     panel_pathway_info(null, false);
     init_network(true);
-    render_layout(cy.elements());
+    refresh_layout();
     show_cofactors(false);
     put_pathway_values('global_score');
     make_pathway_table_sortable();  // Should be called only after the table has been populated with values
@@ -832,7 +832,7 @@ $(function(){
         } else {
             cy.elements('node[cofactor = 1]').style("display", "none");
         }
-        render_layout(cy.elements().not(':hidden'));
+        refresh_layout();
     }
 
     /**
@@ -848,6 +848,13 @@ $(function(){
                 }
             }
         });
+    }
+    
+    /**
+     * Refresh layout according to visible nodes
+     */
+    function refresh_layout(){
+        render_layout(cy.elements().not(':hidden'));
     }
     
     // When a pathway is checked
@@ -907,6 +914,9 @@ $(function(){
     $('#view_all_pathways_button').on('click', function(event){
         show_pathways(selected_paths='__ALL__');  // Show all
         $('input[name=path_checkbox]').prop('checked', true);  // Check all
+    });
+    $('#redraw_pathways_button').on('click', function(event){
+        refresh_layout();
     });
     
     // Cofactors handling
