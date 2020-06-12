@@ -356,6 +356,11 @@ function panel_chemical_info(node, show=false){
         } else {
             var cofactor = 'False';
         }
+        if (node.data('sink_chemical') == 1){
+            var insink = 'True';
+        } else {
+            var insink = 'False';
+        }
         let xlinks = node.data('xlinks');
         let path_ids = node.data('path_ids');
         // Inject
@@ -382,6 +387,8 @@ function panel_chemical_info(node, show=false){
             $("span.chem_info_smiles_search").html('<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/search/#collection=compounds&query_type=structure&query_subtype=identity&query=' + encodeURI(smiles) + '">Look for identical structure using PubChem</a>');
         }
         $("span.chem_info_iscofactor").html(cofactor);
+        $("span.chem_info_isprecursor").html(insink);
+        
         // Inject SVG depiction as a background image (if any)
         if (svg !== null && svg !== ""){
             $('div.img-box').show();
