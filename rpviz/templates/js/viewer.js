@@ -352,14 +352,14 @@ function panel_chemical_info(node, show=false){
         let inchi = node.data('inchi');
         let inchikey = node.data('inchikey');
         if (node.data('cofactor') == 1){
-            var cofactor = 'True';
+            var cofactor = 'Yes';
         } else {
-            var cofactor = 'False';
+            var cofactor = 'No';
         }
         if (node.data('sink_chemical') == 1){
-            var insink = 'True';
+            var insink = 'Yes';
         } else {
-            var insink = 'False';
+            var insink = 'No';
         }
         let xlinks = node.data('xlinks');
         let path_ids = node.data('path_ids');
