@@ -19,7 +19,7 @@ import rpSBML
 miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'metanetx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec-code': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/'}, 'species': {'metanetx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
 
 
-def sbml_to_json(input_folder, pathway_id='rp_pathway', species_group_id='central_species'):
+def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='rp_sink_species'):
     """Parse the collection of rpSBML files and outputs as dictionaries the network and pathway info
 
     :param input_folder: str,  path to the folder containing the collection of rpSBML
@@ -157,13 +157,14 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', species_group_id='centra
         #
         largest_rp_reac_id = sorted([i.getIdRef() for i in rp_pathway.getListOfMembers()], key=lambda x: int(x.replace('RP', '')), reverse=True)[0]
         reactants = [i.species for i in rpsbml.model.getReaction(largest_rp_reac_id).getListOfReactants()]
-        central_species = [i.getIdRef() for i in groups.getGroup(species_group_id).getListOfMembers()]
+        sink_species = [i.getIdRef() for i in groups.getGroup(sink_species_group_id).getListOfMembers()]
         sink_molecules_inchikey = []
         for i in reactants:
-            if i in central_species:
+            if i in sink_species:
                 spec_annot = rpsbml.readBRSYNTHAnnotation(rpsbml.model.getSpecies(i).getAnnotation())
                 if 'inchikey' in spec_annot:
                     sink_molecules_inchikey.append(spec_annot['inchikey'])
+                #TODO: use other keys when the species does not have an inchikey
         for species_name in rpsbml.readUniqueRPspecies():
             species = rpsbml.model.getSpecies(species_name)
             brsynth_annot = rpsbml.readBRSYNTHAnnotation(species.getAnnotation())
