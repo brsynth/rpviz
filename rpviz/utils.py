@@ -158,6 +158,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
         largest_rp_reac_id = sorted([i.getIdRef() for i in rp_pathway.getListOfMembers()], key=lambda x: int(x.replace('RP', '')), reverse=True)[0]
         reactants = [i.species for i in rpsbml.model.getReaction(largest_rp_reac_id).getListOfReactants()]
         sink_species = [i.getIdRef() for i in groups.getGroup(sink_species_group_id).getListOfMembers()]
+        '''
         sink_molecules_inchikey = []
         for i in reactants:
             if i in sink_species:
@@ -165,6 +166,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 if 'inchikey' in spec_annot:
                     sink_molecules_inchikey.append(spec_annot['inchikey'])
                 #TODO: use other keys when the species does not have an inchikey
+        '''
         for species_name in rpsbml.readUniqueRPspecies():
             species = rpsbml.model.getSpecies(species_name)
             brsynth_annot = rpsbml.readBRSYNTHAnnotation(species.getAnnotation())
@@ -185,6 +187,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             if node_id not in chem_nodes:
                 node = dict()
                 node['id'] = node_id
+                print()
                 node['path_ids'] = [rpsbml.modelName]
                 node['type'] = 'chemical'
                 node['label'] = node_id
@@ -243,7 +246,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 node['cofactor'] = 0
                 #check the highest RP{\d} reactants and ignore cofactors
                 #TODO: not great but most time inchikey is the key
-                if node_id in sink_molecules_inchikey:
+                if species_name in sink_species:
                     node['sink_chemical'] = 1
                 else:
                     node['sink_chemical'] = 0
