@@ -11,6 +11,7 @@ import os
 import csv
 import glob
 import logging
+import numpy as np
 
 from collections import OrderedDict
 
@@ -49,6 +50,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
         logging.info('norm_scores: '+str(norm_scores))
         ############## pathway_id ##############
         scores = {}
+        pathway_rule_scores = []
         for i in norm_scores:
             try:
                 scores[i] = brsynth_annot[i]['value']
@@ -70,10 +72,6 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             'thermo_dg_m_gibbs': None,
             'rule_score': None
         }
-        try:
-            pathways_info[rpsbml.modelName]['rule_score'] = brsynth_annot['rule_score']['value']
-        except KeyError:
-            pass
         try:
             pathways_info[rpsbml.modelName]['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
         except KeyError:
@@ -133,8 +131,10 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 #node['fba_reaction'] = '0'
                 try:
                     node['rule_score'] = round(brsynth_annot['rule_score']['value'], 3)
+                    pathway_rule_scores.append(brsynth_annot['rule_score']['value'])
                 except KeyError:
                     node['rule_score'] = None
+                    pathway_rule_scores.append(0.0)
                 node['smiles'] = None
                 node['inchi'] = None
                 node['inchikey'] = None
@@ -146,6 +146,12 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 reac_nodes[tmp_smiles] = node
             # Update already existing node
             else:
+                try:
+                    node['rule_score'] = round(brsynth_annot['rule_score']['value'], 3)
+                    pathway_rule_scores.append(brsynth_annot['rule_score']['value'])
+                except KeyError:
+                    node['rule_score'] = None
+                    pathway_rule_scores.append(0.0)
                 if rpsbml.modelName not in reac_nodes[node_id]['path_ids']:
                     reac_nodes[node_id]['path_ids'].append(rpsbml.modelName)
                 if brsynth_annot['rule_id'] not in reac_nodes[node_id]['all_labels']:
@@ -161,6 +167,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             # Keep track for pathway info
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
                 pathways_info[rpsbml.modelName]['node_ids'].append(node_id)
+        pathways_info[rpsbml.modelName]['rule_score'] = round(np.mean(pathway_rule_scores), 3)
         ################# CHEMICALS #########################
         ## compile all the species that are sink molecules
         #
