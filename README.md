@@ -77,6 +77,7 @@ Below an overview of the `network` object expected by the JS viewer:
                     "rule_ids": ["string"],
                     "ec_numbers": ["string"],
                     "thermo_dg_m_gibbs": float,
+                    "rule_score": float,
                     "smiles": null,
                     "inchi": null,
                     "inchikey": null,
@@ -102,6 +103,7 @@ Below an overview of the `network` object expected by the JS viewer:
                     "rule_ids": null,
                     "ec_numbers": null,
                     "thermo_dg_m_gibbs": null,
+                    "rule_score": null,
                     "smiles": "string",
                     "inchi": "string",
                     "inchikey": "string",
@@ -155,6 +157,7 @@ be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `rule_ids`, (list of strings), __optional__ -- The reaction rule IDs.
 - `ec_numbers`, (list of strings), __optional__ -- The EC numbers.
 - `thermo_dg_m_gibbs`, (float), __optional__ -- The dG Gibbs energy of the reaction (in mM concentration context).
+- `rule_score`, (float), __optional__ -- The rule score associated to the reaction rule.
 - `smiles`, (string), __not used__ -- Value should be `null` (meaningful for chemical node only).
 - `inchi`, (string),  __required value__ -- Value should be `null`.
 - `inchikey`, (string),  __required value__ -- Value should be `null`.
@@ -182,6 +185,7 @@ be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `rule_ids`, (list of strings), __not used__ -- Value should be `null`.
 - `ec_numbers`, (list of strings), __not used__ -- Value should be `null`.
 - `thermo_dg_m_gibbs`, (float), __not used__ -- Value should be `null`.
+- `rule_score`, (float), __not used__ -- Value should be `null`.
 - `smiles`, (string), __required value__ -- The canonic SMILES.
 - `inchi`, (string),  __required value__ -- InChI.
 - `inchikey`, (string),  __required value__ -- InChIKey.
