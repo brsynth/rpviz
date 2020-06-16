@@ -203,7 +203,6 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             if node_id not in chem_nodes:
                 node = dict()
                 node['id'] = node_id
-                print()
                 node['path_ids'] = [rpsbml.modelName]
                 node['type'] = 'chemical'
                 node['label'] = node_id
@@ -237,22 +236,16 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 node['thermo_dg_m_gibbs'] = None
                 #node['fba_reaction'] = None
                 node['rule_score'] = None
-                tmp_smiles = None
-                tmp_inchi = None
-                tmp_inchikey = None
                 try:
                     node['smiles'] = brsynth_annot['smiles']
-                    tmp_smiles = brsynth_annot['smiles']
                 except KeyError:
                     node['smiles'] = None
                 try:
                     node['inchi'] = brsynth_annot['inchi']
-                    tmp_inchi = brsynth_annot['inchi']
                 except KeyError:
                     node['inchi'] = None
                 try:
                     node['inchikey'] = brsynth_annot['inchikey']
-                    tmp_inchikey = brsynth_annot['inchikey']
                 except KeyError:
                     node['inchikey'] = None
                 #TODO: need a better way if not TARGET in name
@@ -275,7 +268,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                     chem_nodes[node_id]['path_ids'].append(rpsbml.modelName)
                 # TODO: manage xref, without adding duplicates
                 try:
-                    assert tmp_smiles == chem_nodes[node_id]['smiles']
+                    assert brsynth_annot['smiles'] == chem_nodes[node_id]['smiles']
                 except AssertionError:
                     try:
                         msg = 'Not the same SMILES: {} vs. {}'.format(
@@ -287,7 +280,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                         logging.warning('The brsynth_annot has no smiles: '+str(node_id))
                         logging.info(brsynth_annot)
                 try:
-                    assert tmp_inchi == chem_nodes[node_id]['inchi']
+                    assert brsynth_annot['inchi'] == chem_nodes[node_id]['inchi']
                 except AssertionError:
                     try:
                         msg = 'Not the same INCHI: {} vs. {}'.format(
@@ -299,7 +292,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                         logging.warning('The brsynth_annot has no inchi: '+str(node_id))
                         logging.info(brsynth_annot)
                 try:
-                    assert tmp_inchikey == chem_nodes[node_id]['inchikey']
+                    assert brsynth_annot['inchikey'] == chem_nodes[node_id]['inchikey']
                 except AssertionError:
                     try:
                         msg = 'Not the same INCHIKEY: {} vs. {}'.format(
