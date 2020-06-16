@@ -435,6 +435,7 @@ function panel_reaction_info(node, show=true){
         let ec_numbers = node.data('ec_numbers');
         let xlinks = node.data('xlinks');
         let thermo_value = node.data('thermo_dg_m_gibbs');
+        let rule_score = node.data('rule_score');
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
@@ -480,6 +481,13 @@ function panel_reaction_info(node, show=true){
             thermo_value = parseFloat(thermo_value).toFixed(3);
         }
         $("span.reaction_info_thermo").html(thermo_value);
+        // Rule score
+        if (isNaN(rule_score)){
+            rule_score = "NaN";
+        } else {
+            rule_score = parseFloat(rule_score).toFixed(3);
+        }
+        $("span.reaction_info_rule_score").html(rule_score);
         // Selenzyme crosslink
         $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
         // Show
@@ -511,6 +519,7 @@ function panel_pathway_info(path_id, show=true){
         // Collect
         let global_score = pathways_info[path_id]['scores']['global_score'];
         let thermo_value = pathways_info[path_id]['thermo_dg_m_gibbs'];
+        let rule_score = pathways_info[path_id]['rule_score'];
         let fba_value = pathways_info[path_id]['fba_target_flux'];
         let nb_steps = pathways_info[path_id]['nb_steps'];
         // Refine the global score value
@@ -525,6 +534,12 @@ function panel_pathway_info(path_id, show=true){
         } else {
             thermo_value = parseFloat(thermo_value).toFixed(3);
         }
+        // Refines rule score
+        if (isNaN(rule_score)){
+            rule_score = "NaN";
+        } else {
+            rule_score = parseFloat(rule_score).toFixed(3);
+        }
         // Refines target's flux production
         if (isNaN(fba_value)){
             fba_value = "NaN";
@@ -535,6 +550,7 @@ function panel_pathway_info(path_id, show=true){
         $("span.pathway_info_path_id").html(path_id);
         $("span.pathway_info_global_score").html(global_score);
         $("span.pathway_info_thermo").html(thermo_value);
+        $("span.pathway_info_rule_score").html(rule_score);
         $("span.pathway_info_target_flux").html(fba_value);
         $("span.pathway_info_nb_steps").html(nb_steps);
         // Show
