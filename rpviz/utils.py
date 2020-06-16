@@ -68,7 +68,12 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             'nb_steps': rp_pathway.num_members,
             'fba_target_flux': target_flux,
             'thermo_dg_m_gibbs': None,
+            'rule_score': None
         }
+        try:
+            pathways_info[rpsbml.modelName]['rule_score'] = brsynth_annot['rule_score']['value']
+        except KeyError:
+            pass
         try:
             pathways_info[rpsbml.modelName]['thermo_dg_m_gibbs'] = brsynth_annot['dfG_prime_m']['value']
         except KeyError:
@@ -133,6 +138,10 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                 node['sink_chemical'] = None
                 node['thermo_dg_m_formation'] = None
                 node['cofactor'] = None
+                try:
+                    node['rule_score'] = round(brsynth_annot['rule_score']['value'], 3)
+                except KeyError:
+                    node['rule_score'] = None
                 # Store
                 reac_nodes[tmp_smiles] = node
             # Update already existing node
@@ -186,6 +195,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             # Make a new node in the chemical has never been met yet
             if node_id not in chem_nodes:
                 node = dict()
+                node['rule_score'] = None
                 node['id'] = node_id
                 print()
                 node['path_ids'] = [rpsbml.modelName]
