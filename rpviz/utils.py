@@ -11,8 +11,8 @@ import os
 import csv
 import glob
 import logging
-import numpy as np
 
+from statistics import mean
 from collections import OrderedDict
 
 import rpSBML
@@ -167,7 +167,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
             # Keep track for pathway info
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
                 pathways_info[rpsbml.modelName]['node_ids'].append(node_id)
-        pathways_info[rpsbml.modelName]['rule_score'] = round(np.mean(pathway_rule_scores), 3)
+        pathways_info[rpsbml.modelName]['rule_score'] = round(mean(pathway_rule_scores), 3)
         ################# CHEMICALS #########################
         ## compile all the species that are sink molecules
         #
