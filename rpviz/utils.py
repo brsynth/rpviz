@@ -497,6 +497,46 @@ def annotate_chemical_svg(network):
     return network
 
 
+def get_autonomous_html(ifolder):
+    """Merge all needed file into a single HTML
+    
+    :param ifolder: folder containing the files to be merged
+    :return html_str: string, the HTML
+    """
+    # find and open the index file 
+    htmlString = open(ifolder + '/index.html', 'rb').read() 
+    # open and read JS files and replace them in the HTML
+    jsReplace = [
+                 'js/chroma-2.1.0.min.js',
+                 'js/cytoscape-3.12.1.min.js',
+                 'js/cytoscape-dagre-2.2.1.js',
+                 'js/dagre-0.8.5.min.js',
+                 'js/jquery-3.4.1.min.js', 
+                 'js/jquery-ui-1.12.1.min.js',
+                 'js/jquery.tablesorter-2.31.2.min.js',
+                 'js/viewer.js'
+                ]
+    for js in jsReplace:
+        jsString = open(ifolder + '/' + js, 'rb').read()
+        ori = b'src="' + js.encode() + b'">'
+        rep = b'>' + jsString
+        htmlString = htmlString.replace(ori, rep)
+    # open and read style.css and replace it in the HTML
+    cssReplace = ['css/jquery.tablesorte.theme.default-2.31.2.min.css',
+                  'css/viewer.css']
+    for css_file in cssReplace:
+        cssBytes = open(ifolder + '/' + css_file, 'rb').read() 
+        ori = b'<link href="' + css_file.encode() + b'" rel="stylesheet" type="text/css"/>'
+        rep = b'<style type="text/css">' + cssBytes + b'</style>'
+        htmlString = htmlString.replace(ori, rep)
+    ### replace the network
+    netString = open(ifolder + '/network.json', 'rb').read()
+    ori = b'src="' + 'network.json'.encode() + b'">'
+    rep = b'>' + netString
+    htmlString = htmlString.replace(ori, rep)
+    return htmlString
+
+
 if __name__ == '__main__':
 
     pass

@@ -15,7 +15,7 @@ import tarfile
 import argparse
 import tempfile
 
-from rpviz.utils import sbml_to_json, annotate_cofactors, annotate_chemical_svg
+from rpviz.utils import sbml_to_json, annotate_cofactors, annotate_chemical_svg, get_autonomous_html
 from rpviz.Viewer import Viewer
 
 if __name__ == '__main__':
@@ -35,6 +35,9 @@ if __name__ == '__main__':
     parser.add_argument('--cofactor',
                         default=os.path.join(os.path.dirname(__file__), 'data', 'cofactor_inchi_201811.tsv'),
                         help='File listing structures to consider as cofactors.')
+    parser.add_argument('--autonomous_html',
+                        default=None,
+                        help="Optional file path, if provided will output an autonomous HTML containing all dependancies.")
     args = parser.parse_args()
 
     # Logging
@@ -76,5 +79,9 @@ if __name__ == '__main__':
         ofh.write('network = ' + json.dumps(network, indent=4))
         ofh.write(os.linesep)
         ofh.write('pathways_info = ' + json.dumps(pathways_info, indent=4))
-
-
+    
+    # Write single HTML if requested
+    if args.autonomous_html is not None:
+        str_html = get_autonomous_html(args.output_folder)
+        with open(args.autonomous_html, 'wb') as ofh:
+            ofh.write(str_html)
