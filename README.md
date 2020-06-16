@@ -21,6 +21,30 @@ conda activate rpviz
 python -m rpviz.cli 'sample/Galaxy1015-[rpGlobalScore].tar' sample/outfolder_test_42
 ```
 
+## Arguments
+
+```
+positional arguments:
+  input_rpSBMLs         Input file containing rpSBML files in a 
+                        tar archive or a folder.
+  output_folder         Output folder to be used. If it does not 
+                        exist, an attempt will be made to create 
+                        it.It the creation of the folder fails, 
+                        IOError will be raised.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --debug               Turn on debug instructions
+  --template_folder TEMPLATE_FOLDER
+                        Path to the folder containing templates
+  --cofactor COFACTOR   File listing structures to consider as 
+                        cofactors.
+  --autonomous_html AUTONOMOUS_HTML
+                        Optional file path, if provided will 
+                        output an autonomous HTML containing
+                        all dependancies.
+```
+
 ## Build the docker
 
 ```
