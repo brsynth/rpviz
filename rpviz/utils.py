@@ -290,7 +290,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                     chem_nodes[node_id]['path_ids'].append(rpsbml.modelName)
                 # TODO: manage xref, without adding duplicates
                 try:
-                    assert brsynth_annot['smiles'] == chem_nodes[node_id]['smiles']
+                    assert brsynth_annot.get('smiles', None) == chem_nodes[node_id]['smiles']
                 except AssertionError:
                     try:
                         msg = 'Not the same SMILES: {} vs. {}'.format(
@@ -299,10 +299,10 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                         )
                         logging.warning(msg)
                     except KeyError:
-                        logging.warning('The brsynth_annot has no smiles: '+str(node_id))
+                        logging.warning('The brsynth_annot has no smiles: ' + str(node_id))
                         logging.info(brsynth_annot)
                 try:
-                    assert brsynth_annot['inchi'] == chem_nodes[node_id]['inchi']
+                    assert brsynth_annot.get('inchi', None) == chem_nodes[node_id]['inchi']
                 except AssertionError:
                     try:
                         msg = 'Not the same INCHI: {} vs. {}'.format(
@@ -311,10 +311,10 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                         )
                         logging.warning(msg)
                     except KeyError:
-                        logging.warning('The brsynth_annot has no inchi: '+str(node_id))
+                        logging.warning('The brsynth_annot has no inchi: ' + str(node_id))
                         logging.info(brsynth_annot)
                 try:
-                    assert brsynth_annot['inchikey'] == chem_nodes[node_id]['inchikey']
+                    assert brsynth_annot.get('inchikey', None) == chem_nodes[node_id]['inchikey']
                 except AssertionError:
                     try:
                         msg = 'Not the same INCHIKEY: {} vs. {}'.format(
@@ -323,7 +323,7 @@ def sbml_to_json(input_folder, pathway_id='rp_pathway', sink_species_group_id='r
                         )
                         logging.warning(msg)
                     except KeyError:
-                        logging.warning('The brsynth_annot has no inchi: '+str(node_id))
+                        logging.warning('The brsynth_annot has no inchi: ' + str(node_id))
                         logging.info(brsynth_annot)
             # Keep track for pathway info
             if node_id not in pathways_info[rpsbml.modelName]['node_ids']:
