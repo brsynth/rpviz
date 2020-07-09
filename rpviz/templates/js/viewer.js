@@ -642,7 +642,7 @@ $(function(){
     panel_reaction_info(null, false);
     panel_pathway_info(null, false);
     init_network(true);
-    annotate_hiddable_cofactors();
+    annotate_hiddable_cofactors();  // Need to be done after init_network so the network is already loaded
     refresh_layout();
     show_cofactors(false);
     put_pathway_values('global_score');
