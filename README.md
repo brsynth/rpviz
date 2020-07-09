@@ -14,11 +14,13 @@ From a given -- and compatible -- rpSBML tar file:
 python -m rpviz.cli rpSBML.tar outfolder
 ```
 
-## Example
+## Examples
 
 ```bash
 conda activate rpviz
-python -m rpviz.cli sample/input/input_sample.tar.gz sample/output_sample --autonomous_html sample/output/all_in_one_output.html
+python -m rpviz.cli sample/input/ten_pathways.tar.gz sample/output/ten_pathways --autonomous_html sample/output/ten_pathways/all_in_one_output.html
+python -m rpviz.cli sample/input/4279074841683024269.tar sample/output/4279074841683024269 --autonomous_html sample/output/4279074841683024269/all_in_one_output.html
+python -m rpviz.cli sample/input/6999994565578834569.tar sample/output/6999994565578834569 --autonomous_html sample/output/6999994565578834569/all_in_one_output.html
 ```
 
 ## Arguments
