@@ -18,7 +18,7 @@ python -m rpviz.cli rpSBML.tar outfolder
 
 ```bash
 conda activate rpviz
-python -m rpviz.cli sample/input_sample.tar.gz sample/output_sample --autonomous_html sample/all_in_one_output.html
+python -m rpviz.cli sample/input/input_sample.tar.gz sample/output_sample --autonomous_html sample/output/all_in_one_output.html
 ```
 
 ## Arguments
