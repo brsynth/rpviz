@@ -55,7 +55,10 @@ if __name__ == '__main__':
             raise e
 
     # Extract input if it is a tar archive
-    if os.path.isfile(args.input_rpSBMLs) and tarfile.is_tarfile(args.input_rpSBMLs):
+    if not os.path.isfile(args.input_rpSBMLs):
+        logging.error('File "{}" not found, exit'.format(args.input_rpSBMLs))
+        sys.exit(1)
+    if tarfile.is_tarfile(args.input_rpSBMLs):
         with tempfile.TemporaryDirectory() as tmp_folder:
             tar = tarfile.open(args.input_rpSBMLs, mode='r')
             tar.extractall(path=tmp_folder)
