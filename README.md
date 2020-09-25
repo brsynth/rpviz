@@ -33,10 +33,15 @@ pip install -e .
 
 ## Usage
 
+
+Produce the HTML files
 ```bash
 conda activate <myenv>
 python -m rpviz.cli <rpSBML.tar> <outfolder>
 ```
+
+To view the pathways, open the `index.html` file outputted in <outfolder> using any web browser.
+
 
 Few examples
 ```bash
