@@ -1,29 +1,51 @@
-# rpviz -- Visualisation of pathways from the RetroPath Suite
+# rpviz -- Tool to visualize pathways from the RetroPath Suite
 
-## Important
+## Installation
 
-Input file expected by the viewer:
-- `network.json`: should contains 2 variable, namely `network` and
-`pathways_info`.
-
-## Execute
-
-From a given -- and compatible -- rpSBML tar file:
 ```bash
-python -m rpviz.cli rpSBML.tar outfolder
+conda create -n <myenv> python=3
+conda activate <myenv>
+conda install -y -c rdkit rdkit=2019.03.1.0
+conda install -y -c bioconda python-libsbml
+conda install -y -c bioconda 
+conda install -y -c conda-forge lxml
+conda install -y -c conda-forge requests
+conda install -y -c conda-forge cirpy
+conda install -y -c conda-forge networkx
+conda install -y -c conda-forge beautifulsoup4
+conda install -y -c conda-forge matplotlib
+
+# Finally, download rpSBML.py file from GitHub -- TODO: as of 2020.09.25, to be fixed
+# rpSBML.py should be located alongside this README file
+wget https://raw.githubusercontent.com/Galaxy-SynBioCAD/rpBase/master-v2/rpSBML.py /path/to/root/dir/of/rpviz/rpSBML.py
 ```
 
-## Examples
+`<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
+
+**Important**:
+- this is still in development
+- one also needs to download the rpSBML library and make it accessible from the pathway visualiser CLI.
+
+
+## Usage
+
+**Important**: python calls should be done from the root dir of the project
 
 ```bash
-conda activate rpviz
+conda activate <myenv>
+cd <root/dir/of/project>
+python -m rpviz.cli <rpSBML.tar> <outfolder>
+```
+
+Few examples
+```bash
+conda activate <myenv>
 python -m rpviz.cli sample/input/ten_pathways.tar.gz sample/output/ten_pathways --autonomous_html sample/output/ten_pathways/all_in_one_output.html
 python -m rpviz.cli sample/input/4279074841683024269.tar sample/output/4279074841683024269 --autonomous_html sample/output/4279074841683024269/all_in_one_output.html
 python -m rpviz.cli sample/input/6999994565578834569.tar sample/output/6999994565578834569 --autonomous_html sample/output/6999994565578834569/all_in_one_output.html
 ```
 
-## Arguments
-
+Complete list of arguments
 ```
 positional arguments:
   input_rpSBMLs         Input file containing rpSBML files in a 
@@ -46,31 +68,13 @@ optional arguments:
                         all dependancies.
 ```
 
-## Build the docker
 
-```
-docker build -t brsynth/rpvisualiser-rest -f Dockerfile .
-```
+## Input
 
-## Setting up
+Input file expected by the viewer:
+- `network.json`: should contains 2 variable, namely `network` and
+`pathways_info`.
 
-Below are instructions to set up a conda environment. This is still in development.
-
-```bash
-conda create -n rpviz
-source activate rpviz
-conda install -y -c rdkit rdkit=2019.03.1.0
-conda install -y -c bioconda python-libsbml
-conda install -y -c bioconda pubchempy
-conda install -y -c conda-forge lxml
-conda install -y -c conda-forge requests
-conda install -y -c conda-forge cirpy
-conda install -y -c conda-forge networkx
-conda install -y -c conda-forge beautifulsoup4
-conda install -y -c conda-forge matplotlib
-```
-
-**Important**: one also needs to download the rpSBML library and make it accessible from the pathway visualiser CLI.
 
 ## JSON objects
 
