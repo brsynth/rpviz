@@ -37,7 +37,8 @@ if __name__ == '__main__':
                         help='File listing structures to consider as cofactors.')
     parser.add_argument('--autonomous_html',
                         default=None,
-                        help="Optional file path, if provided will output an autonomous HTML containing all dependancies.")
+                        help="Optional file path, if provided will output an autonomous HTML containing all "
+                             "dependencies.")
     args = parser.parse_args()
 
     # Logging
