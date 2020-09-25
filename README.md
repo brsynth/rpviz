@@ -1,5 +1,4 @@
-# rpviz
-Visualisation of pathways predicted from the RetroPath Suite.
+# rpviz -- Visualisation of pathways from the RetroPath Suite
 
 ## Important
 
@@ -51,12 +50,6 @@ optional arguments:
 
 ```
 docker build -t brsynth/rpvisualiser-rest -f Dockerfile .
-```
-
-## Run the REST service
-
-```
-docker run -p 8875:8888 brsynth/rpvisualiser-rest
 ```
 
 ## Setting up
