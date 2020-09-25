@@ -1,4 +1,4 @@
-# rpviz -- Tool to visualize pathways from the RetroPath Suite
+# rpviz -- Visualize pathways from the RetroPath Suite
 
 ## Installation
 
@@ -15,9 +15,13 @@ conda install -y -c conda-forge networkx
 conda install -y -c conda-forge beautifulsoup4
 conda install -y -c conda-forge matplotlib
 
-# Finally, download rpSBML.py file from GitHub -- TODO: as of 2020.09.25, to be fixed
+# Download rpSBML.py file from GitHub -- TODO: as of 2020.09.25, to be fixed
 # rpSBML.py should be located alongside this README file
 wget https://raw.githubusercontent.com/Galaxy-SynBioCAD/rpBase/master-v2/rpSBML.py /path/to/root/dir/of/rpviz/rpSBML.py
+
+# Install rpviz as an editable package
+cd <root/dir/of/project>
+pip install -e .
 ```
 
 `<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
@@ -29,11 +33,8 @@ wget https://raw.githubusercontent.com/Galaxy-SynBioCAD/rpBase/master-v2/rpSBML.
 
 ## Usage
 
-**Important**: python calls should be done from the root dir of the project
-
 ```bash
 conda activate <myenv>
-cd <root/dir/of/project>
 python -m rpviz.cli <rpSBML.tar> <outfolder>
 ```
 
