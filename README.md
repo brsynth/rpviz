@@ -2,18 +2,22 @@
 
 ## Installation
 
+We strongly recommend you to use [conda package manager](https://docs.conda.io/en/latest/), and to follow those steps:
+
 ```bash
 conda create -n <myenv> python=3
 conda activate <myenv>
 conda install -y -c rdkit rdkit=2019.03.1.0
 conda install -y -c bioconda python-libsbml
-conda install -y -c bioconda 
 conda install -y -c conda-forge lxml
 conda install -y -c conda-forge requests
 conda install -y -c conda-forge cirpy
 conda install -y -c conda-forge networkx
 conda install -y -c conda-forge beautifulsoup4
 conda install -y -c conda-forge matplotlib
+
+# Clone the project repository
+git clone <url/to/project>
 
 # Download rpSBML.py file from GitHub -- TODO: as of 2020.09.25, to be fixed
 # rpSBML.py should be located alongside this README file
