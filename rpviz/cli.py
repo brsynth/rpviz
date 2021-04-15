@@ -15,7 +15,7 @@ import tarfile
 import argparse
 import tempfile
 
-from rpviz.utils import sbml_to_json, annotate_cofactors, annotate_chemical_svg, get_autonomous_html
+from rpviz.utils import annotate_cofactors, annotate_chemical_svg, get_autonomous_html, parse_all_pathways
 from rpviz.Viewer import Viewer
 
 if __name__ == '__main__':
@@ -55,19 +55,21 @@ if __name__ == '__main__':
             raise e
 
     # Extract input if it is a tar archive
-    if not os.path.isfile(args.input_rpSBMLs):
-        logging.error('File "{}" not found, exit'.format(args.input_rpSBMLs))
-        sys.exit(1)
-    if tarfile.is_tarfile(args.input_rpSBMLs):
-        with tempfile.TemporaryDirectory() as tmp_folder:
-            tar = tarfile.open(args.input_rpSBMLs, mode='r')
-            tar.extractall(path=tmp_folder)
-            tar.close()
-            network, pathways_info = sbml_to_json(input_folder=tmp_folder)
-    elif os.path.isdir(args.input_rpSBMLs):
-        network, pathways_info = sbml_to_json(input_folder=args.input_rpSBMLs)
-    else:
-        raise NotImplementedError()
+    # if not os.path.isfile(args.input_rpSBMLs):
+    #     logging.error('File "{}" not found, exit'.format(args.input_rpSBMLs))
+    #     sys.exit(1)
+    # if tarfile.is_tarfile(args.input_rpSBMLs):
+    #     with tempfile.TemporaryDirectory() as tmp_folder:
+    #         tar = tarfile.open(args.input_rpSBMLs, mode='r')
+    #         tar.extractall(path=tmp_folder)
+    #         tar.close()
+    #         network, pathways_info = sbml_to_json(input_folder=tmp_folder)
+    # elif os.path.isdir(args.input_rpSBMLs):
+    #     # network, pathways_info = sbml_to_json(input_folder=args.input_rpSBMLs)
+    #     network, pathways_info = parse_all_pathways(input_folder=args.input_rpSBMLs)
+    # else:
+    #     raise NotImplementedError()
+    network, pathways_info = parse_all_pathways(input_folder=args.input_rpSBMLs)
 
     # Add annotations
     network = annotate_cofactors(network, args.cofactor)  # Typical cofactors
