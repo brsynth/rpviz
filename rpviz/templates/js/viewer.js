@@ -356,7 +356,7 @@ function panel_chemical_info(node, show=false){
         } else {
             var cofactor = 'No';
         }
-        if (node.data('sink_chemical') == 1){
+        if (node.data('sink_chemical')){
             var insink = 'Yes';
         } else {
             var insink = 'No';
@@ -718,17 +718,17 @@ $(function(){
                         'text-background-opacity': 0.85,
                         'text-background-shape': 'roundrectangle',
                     })
-                .selector("node[type='chemical'][target_chemical=1]")
+                .selector("node[type='chemical'][?target_chemical]")
                     .css({
                         'background-color': '#B22222',
                         'border-color': '#B22222',
                     })
-                .selector("node[type='chemical'][target_chemical=0]")
+                .selector("node[type='chemical'][?target_chemical]")
                     .css({
                         'background-color': '#235789',
                         'border-color': '#235789',
                     })
-                    .selector("node[type='chemical'][sink_chemical=1]")
+                    .selector("node[type='chemical'][?sink_chemical]")
                     .css({
                         'background-color': '#68956D',
                         'border-color': '#68956D'
@@ -803,7 +803,7 @@ $(function(){
         // Layout
         let layout = element_collection.layout({
             name: 'breadthfirst',
-            roots: cy.elements("node[target_chemical = 1]")
+            roots: cy.elements("node[?target_chemical]")
         });
         layout.run();
     }
