@@ -104,7 +104,7 @@ Below an overview of the `network` object expected by the JS viewer:
                     "type": "reaction",
                     "label": "string",
                     "all_labels": ["string"],
-                    "svg": "string",
+                    "svg": null,
                     "xlinks": [{"db_name":  "string", "entity_id": "string", "url": "string"}, ...],
                     "rsmiles": "string",
                     "rule_ids": ["string"],
@@ -140,8 +140,8 @@ Below an overview of the `network` object expected by the JS viewer:
                     "smiles": "string",
                     "inchi": "string",
                     "inchikey": "string",
-                    "target_chemical": integer,
-                    "sink_chemical": integer,
+                    "target_chemical": bool,
+                    "sink_chemical": bool,
                     "thermo_dg_m_formation": float, 
                     "cofactor": integer
                 }
@@ -194,8 +194,8 @@ be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `smiles`, (string), __not used__ -- Value should be `null` (meaningful for chemical node only).
 - `inchi`, (string),  __required value__ -- Value should be `null`.
 - `inchikey`, (string),  __required value__ -- Value should be `null`.
-- `target_chemical`, (string), __not used__ -- Value should be `null`.
-- `sink_chemical`, (string), __not used__ -- Value should be `null`.
+- `target_chemical`, (bool), __not used__ -- Value should be `null`.
+- `sink_chemical`, (bool), __not used__ -- Value should be `null`.
 - `thermo_dg_m_formation`, (string), __not used__ -- Value should be `null`.
 - `cofactor`, (string), __not used__ -- Value should be `null`.
 
@@ -222,10 +222,10 @@ be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `smiles`, (string), __required value__ -- The canonic SMILES.
 - `inchi`, (string),  __required value__ -- InChI.
 - `inchikey`, (string),  __required value__ -- InChIKey.
-- `target_chemical`, (string), __required__ -- Flag to designate the target. Value should be either 0 (not the
-target) or 1 (it is).
-- `sink_chemical`, (string), __optional value__ -- Flag to designate chemical that are available in the sink. Value
-should be either 0 (not in the sink) or (it is).
+- `target_chemical`, (bool), __required__ -- Flag to designate the target. Value should be either false (not the
+target) or true (it is).
+- `sink_chemical`, (bool), __optional value__ -- Flag to designate chemical that are available in the sink. Value
+should be either false (not in the sink) or true (it is).
 - `thermo_dg_m_formation`, (string), __optional value__ -- The dG of formation of the chemical (in mM concentration context).
 - `cofactor`, (string), __required__ -- Flag to designate cofactor chemicals (eg: ATP, NADH, ...). Value should
 be either 0 (not a cofactor) or 1 (it is).
@@ -288,7 +288,7 @@ error is logged and the execution is continued.
 
 - rpSBML file name should end by `.sbml.xml`
 
-- Target chemical should be have a SBML name that starts by `TARGET`
+- Target chemical have a SBML ID starting by `TARGET`
 
 
 ## Known bugs and feature requests
