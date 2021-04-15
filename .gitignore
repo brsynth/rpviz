@@ -1,5 +1,9 @@
 .DS_Store
 __pycache__
 
+package.json
+package-lock.json
+node_modules
+
 rpSBML.py
 sample/output
