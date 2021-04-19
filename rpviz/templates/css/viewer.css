@@ -1,0 +1,156 @@
+/* Basic layout ***************************************************************/
+
+body {
+    margin: 0px;
+}
+
+#base {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#viewer {
+    height: 80%;
+    box-shadow: 0 0 5px 0px black;
+}
+
+#interaction {
+    position: absolute;
+    z-index: 11;
+    background-color: #E8E9E8;
+    padding: 1%;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 10px;
+    width: 15%;
+    height: 1000px;
+}
+
+/* Central panel: the graph ***************************************************/
+#cy {
+    float: left;
+    width: 60%;
+    height: 1000px;
+    margin-left: 15%;
+}
+
+/* Right side panel: info *****************************************************/
+#info {
+    float: right;
+    border-radius: 5px;
+    background-color: #E8E9E8;
+    width: 25%;
+    height: 1000px;
+    position: relative;
+}
+
+/* Info panel *****************************************************************/
+#panel_startup_legend {
+    display: block;
+}
+
+#panel_chemical_info, #panel_reaction_info {
+    display: none;
+}
+
+#info div.info-title {
+    font-weight: bold;
+    font-size: 2em;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    text-align: right;
+    padding-top: 5%;
+    padding-right: 5%;
+}
+
+#info div.info-name {
+    font-family: sans-serif;
+    text-align: right;
+    padding-right: 5%;
+}
+
+#info div.spacer {
+    width: 80%;
+    margin: 5%;
+}
+
+#info div.info-subtitle {
+    font-family: sans-serif;
+    padding-left: 2%;
+    padding-top: 5%;
+}
+
+#info div.raw-text {
+    line-height: 1.4;
+    width: auto;
+    background-color: #fff;
+    padding: 8px 12px;
+    margin-right: -1%;
+    border-left: 4px solid #4CAF50;
+    font-family: Consolas,"courier new", "monospace";
+    font-size: 1em;
+}
+
+#info .raw-text {
+    // overflow-x: scroll;
+    // white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
+    margin-left: 2%;
+}
+
+#info .raw-text a,
+#info .raw-text a:visited
+{
+    color: #575757;
+}
+
+/* Nodes and edges CSS ********************************************************/
+/* Should be set directly at the cytoscape.js level  **************************/
+
+
+/* Table to select pathways ***************************************************/
+#table_choice table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+#table_choice table thead th {
+    background-color: #DDEFEF;
+    border: solid 1px #DDEEEE;
+    color: #336B6B;
+    padding: 0 10px 0 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+#table_choice table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 0 10px 0 10px;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+#table_choice table tbody td.checkbox {
+    text-align: center;
+}
+
+#table_choice table tbody td.path_id:hover {
+    border: solid 1px #DDEEEE;
+    background-color: #ff573344 ;
+    padding: 0 10px 0 10px;
+    text-shadow: 1px 1px 1px #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#table_choice table tbody td.pinned {
+    border: solid 1px #DDEEEE;
+    background-color: #ff573344 ;
+    padding: 0 10px 0 10px;
+    text-shadow: 1px 1px 1px #fff;
+    border-radius: 5px;
+}
