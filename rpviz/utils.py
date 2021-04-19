@@ -119,7 +119,7 @@ def _get_pathway_scores(pathway_dict):
     scores = {}
     for score_type in __SCORE_KEYS:
         try:
-            scores[score_type] = pathway_dict['brsynth'][score_type]['value']
+            scores[score_type] = pathway_dict['brsynth'][score_type]
         except KeyError:
             logging.warning(f'Cannot retrieve pathway score "{score_type}" in rpSBML. Set to None')
             scores[score_type] = None
@@ -211,7 +211,7 @@ def _get_reaction_xlinks(rxn_dict):
 
 def _get_reaction_rule_score(rxn_dict):
     try:
-        return round(rxn_dict['brsynth']['rule_score']['value'], 3)
+        return round(rxn_dict['brsynth']['rule_score'], 3)
     except KeyError:
         return None
 
