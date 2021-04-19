@@ -1,11 +1,13 @@
 .DS_Store
 __pycache__
 
+.vscode
+.idea
+
 package.json
 package-lock.json
 node_modules
 
 rpviz.egg-info
 
-rpSBML.py
 sample/output
