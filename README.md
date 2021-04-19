@@ -9,19 +9,15 @@ conda create -n <myenv> python=3
 conda activate <myenv>
 conda install -y -c rdkit rdkit=2019.03.1.0
 conda install -y -c bioconda python-libsbml
-conda install -y -c conda-forge lxml
 conda install -y -c conda-forge requests
 conda install -y -c conda-forge cirpy
 conda install -y -c conda-forge networkx
 conda install -y -c conda-forge beautifulsoup4
 conda install -y -c conda-forge matplotlib
+conda install -y -c conda-forge -c brsynth rptools
 
 # Clone the project repository
 git clone <url/to/project>
-
-# Download rpSBML.py file from GitHub -- TODO: as of 2020.09.25, to be fixed
-# rpSBML.py should be located alongside this README file
-wget https://raw.githubusercontent.com/Galaxy-SynBioCAD/rpBase/master-v2/rpSBML.py /path/to/root/dir/of/rpviz/rpSBML.py
 
 # Install rpviz as an editable package
 cd <root/dir/of/project>
