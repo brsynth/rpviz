@@ -5,5 +5,7 @@ package.json
 package-lock.json
 node_modules
 
+rpviz.egg-info
+
 rpSBML.py
 sample/output
