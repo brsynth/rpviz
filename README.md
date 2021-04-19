@@ -2,56 +2,34 @@
 
 ## Installation
 
-We strongly recommend you to use [conda package manager](https://docs.conda.io/en/latest/), and to follow those steps:
+### From source code
 
-```bash
-conda create -n <myenv> python=3
-conda activate <myenv>
-conda install -y -c rdkit rdkit=2019.03.1.0
-conda install -y -c bioconda python-libsbml
-conda install -y -c conda-forge requests
-conda install -y -c conda-forge cirpy
-conda install -y -c conda-forge networkx
-conda install -y -c conda-forge beautifulsoup4
-conda install -y -c conda-forge matplotlib
-conda install -y -c conda-forge -c brsynth rptools
-
-# Clone the project repository
-git clone <url/to/project>
-
-# Install rpviz as an editable package
-cd <root/dir/of/project>
+```
+git clone https://github.com/brsynth/rpviz.git
+cd rpviz
+conda env create -f environment.yaml -n <myenv>
 pip install -e .
 ```
-
 `<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
-
-**Important**:
-- this is still in development
-- one also needs to download the rpSBML library and make it accessible from the pathway visualiser CLI.
 
 
 ## Usage
 
-
 Produce the HTML files
 ```bash
 conda activate <myenv>
-python -m rpviz.cli <rpSBML.tar> <outfolder>
+python -m rpviz.cli <input-folder> <output-folder>
 ```
 
-To view the pathways, open the `index.html` file outputted in <outfolder> using any web browser.
+To view the pathways, open the `index.html` file outputted in `<out-folder>` using any web browser.
 
-
-Few examples
+### Example
 ```bash
 conda activate <myenv>
-python -m rpviz.cli sample/input/ten_pathways.tar.gz sample/output/ten_pathways --autonomous_html sample/output/ten_pathways/all_in_one_output.html
-python -m rpviz.cli sample/input/4279074841683024269.tar sample/output/4279074841683024269 --autonomous_html sample/output/4279074841683024269/all_in_one_output.html
-python -m rpviz.cli sample/input/6999994565578834569.tar sample/output/6999994565578834569 --autonomous_html sample/output/6999994565578834569/all_in_one_output.html
+python -m rpviz.cli sample/input/as_dir sample/output/as_dir
 ```
 
-Complete list of arguments
+### Command line arguments
 ```
 positional arguments:
   input_rpSBMLs         Input file containing rpSBML files in a 
@@ -75,7 +53,7 @@ optional arguments:
 ```
 
 
-## Input
+### Input expected by the HTML component
 
 Input file expected by the viewer:
 - `network.json`: should contains 2 variable, namely `network` and
@@ -167,7 +145,7 @@ Below an overview of the `network` object expected by the JS viewer:
 all the keys ('id', 'path_ids', ...) should be present in each node.
 
 
-#### reaction node
+### reaction node
 
 For reaction node, the content should be: 
 
@@ -196,7 +174,7 @@ be described in a dictionary having keys: "db_name", "entity_id", "url".
 - `cofactor`, (string), __not used__ -- Value should be `null`.
 
 
-#### chemical node
+### chemical node
 
 For chemical node, the content should be:
 
@@ -227,7 +205,7 @@ should be either false (not in the sink) or true (it is).
 be either 0 (not a cofactor) or 1 (it is).
 
 
-#### edge
+### edge
 
 For edge, the content should be:
 
@@ -281,9 +259,7 @@ Where:
 - If a compound cannot be associated to an inchikey (typically, in the case of a generic compound like
 `NAD-OR-NADP`), then the MNX ID is used as ID in the network.json file. If no MNX is available, then an
 error is logged and the execution is continued.
-
-- rpSBML file name should end by `.sbml.xml`
-
+- rpSBML file name should end by `.xml`
 - Target chemical have a SBML ID starting by `TARGET`
 
 
@@ -306,4 +282,4 @@ Add information into the JSON:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details
