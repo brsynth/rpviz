@@ -2,14 +2,14 @@ from setuptools import setup
 
 setup(
     name='rpviz',
-    version=0.1.0,
+    version='0.1.0',
     description='Visualize pathways from the RetroPath Suite.',
     license='MIT',
     author='Thomas Duigou, Melchior du Lac',
     author_email='thomas.duigou@inrae.fr',
     packages=find_packages(),
     keywords=['rpviz'],
-    url='https://github.com/brsynth/rpreactor',
+    url='https://github.com/brsynth/rpviz',
     classifiers=[
         'Topic :: Scientific/Engineering',
     ]
