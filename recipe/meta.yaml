@@ -1,4 +1,4 @@
-{% set name = "rpbasicdesign" %}
+{% set name = "rpviz" %}
 {% set data = load_setup_py_data() %}
 
 package:
@@ -17,19 +17,20 @@ requirements:
     - python {{ python }}
   run:
     - python {{ python }}
-    - python-libsbml
-    - pysbol2
+    - rptools
+    - rdkit
+    - beautifulsoup4
 
 test:
-  source_files:
-    - tests
+  # source_files:
+  #   - tests
   imports:
     - {{ name|lower }}
   requires:
     - pytest
   commands:
     - python -m {{ name|lower }}.cli --help
-    - cd tests ; pytest -v
+    # - cd tests ; pytest -v
 
 about:
   home: https://github.com/brsynth/{{ name|lower }}
