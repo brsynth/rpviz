@@ -2,22 +2,22 @@
 
 ## Installation
 
-### From source code
-
-```
-git clone https://github.com/brsynth/rpviz.git
-cd rpviz
-conda env create -f environment.yaml -n <myenv>
-pip install -e .
-```
-`<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
-
+```bash
+conda install -c brsynth -c conda-forge rpviz
+``` 
 
 ## Usage
 
+```bash
+git clone https://github.com/brsynth/rpviz.git
+cd rpviz
+conda create --name <myenv>
+conda activate <myenv>
+```
+`<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
+
 Produce the HTML files
 ```bash
-conda activate <myenv>
 python -m rpviz.cli <input-folder> <output-folder>
 ```
 
