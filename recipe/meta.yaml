@@ -1,0 +1,44 @@
+{% set name = "rpviz" %}
+{% set data = load_setup_py_data() %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ data['version'] }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
+
+requirements:
+  host:
+    - python {{ python }}
+  run:
+    - python {{ python }}
+    - rptools
+    - rdkit
+    - beautifulsoup4
+
+test:
+  # source_files:
+  #   - tests
+  imports:
+    - {{ name|lower }}
+  requires:
+    - pytest
+  commands:
+    - python -m {{ name|lower }}.cli --help
+    # - cd tests ; pytest -v
+
+about:
+  home: https://github.com/brsynth/{{ name|lower }}
+  summary: {{ data['description'] }}
+  license: {{ data.get('license') }}
+  license_file: LICENSE.txt
+#  description: {{ data['long_description'] }}
+
+extra:
+  recipe-maintainers:
+    - tduigou
