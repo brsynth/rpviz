@@ -2,4 +2,4 @@ python:
   - 3.6
   - 3.7
   - 3.8
-  #- 3.9 we can't install rptools package in 3.9 python environment
+  - 3.9
