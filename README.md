@@ -3,18 +3,18 @@
 ## Installation
 
 ```bash
-conda install -c brsynth -c conda-forge rpviz
+conda create --name <myenv>
+conda activate <myenv>
+conda install -c brsynth -c conda-forge -c bioconda rpviz
 ``` 
+`<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
 
 ## Usage
 
 ```bash
 git clone https://github.com/brsynth/rpviz.git
 cd rpviz
-conda create --name <myenv>
-conda activate <myenv>
 ```
-`<myenv>` has to be replaced by whatever meaningful name that will pleased the user.
 
 Produce the HTML files
 ```bash
