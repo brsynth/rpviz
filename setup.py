@@ -8,6 +8,7 @@ setup(
     author='Thomas Duigou, Melchior du Lac',
     author_email='thomas.duigou@inrae.fr',
     packages=find_packages(),
+    include_package_data=True,
     keywords=['rpviz'],
     url='https://github.com/brsynth/rpviz',
     classifiers=[
