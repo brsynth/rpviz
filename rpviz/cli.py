@@ -15,6 +15,8 @@ import tarfile
 import argparse
 import tempfile
 
+from pathlib import Path
+
 from rpviz.utils import annotate_cofactors, annotate_chemical_svg, get_autonomous_html, parse_all_pathways
 from rpviz.Viewer import Viewer
 
@@ -54,22 +56,46 @@ if __name__ == '__main__':
         except IOError as e:
             raise e
 
-    # Extract input if it is a tar archive
-    # if not os.path.isfile(args.input_rpSBMLs):
-    #     logging.error('File "{}" not found, exit'.format(args.input_rpSBMLs))
-    #     sys.exit(1)
-    # if tarfile.is_tarfile(args.input_rpSBMLs):
-    #     with tempfile.TemporaryDirectory() as tmp_folder:
-    #         tar = tarfile.open(args.input_rpSBMLs, mode='r')
-    #         tar.extractall(path=tmp_folder)
-    #         tar.close()
-    #         network, pathways_info = sbml_to_json(input_folder=tmp_folder)
-    # elif os.path.isdir(args.input_rpSBMLs):
-    #     # network, pathways_info = sbml_to_json(input_folder=args.input_rpSBMLs)
-    #     network, pathways_info = parse_all_pathways(input_folder=args.input_rpSBMLs)
-    # else:
-    #     raise NotImplementedError()
-    network, pathways_info = parse_all_pathways(input_folder=args.input_rpSBMLs)
+    # Both folder and tar file are valid inputs
+    input_path = Path(args.input_rpSBMLs)
+    if input_path.exists():
+        # Input is a folder
+        if input_path.is_dir():
+            input_files = list(input_path.glob('*.xml'))
+            if not len(input_files):
+                raise FileNotFoundError(
+                    f'"{args.input_rpSBMLs}" sounds like a directory '
+                    'but no rpSBML files (xml extension) has been find. '
+                    'Exit. '
+                    )
+            # Parse
+            network, pathways_info = parse_all_pathways(input_files=input_files)
+        # Input is a tarfile
+        elif input_path.is_file() and tarfile.is_tarfile(args.input_rpSBMLs):
+            with tempfile.TemporaryDirectory() as tmp_folder:
+                with tarfile.open(args.input_rpSBMLs, mode='r') as tar:
+                    tar.extractall(path=tmp_folder)
+                _ = list(Path(tmp_folder).glob('*.xml'))
+                if not len(_):  # Possible if there is a root folder
+                    _ = list(Path(tmp_folder).glob('*/*.xml'))
+                # Removed tar "fork" files if any (name starts by ._)
+                input_files = [item for item in _ if not item.name.startswith('._')]
+                # Check if any file to parse
+                if not len(input_files):
+                    raise FileNotFoundError(
+                        f'No rpSBML files found in "{args.input_rpSBMLs}" tarfile. Exit.'
+                        )
+                # Parse
+                network, pathways_info = parse_all_pathways(input_files=input_files)
+        # Input is something else
+        else:
+            raise NotImplementedError(
+                f'Unable to handle input "{args.input_rpSBMLs}". Exit. '
+            )
+    else:
+        raise FileNotFoundError(
+            f'"{args.input_rpSBMLs}" not found. Exit'
+        )
 
     # Add annotations
     network = annotate_cofactors(network, args.cofactor)  # Typical cofactors
