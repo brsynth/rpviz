@@ -509,15 +509,14 @@ def parse_one_pathway(rpsbml_dict):
     return nodes, edges, pathway
 
 
-def parse_all_pathways(input_folder):
+def parse_all_pathways(input_files):
     network = {'elements': {'nodes': [], 'edges': []}}
     all_nodes = {}
     all_edges = {}
     pathways_info = {}
 
-    # glob.escape() prevents issues with brackets in the inputted path
-    for sbml_path in glob.glob(glob.escape(input_folder) + '/*.xml'):
-        rpsbml = rpSBML(sbml_path)
+    for sbml_path in input_files:
+        rpsbml = rpSBML(str(sbml_path))
         rpsbml_dict = rpsbml.toDict()
         nodes, edges, pathway = parse_one_pathway(rpsbml_dict)
         # Store pathway
