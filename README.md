@@ -2,7 +2,7 @@
 
 ## Installation
 
-```bash
+```sh
 conda create --name <myenv>
 conda activate <myenv>
 conda install -c brsynth -c conda-forge -c bioconda rpviz
@@ -11,25 +11,28 @@ conda install -c brsynth -c conda-forge -c bioconda rpviz
 
 ## Usage
 
-```bash
-git clone https://github.com/brsynth/rpviz.git
-cd rpviz
-```
-
 Produce the HTML files
-```bash
+```sh
 python -m rpviz.cli <input-folder> <output-folder>
 ```
 
 To view the pathways, open the `index.html` file outputted in `<out-folder>` using any web browser.
 
-### Example
-```bash
+## Example
+
+Using a folder as input:
+```sh
 conda activate <myenv>
 python -m rpviz.cli sample/input/as_dir sample/output/as_dir
 ```
 
-### Command line arguments
+Using a tar file as input:
+```sh
+conda activate <myenv>
+python -m rpviz.cli sample/input/as_tar.tar sample/output/as_dir
+```
+
+## Command line arguments
 ```
 positional arguments:
   input_rpSBMLs         Input file containing rpSBML files in a 
@@ -52,16 +55,32 @@ optional arguments:
                         all dependancies.
 ```
 
-
-### Input expected by the HTML component
+## Input expected by the HTML component
 
 Input file expected by the viewer:
 - `network.json`: should contains 2 variable, namely `network` and
 `pathways_info`.
 
 
-## JSON objects
+## For developpers
 
+Installation, after a git clone:
+```sh
+cd <repository>
+conda env create -f environment.yaml -n <dev_env>
+conda activate <dev_env>
+conda develop -n <dev_env> .
+```
+
+Warning: if you do not specify an environment name with -n <dev_env>, then `rpviz` will be used.
+
+To uninstall:
+```sh
+conda deactivate
+conda env remove -n <dev_env>
+```
+
+## JSON objects
 
 ### network
 
