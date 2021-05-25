@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rpviz',
-    version='0.1.0',
+    version='0.1.1',
     description='Visualize pathways from the RetroPath Suite.',
     license='MIT',
     author='Thomas Duigou, Melchior du Lac',
