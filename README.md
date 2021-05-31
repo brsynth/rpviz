@@ -69,7 +69,8 @@ Installation, after a git clone:
 cd <repository>
 conda env create -f environment.yaml -n <dev_env>
 conda activate <dev_env>
-conda develop -n <dev_env> .
+conda install conda-build
+conda develop .
 ```
 
 Warning: if you do not specify an environment name with -n <dev_env>, then `rpviz` will be used.
