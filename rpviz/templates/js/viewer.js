@@ -270,7 +270,7 @@ function build_pathway_table(){
     let table_base = $('<table></table>');
     
     // Build the header
-    let field_names = ['Pathway', 'Show', 'Info', 'Colour', 'Value'];
+    let field_names = ['Pathway', 'Show', 'Info', 'Colour', 'Score'];
     let field_classes = ['path_id_head', 'path_checkbox_head', 'path_info_head', 'path_colour_head', 'path_value_head'];  // This is needed for tablesort
     let table_row = $('<tr></tr>');
     for (let i = 0; i < field_names.length; i++){
