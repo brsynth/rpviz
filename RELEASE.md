@@ -1,5 +1,10 @@
 # Release history
 
+## 0.1.2
+- fix(cli): remove unused argument template folder
+- fix(meta.yaml): prevent use of most recent rptools
+- chore(setup.py): make use centralized metadata
+
 ## 0.1.1
 - feat: accept both folder and tarfile as input
 - tests: input tarfile example

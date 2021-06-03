@@ -31,9 +31,9 @@ if __name__ == '__main__':
                              'It the creation of the folder fails, IOError will be raised.')
     parser.add_argument('--debug', action='store_true',
                         help='Turn on debug instructions')
-    parser.add_argument('--template_folder',
-                        default=os.path.join(os.path.dirname(__file__), 'templates'),
-                        help='Path to the folder containing templates')
+    # parser.add_argument('--template_folder',
+    #                     default=os.path.join(os.path.dirname(__file__), 'templates'),
+    #                     help='Path to the folder containing templates')
     parser.add_argument('--cofactor',
                         default=os.path.join(os.path.dirname(__file__), 'data', 'cofactor_inchi_201811.tsv'),
                         help='File listing structures to consider as cofactors.')
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     network = annotate_chemical_svg(network)  # SVGs depiction for chemical
 
     # Build the Viewer
-    viewer = Viewer(out_folder=args.output_folder, template_folder=args.template_folder)
+    viewer = Viewer(out_folder=args.output_folder)
     viewer.copy_templates()
 
     # Write info extracted from rpSBMLs
