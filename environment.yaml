@@ -1,4 +1,4 @@
-name: rpviz
+name: rpviz-dev
 channels:
   - brsynth
   - conda-forge
