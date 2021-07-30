@@ -1,5 +1,12 @@
 # Release history
 
+## 0.1.3
+- fix(utils.py): update according to new rpSBML interface
+- fix(Viewer.py): update path to templates
+- fix(viewer.js): update value type
+- docs(utils): add type hints in methods
+- build: rename conda dev env
+
 ## 0.1.2
 - fix(cli): remove unused argument template folder
 - fix(meta.yaml): prevent use of most recent rptools
