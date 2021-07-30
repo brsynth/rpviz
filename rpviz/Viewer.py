@@ -10,6 +10,7 @@ __license__ = 'MIT'
 import os
 import pandas
 import distutils.dir_util
+from pathlib import Path
 
 from bs4 import BeautifulSoup
 
@@ -17,23 +18,26 @@ from bs4 import BeautifulSoup
 class Viewer(object):
     """Viewer factory."""
 
-    def __init__(self, out_folder='viewer', template_folder='templates'):
+    def __init__(self, out_folder='viewer'):
         """Initialising."""
         # Default configuration
-        self.out_folder = os.path.abspath(out_folder)
-        self.template_folder = os.path.abspath(template_folder)
-        self.template_html_file = os.path.join(self.template_folder, 'template.html')
+        self.out_folder = Path(out_folder).resolve()
+        self.template_folder = Path(__file__).resolve().parent / 'templates'
+        self.template_html_file = self.template_folder / 'template.html'
 
         # These are not expected to be changed by the user
-        self.json_file = os.path.join(self.out_folder, 'network_elements.js')
-        self.html_file = os.path.join(self.out_folder, 'index.html')
+        self.json_file = self.out_folder / 'network_elements.js'
+        self.html_file = self.out_folder / 'index.html'
 
     def copy_templates(self):
         """Copy the complete template tree
 
         :return: None
         """
-        distutils.dir_util.copy_tree(self.template_folder, self.out_folder)
+        distutils.dir_util.copy_tree(
+            str(self.template_folder),
+            str(self.out_folder)
+            )
 
     def write_json_deprecated(self, dict_paths, scores):
         """
