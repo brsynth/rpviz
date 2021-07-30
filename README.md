@@ -72,7 +72,7 @@ conda activate <dev_env>
 conda develop -n <dev_env> .
 ```
 
-Warning: if you do not specify an environment name with -n <dev_env>, then `rpviz` will be used.
+Warning: if you do not specify an environment name with -n <dev_env>, then `rpviz-dev` will be used.
 
 To uninstall:
 ```sh

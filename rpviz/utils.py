@@ -10,12 +10,15 @@ import os
 import csv
 import glob
 import logging
+from typing import Any, Union
 
 from statistics import mean
 from collections import OrderedDict
 
-# from rpSBML import rpSBML as old_rpSBML
-from rptools.rplibs import rpSBML
+from rptools.rplibs import rpSBML, rpPathway
+from rptools.rplibs.rpReaction import rpReaction
+from rptools.rplibs.rpCompound import rpCompound
+from rptools.rpfba.cobra_format import uncobraize
 
 DEBUG = True
 
@@ -52,7 +55,9 @@ miriam_header = {
 }
 
 
-def _specie_is_target(specie_id):
+def _specie_is_target_old(
+    specie_id: str
+    ) -> bool:
     """Detect is a specie should be considered as a target
 
     FIXME, this needs to be refined so that we don't rely on the specie ID.
@@ -67,7 +72,10 @@ def _specie_is_target(specie_id):
     return False
 
 
-def _specie_is_intermediate(specie_id, specie_dict=None):
+def _specie_is_intermediate_old(
+    specie_id: str,
+    specie_dict: dict = None, 
+    ) -> bool:
     """Detect is a specie should be considered as an intermediate compound.
 
     FIXME, this needs to be refined so that we don't rely on the specie ID.
@@ -84,7 +92,10 @@ def _specie_is_intermediate(specie_id, specie_dict=None):
     return False
 
 
-def _specie_is_sink(specie_id, specie_dict=None):
+def _specie_is_sink_old(
+    specie_id: str,
+    specie_dict: dict = None
+    ) -> bool:
     """Detect is a specie should be considered as a sink
 
     FIXME, this needs to be refined so that we don't rely on the specie ID.
@@ -96,12 +107,14 @@ def _specie_is_sink(specie_id, specie_dict=None):
     :return: true if it is, otherwise false
     :rtype: bool
     """
-    if not _specie_is_target(specie_id) and not _specie_is_intermediate(specie_id):
+    if not _specie_is_target_old(specie_id) and not _specie_is_intermediate_old(specie_id):
         return True
     return False
 
 
-def _get_pathway_scores(pathway_dict):
+def _get_pathway_scores_old(
+    pathway_dict: dict
+    ) -> dict:
     """Return pathway scores as a dictionary of scores
 
     :param pathway_dict: pathway dictionary as output by toDict
@@ -126,33 +139,77 @@ def _get_pathway_scores(pathway_dict):
     return scores
 
 
-def _get_pathway_thermo(pathway_dict):
+def _get_pathway_score(
+    rp_pathway: rpPathway
+    ) -> dict:
+    return {
+        'norm_fba_obj_biomass': rp_pathway.get_fba_biomass(),
+        'norm_fba_obj_fraction': rp_pathway.get_fba_fraction(),
+        'norm_rule_score': None,  # TODO: add method get_rule_score,
+        'norm_steps': rp_pathway.get_nb_reactions(),
+        'global_score': None  # TODO: add method get_global_score
+    }
+
+
+def _get_pathway_thermo(
+    pathway_dict: dict
+    ) -> Union[float, None]:
     try:
         return pathway_dict['brsynth']['dfg_prime_m']['value']
     except KeyError:
         return None
 
 
-def _get_pathway_fba(pathway_dict):
+def _get_pathway_fba(
+    pathway_dict: dict
+    ) -> Union[float, None]:
     try:
         return pathway_dict['brsynth']['fba_obj_fraction']['value']
     except KeyError:
         return None
 
 
-def _get_reaction_node_id(rxn_dict):
+def _get_reaction_node_id_old(
+    rxn_dict: dict
+    ) -> str:
     """Return a useful ID for the reaction node.
 
     A reaction node could be shared between several pathways, the reaction SMILES is an easy
     way to detect identical reactions used by different pathways.
     """
-    if _get_reaction_smiles(rxn_dict) is not None:
+    if _get_reaction_smiles_old(rxn_dict) is not None:
         return rxn_dict['brsynth']['smiles']
     else:
         raise NotImplementedError(f'Cannot assign a valid ID to reaction idx {rxn_dict["rxn_idx"]} ')
 
 
-def _get_reaction_ecs(rxn_dict):
+def _get_reaction_node_id(
+    rxn: rpReaction
+    ) -> str:
+    """Return a useful ID for the reaction node.
+
+    A reaction node could be shared between several pathways, the reaction SMILES is an easy
+    way to detect identical reactions used by different pathways.
+    """
+    if _rxn_has_smiles(rxn):
+        return rxn.get_smiles()
+    else:
+        raise NotImplementedError(f'Cannot assign a valid ID to reaction idx {rxn.get_id()} ')
+
+
+def _rxn_has_smiles(
+    rxn: rpReaction
+    ) -> bool:
+    if (rxn.get_smiles() is None) or \
+        (rxn.get_smiles() == '>>') or \
+        (rxn.get_smiles() == ''):
+        return False
+    return True
+
+
+def _get_reaction_ecs(
+    rxn_dict: dict
+    ) -> list:
     if 'ec-code' in rxn_dict['miriam'] \
             and len(rxn_dict['miriam']['ec-code']):
         return rxn_dict['miriam']['ec-code']
@@ -160,21 +217,36 @@ def _get_reaction_ecs(rxn_dict):
         return []
 
 
-def _get_reaction_thermo(rxn_dict):
+def _get_reaction_thermo(
+    rxn_dict: dict
+    ) -> Union[float, None]:
     if 'dfG_prime_m' in rxn_dict['brsynth']:
         return rxn_dict['brsynth']['dfG_prime_m']
     else:
         return None
 
 
-def _get_reaction_labels(rxn_dict):
+def _get_reaction_labels_old(
+    rxn_dict: dict
+    ) -> list:
     if len(_get_reaction_ecs(rxn_dict)):
         return [*_get_reaction_ecs(rxn_dict)]
     else:
         return [rxn_dict['brsynth']['rule_id'],]
 
 
-def _get_reaction_smiles(rxn_dict):
+def _get_reaction_labels(
+    rxn: rpReaction
+    ) -> list:
+    if len(rxn.get_ec_numbers()):
+        return rxn.get_ec_numbers()
+    else:
+        return [rxn.get_rule_id(),]
+
+
+def _get_reaction_smiles_old(
+    rxn_dict: dict
+    ) -> Union[str, None]:
     if 'smiles' in rxn_dict['brsynth'] \
             and rxn_dict['brsynth']['smiles'] is not None \
             and rxn_dict['brsynth']['smiles'] != '':
@@ -183,7 +255,9 @@ def _get_reaction_smiles(rxn_dict):
         return None
 
 
-def _get_reaction_xlinks(rxn_dict):
+def _get_reaction_xlinks_old(
+    rxn_dict: dict
+    ) -> list:
     # TODO refine this method
     xlinks = []
     # Special case for EC numbers
@@ -209,14 +283,45 @@ def _get_reaction_xlinks(rxn_dict):
     return xlinks
 
 
-def _get_reaction_rule_score(rxn_dict):
+def _get_reaction_xlinks(
+    rxn: rpReaction
+    ) -> list:
+    xlinks = []
+    for ec in rxn.get_ec_numbers():
+        # Get rid of unwanted characters
+        ec_tmp = []
+        for digit in ec.split('.'):
+            if digit in '-_' or digit == '':
+                break
+            ec_tmp.append(digit)
+        ec_refined = '.'.join(ec_tmp)
+        if ec != ec_refined:
+            logging.info(f'Refined EC number from {ec} to {ec_refined}')
+        # Use direct link to workaround generic ECs issue with identifiers.org
+        xlinks.append({
+            'db_name': 'intenz',
+            'entity_id': ec_refined,
+            'url': f'https://www.ebi.ac.uk/intenz/query?cmd=SearchEC&ec={ec_refined}'})
+        logging.debug(
+            f'Replace identifiers.org to IntEnz crosslinks for EC number {ec_refined}')
+    # Not EC cases
+    # TODO complete me
+    return xlinks
+
+
+def _get_reaction_rule_score(
+    rxn_dict: dict
+    ) -> Union[float, None]:
     try:
         return round(rxn_dict['brsynth']['rule_score'], 3)
     except KeyError:
         return None
 
 
-def _get_specie_node_id(specie_dict, specie_id=None):
+def _get_specie_node_id_old(
+    specie_dict: dict,
+    specie_id: str = None
+    ) -> str:
     """Return a useful ID for the specie node.
 
     A compound/specie node could be shared between several pathways,
@@ -246,28 +351,36 @@ def _get_specie_node_id(specie_dict, specie_id=None):
         raise NotImplementedError('Could not assign a valid id')
 
 
-def _get_specie_inchikey(specie_dict):
+def _get_specie_inchikey(
+    specie_dict: dict
+    ) -> Union[str, None]:
     try:
         return specie_dict['brsynth']['inchikey']
     except KeyError:
         return None
 
 
-def _get_specie_smiles(specie_dict):
+def _get_specie_smiles(
+    specie_dict: dict
+    ) -> Union[str, None]:
     try:
         return specie_dict['brsynth']['smiles']
     except KeyError:
         return None
 
 
-def _get_specie_inchi(specie_dict):
+def _get_specie_inchi(
+    specie_dict: dict
+    ) -> Union[str, None]:
     try:
         return specie_dict['brsynth']['inchi']
     except KeyError:
         return None
 
 
-def _get_specie_xlinks(specie_dict):
+def _get_specie_xlinks_old(
+    specie_dict: dict
+    ) -> list:
     _MIRIAM_TO_IDENTIFIERS = {
         'metanetx': 'metanetx.chemical/',
         'chebi': 'chebi/CHEBI:',
@@ -303,7 +416,20 @@ def _get_specie_xlinks(specie_dict):
     return xlinks
 
 
-def _nodes_seem_equal(node1, node2):
+def _get_specie_xlinks(
+    cmpd: rpCompound
+    ) -> dict:
+    return [{
+        'db_name': 'metanetx',
+        'entity_id': uncobraize(cmpd.get_id()),
+        'url': f'http://identifiers.org/metanetx.chemical/{uncobraize(cmpd.get_id())}'
+    }]
+
+
+def _nodes_seem_equal(
+    node1: dict,
+    node2: dict
+    ) -> bool:
     # Few basic checks
     if node1['id'] == node2['id'] \
                 and node1['type'] == node2['type'] \
@@ -317,7 +443,10 @@ def _nodes_seem_equal(node1, node2):
     return False
 
 
-def _edge_seem_equal(edge1, edge2):
+def _edge_seem_equal(
+    edge1: dict,
+    edge2: dict
+    ) -> bool:
     if edge1['id'] == edge2['id'] \
             and edge1['source'] == edge2['source'] \
             and edge1['target'] == edge2['target']:
@@ -325,20 +454,26 @@ def _edge_seem_equal(edge1, edge2):
     return False
 
 
-def _merge_nodes(node1, node2):
+def _merge_nodes(
+    node1: dict,
+    node2: dict
+    ) -> dict:
     node3 = {}
     for key in node1.keys():
+        # Only node 1 has a value
         if node1[key] is None:
             value = node2[key]
+        # Only node 2 has a value
         elif node2[key] is None:
             value = node1[key]
+        # Both have a value
         else:
             # list of strings
             if key in ['path_ids', 'rule_id', 'all_labels']:
                 value = list(set(node1[key] + node2[key]))
-            # important value
-            elif key in ['smiles', 'inchi', 'inchikey']:
-
+            # important str values
+            elif key in ['smiles', 'inchi', 'inchikey']:                
+                value = node1[key]
                 if node1[key] != node2[key]:
                     logging.warning(f'Not the same {key} when merging nodes: '
                                     f'{node1[key]} vs {node2[key]}. '
@@ -359,10 +494,14 @@ def _merge_nodes(node1, node2):
             else:
                 value = node1[key]
         node3[key] = value
+
     return node3
 
 
-def _merge_edges(edge1, edge2):
+def _merge_edges(
+    edge1: dict,
+    edge2: dict
+    ) -> dict:
     edge3 = {}
     for key in edge1.keys():
         if key == 'path_ids':
@@ -373,48 +512,42 @@ def _merge_edges(edge1, edge2):
     return edge3
 
 
-# def parse_one_pathway(sbml_path):
-def parse_one_pathway(rpsbml_dict):
+def parse_one_pathway(
+    rp_pathway: rpPathway
+    ) -> tuple:
     """Extract info from one rpSBML file
 
     :param sbml_path: str, path to file
     """
     nodes = {}
     edges = {}
-    pathway = {}
 
-    # To dict
-    # rpsbml = new_rpSBML(sbml_path)
-    # rpsbml_dict = rpsbml.toDict()
-
-    # Pathway info
-    # = Mandatory values
     pathway = {
-        'path_id': rpsbml_dict['pathway']['brsynth']['path_id'],
-        'nb_steps': len(rpsbml_dict['reactions']),
+        'path_id': rp_pathway.get_id(),
+        'nb_steps': rp_pathway.get_nb_reactions(),
         'node_ids': [],  # To be filled later
         'edge_ids': [],  # To be filled later
-        'scores': _get_pathway_scores(rpsbml_dict['pathway']),
-        'thermo_dg_m_gibbs': _get_pathway_thermo(rpsbml_dict['pathway']),
-        'fba_target_flux': _get_pathway_fba(rpsbml_dict['pathway'])
+        'scores': _get_pathway_score(rp_pathway),
+        'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime(),
+        'fba_target_flux': rp_pathway.get_fba_fraction()
     }
 
     # Node info: reactions
-    for rxn_dict in rpsbml_dict['reactions'].values():
+    for rxn in rp_pathway.get_reactions().values():
         node = {
-            'id': _get_reaction_node_id(rxn_dict),
+            'id': _get_reaction_node_id(rxn),
             'path_ids': [pathway['path_id'], ],
             'type': 'reaction',
-            'label': _get_reaction_labels(rxn_dict)[0],
-            'all_labels': _get_reaction_labels(rxn_dict),
+            'label': _get_reaction_labels(rxn)[0],
+            'all_labels': _get_reaction_labels(rxn),
             'svg': None,  # FIXME could add the reaction depiction here
-            'xlinks': _get_reaction_xlinks(rxn_dict),
+            'xlinks': _get_reaction_xlinks(rxn),
             # Only for reaction, None for compounds
-            'rsmiles': _get_reaction_smiles(rxn_dict),
-            'rule_id': [rxn_dict['brsynth']['rule_id'],],
-            'ec_numbers': _get_reaction_ecs(rxn_dict),
-            'thermo_dg_m_gibbs': _get_reaction_thermo(rxn_dict),
-            'rule_score': _get_reaction_rule_score(rxn_dict),
+            'rsmiles': rxn.get_smiles(),
+            'rule_id': [rxn.get_rule_id(),],
+            'ec_numbers': rxn.get_ec_numbers(),
+            'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime(),
+            'rule_score': rxn.get_rule_score(),
             # Only for compounds
             'smiles': None,
             'inchi': None,
@@ -435,15 +568,18 @@ def parse_one_pathway(rpsbml_dict):
                               f'between 2 nodes having ID {node["id"]}.')
 
     # Node info: compounds
-    for specie_id, specie_dict in rpsbml_dict['species'].items():
+    for cmpd in rp_pathway.get_compounds():
         node = {
-            'id': _get_specie_node_id(specie_dict, specie_id),
+            # 'id': _get_specie_node_id_old(specie_dict, specie_id),
+            'id': cmpd.get_id(),
             'path_ids': [pathway['path_id'], ],
             'type': 'chemical',
-            'label': _get_specie_node_id(specie_dict, specie_id),
-            'all_labels': [_get_specie_node_id(specie_dict, specie_id), ],
+            # 'label': _get_specie_node_id_old(specie_dict, specie_id),
+            'label': cmpd.get_id(),
+            # 'all_labels': [_get_specie_node_id_old(specie_dict, specie_id), ],
+            'all_labels': [cmpd.get_id(), ],
             'svg': None,  # Will be filled later
-            'xlinks': _get_specie_xlinks(specie_dict),
+            'xlinks': _get_specie_xlinks(cmpd),  # TODO: fix me
             # Only for reaction, None for compounds
             'rsmiles': None,
             'rule_id': None,
@@ -451,13 +587,13 @@ def parse_one_pathway(rpsbml_dict):
             'thermo_dg_m_gibbs': None,
             'rule_score': None,
             # Only for compounds
-            'smiles': _get_specie_smiles(specie_dict),
-            'inchi': _get_specie_inchi(specie_dict),
-            'inchikey': _get_specie_inchikey(specie_dict),
-            'target_chemical': _specie_is_target(specie_id),
-            'sink_chemical': _specie_is_sink(specie_id),
+            'smiles': cmpd.get_smiles(),
+            'inchi': cmpd.get_inchi(),
+            'inchikey': cmpd.get_inchikey(),
+            'target_chemical': rp_pathway.get_target_id() == cmpd.get_id(),
+            'sink_chemical': cmpd.get_id() in rp_pathway.get_sink(),
             'thermo_dg_m_formation': None,  # FIXME
-            'cofactor': None,  # FIXME
+            'cofactor': False,  # Default, refined later
         }
         # Collect
         if node['id'] not in nodes:
@@ -471,37 +607,45 @@ def parse_one_pathway(rpsbml_dict):
                               f'between 2 nodes having ID {node["id"]}.')
 
     # Edges
-    for rxn_dict in rpsbml_dict['reactions'].values():
-        rxn_node_id = _get_reaction_node_id(rxn_dict)
-        for side in ('left', 'right'):
-            for specie_id, specie_coeff in rxn_dict['brsynth'][side].items():
-                specie_dict = rpsbml_dict['species'][specie_id]
-                specie_node_id = _get_specie_node_id(specie_dict, specie_id)
-                if side == 'left':
-                    edge_id = f'{specie_node_id}_{rxn_node_id}'
-                    edge = {
-                        'id': edge_id,
-                        'path_ids': [pathway['path_id'], ],
-                        'source': specie_node_id,
-                        'target': rxn_node_id
-                    }
-                else:
-                    edge_id = f'{rxn_node_id}_{specie_node_id}'
-                    edge = {
-                        'id': edge_id,
-                        'path_ids': [pathway['path_id'], ],
-                        'source': rxn_node_id,
-                        'target': specie_node_id
-                    }
-                if edge_id not in edges:
-                    edges[edge_id] = edge
-                else:
-                    try:
-                        assert _edge_seem_equal(edge, edges[edge_id])
-                    except AssertionError:
-                        logging.error(f'Unexpected edge inequality '
-                                      f'between 2 edges having ID {edge_id}.')
-
+    # for rxn_dict in rpsbml_dict['reactions'].values():
+    for rxn in rp_pathway.get_reactions().values():
+        rxn_node_id = _get_reaction_node_id(rxn)
+        # Reactants
+        for cmpd in rxn.get_reactants_compounds():
+            cmpd_node_id = cmpd.get_id()
+            edge_id = f'{cmpd_node_id}_{rxn_node_id}'
+            edge = {
+                'id': edge_id,
+                'path_ids': [pathway['path_id'],],
+                'source': cmpd_node_id,
+                'target': rxn_node_id
+            }
+            if edge_id not in edges:
+                edges[edge_id] = edge
+            else:
+                try:
+                    assert _edge_seem_equal(edge, edges[edge_id])
+                except AssertionError:
+                    logging.error(f'Unexpected edge inequality '
+                                  f'between 2 edges having ID {edge_id}.')
+        # Products
+        for cmpd in rxn.get_products_compounds():
+            cmpd_node_id = cmpd.get_id()
+            edge_id = f'{rxn_node_id}_{cmpd_node_id}'
+            edge = {
+                'id': edge_id,
+                'path_ids': [pathway['path_id'],],
+                'source': rxn_node_id,
+                'target': cmpd_node_id
+            }
+            if edge_id not in edges:
+                edges[edge_id] = edge
+            else:
+                try:
+                    assert _edge_seem_equal(edge, edges[edge_id])
+                except AssertionError:
+                    logging.error(f'Unexpected edge inequality '
+                                  f'between 2 edges having ID {edge_id}.')
     # Update pathway info
     pathway['node_ids'] = list(nodes.keys())
     pathway['edge_ids'] = list(edges.keys())
@@ -509,16 +653,20 @@ def parse_one_pathway(rpsbml_dict):
     return nodes, edges, pathway
 
 
-def parse_all_pathways(input_files):
+def parse_all_pathways(
+    input_files: list
+    ) -> tuple:
     network = {'elements': {'nodes': [], 'edges': []}}
     all_nodes = {}
     all_edges = {}
     pathways_info = {}
 
+    from pprint import pprint
+
     for sbml_path in input_files:
         rpsbml = rpSBML(str(sbml_path))
-        rpsbml_dict = rpsbml.toDict()
-        nodes, edges, pathway = parse_one_pathway(rpsbml_dict)
+        pathway = rpPathway.from_rpSBML(rpsbml=rpsbml)
+        nodes, edges, pathway = parse_one_pathway(pathway)
         # Store pathway
         pathways_info[pathway['path_id']] = pathway
         # Store nodes
@@ -1025,7 +1173,7 @@ def annotate_cofactors(network, cofactor_file):
             match = False
             for cof_inchi in cof_inchis:
                 if node['data']['inchi'].find(cof_inchi) > -1:  # Match
-                    node['data']['cofactor'] = 1
+                    node['data']['cofactor'] = True
                     match = True
                     continue
             if match:

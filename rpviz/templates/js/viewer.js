@@ -723,15 +723,15 @@ $(function(){
                         'background-color': '#B22222',
                         'border-color': '#B22222',
                     })
-                .selector("node[type='chemical'][?target_chemical]")
-                    .css({
-                        'background-color': '#235789',
-                        'border-color': '#235789',
-                    })
-                    .selector("node[type='chemical'][?sink_chemical]")
+                .selector("node[type='chemical'][?sink_chemical]")
                     .css({
                         'background-color': '#68956D',
                         'border-color': '#68956D'
+                    })
+                .selector("node[type='chemical'][!target_chemical][!sink_chemical]")  // ie: intermediates
+                    .css({
+                        'background-color': '#235789',
+                        'border-color': '#235789',
                     })
                 .selector("node[type='chemical'][?svg]")  // The beauty of it: "?" will match only non null values
                     .css({
@@ -854,8 +854,8 @@ $(function(){
     function annotate_hiddable_cofactors(){
         cy.elements('node[type = "reaction"]').forEach((rxn_node, i) => {
             // Check
-            let in_not_cof = rxn_node.incomers().filter('node[cofactor = 0]');
-            let out_not_cof = rxn_node.outgoers().filter('node[cofactor = 0]');
+            let in_not_cof = rxn_node.incomers().filter('node[?cofactor]');
+            let out_not_cof = rxn_node.outgoers().filter('node[?cofactor]');
             // Decide
             let hiddable;
             if (in_not_cof.length == 0 || out_not_cof.length == 0){
@@ -895,7 +895,7 @@ $(function(){
         if (show){
             cy.elements().style("display", "element");
         } else {
-            cy.elements('node[cofactor = 1][hiddable_cofactor = 1]').style("display", "none");
+            cy.elements('node[?cofactor][?hiddable_cofactor]').style("display", "none");
         }
         refresh_layout();
     }
