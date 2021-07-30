@@ -17,7 +17,7 @@ requirements:
     - python {{ python }}
   run:
     - python {{ python }}
-    - rptools <=4.4.5  # rptools toDict issue
+    - rptools
     - rdkit
     - beautifulsoup4
 
