@@ -33,7 +33,10 @@ def parse_meta(filename):
         try: requirements += yaml_safe_load(recipe)['test']['requires']
         except TypeError: pass
         tests['commands']     = yaml_safe_load(recipe)['test']['commands']
-        tests['source_files'] = yaml_safe_load(recipe)['test']['source_files']
+        try:
+            tests['source_files'] = yaml_safe_load(recipe)['test']['source_files']
+        except KeyError:
+            pass
     except YAMLError as exc:
         print(exc)
 
