@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 include $(SELF_DIR)/.env
@@ -63,3 +64,12 @@ conda-check-recipe: ## Check conda recipe
 
 conda-create-run_env: ## Make an conda environment to run program
 	@$(MAKE_CMD) -f conda.mk check-environment-test env=${PACKAGE}_test
+
+doc-pdoc:
+	cd .. ; rm -rf chemlite/__pycache__ ; pdoc --force --html -o docs chemlite
+
+doc-sphinx:
+	cd .. ; sphinx-apidoc -f -o docs/source chemlite
+	
+doc-sphinx-html:
+	cd ../docs ; make html

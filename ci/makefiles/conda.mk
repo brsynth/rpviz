@@ -1,6 +1,8 @@
 include ../../extras/.env
 include ../.env
 
+SHELL := /bin/bash
+
 tmpfile := $(shell mktemp -u)
 tmpdir  := $(shell dirname $(tmpfile))
 
@@ -76,14 +78,12 @@ ifneq ($(strip $(variants)),)
 	VARIANTS = --variants=\"$(variants)\"
 endif
 
-#	@conda run --name ${PACKAGE}_build conda build --no-test $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null \
-#	&& echo OK
-
 ## CONDA BUILD
 ### build only
 conda-build-only: check-environment-build
 	@$(ECHO) "Building conda package... "
-	@conda run --name ${PACKAGE}_build conda build --no-test $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe && echo OK
+	@conda run --name ${PACKAGE}_build conda build --no-test $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null \
+	&& echo OK
 
 conda-test-only: check-environment-build conda-add-channels
 	@$(ECHO) "Testing conda package... "
