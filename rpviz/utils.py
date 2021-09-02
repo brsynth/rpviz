@@ -753,7 +753,9 @@ def annotate_chemical_svg(network):
     from urllib import parse
 
     for node in network['elements']['nodes']:
-        if node['data']['type'] == 'chemical' and node['data']['inchi'] is not None:
+        if node['data']['type'] == 'chemical' \
+                and node['data']['inchi'] is not None \
+                and node['data']['inchi'] != '':
             inchi = node['data']['inchi']
             try:
                 mol = MolFromInchi(inchi)
