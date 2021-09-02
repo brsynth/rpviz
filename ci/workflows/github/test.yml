@@ -38,4 +38,4 @@ jobs:
     - name: Testing package
       run: |
         cd ci
-        make test-inconda
+        make conda-test
