@@ -33,7 +33,7 @@ def parse_meta(filename):
         try: requirements += yaml_safe_load(recipe)['test']['requires']
         except TypeError: pass
         tests['commands'] = yaml_safe_load(recipe)['test']['commands']
-        # tests['source_files'] = yaml_safe_load(recipe)['test']['source_files']
+        tests['source_files'] = yaml_safe_load(recipe)['test']['source_files']
     except YAMLError as exc:
         print(exc)
 
@@ -53,8 +53,8 @@ if __name__ == '__main__':
             args = sys_argv
         if any(arg in args for arg in ['commands', 'cmd']):
             print(' && '.join(tests['commands']), end=' ')
-        # if any(arg in args for arg in ['sources', 'src']):
-            # print(' '.join(['../'+e for e in tests['source_files']]))
+        if any(arg in args for arg in ['sources', 'src']):
+            print(' '.join(['../'+e for e in tests['source_files']]))
         else:
             print()
 
