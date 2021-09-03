@@ -112,33 +112,6 @@ def _specie_is_sink_old(
     return False
 
 
-def _get_pathway_scores_old(
-    pathway_dict: dict
-    ) -> dict:
-    """Return pathway scores as a dictionary of scores
-
-    :param pathway_dict: pathway dictionary as output by toDict
-    :type: dict
-    :return: dictionary of scores
-    :rtype: dict
-    """
-    __SCORE_KEYS = [
-        'norm_fba_obj_biomass',
-        'norm_fba_obj_fraction',
-        'norm_rule_score',
-        'norm_steps',
-        'global_score'
-    ]
-    scores = {}
-    for score_type in __SCORE_KEYS:
-        try:
-            scores[score_type] = pathway_dict['brsynth'][score_type]
-        except KeyError:
-            logging.warning(f'Cannot retrieve pathway score "{score_type}" in rpSBML. Set to None')
-            scores[score_type] = None
-    return scores
-
-
 def _get_pathway_score(
     rp_pathway: rpPathway
     ) -> dict:
