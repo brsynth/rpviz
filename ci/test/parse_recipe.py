@@ -32,7 +32,7 @@ def parse_meta(filename):
         except TypeError: pass
         try: requirements += yaml_safe_load(recipe)['test']['requires']
         except TypeError: pass
-        tests['commands'] = yaml_safe_load(recipe)['test']['commands']
+        tests['commands']     = yaml_safe_load(recipe)['test']['commands']
         tests['source_files'] = yaml_safe_load(recipe)['test']['source_files']
     except YAMLError as exc:
         print(exc)
@@ -51,6 +51,7 @@ if __name__ == '__main__':
             args = 'commands sources'
         else:
             args = sys_argv
+        # Print commands from meta.yaml to be exectuted by test.mk
         if any(arg in args for arg in ['commands', 'cmd']):
             print(' && '.join(tests['commands']), end=' ')
         if any(arg in args for arg in ['sources', 'src']):
