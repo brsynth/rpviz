@@ -501,8 +501,8 @@ def parse_one_pathway(
         'node_ids': [],  # To be filled later
         'edge_ids': [],  # To be filled later
         'scores': _get_pathway_score(rp_pathway),
-        'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime(),
-        'fba_target_flux': rp_pathway.get_fba_fraction()
+        'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime()['value'],
+        'fba_target_flux': rp_pathway.get_fba_fraction()['value']
     }
 
     # Node info: reactions
@@ -519,7 +519,7 @@ def parse_one_pathway(
             'rsmiles': rxn.get_smiles(),
             'rule_id': [rxn.get_rule_id(),],
             'ec_numbers': rxn.get_ec_numbers(),
-            'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime(),
+            'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime()['value'],
             'rule_score': rxn.get_rule_score(),
             # Only for compounds
             'smiles': None,
