@@ -14,7 +14,7 @@ help:
 .DEFAULT_GOAL := all
 
 MAKE_CMD = $(MAKE) -s --no-print-directory
-ECHO = echo -n ">>>"
+ECHO = echo ">>>"
 
 
 all: check test ## Run check and test code
