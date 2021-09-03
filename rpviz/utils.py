@@ -115,11 +115,17 @@ def _specie_is_sink_old(
 def _get_pathway_score(
     rp_pathway: rpPathway
     ) -> dict:
+    # Precompute rule score
+    rscores = []
+    for rxn in rp_pathway.get_reactions_ids():
+        rscores.append(rp_pathway.get_reaction(rxn).get_rule_score())
+    rscore = sum(rscores) / len(rscores)
+    # 
     return {
-        'norm_fba_obj_biomass': rp_pathway.get_fba_biomass(),
-        'norm_fba_obj_fraction': rp_pathway.get_fba_fraction(),
-        'norm_rule_score': None,  # TODO: add method get_rule_score,
-        'norm_steps': rp_pathway.get_nb_reactions(),
+        'rule_score': rscore,
+        'steps': rp_pathway.get_nb_reactions(),
+        'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime()['value'],
+        'fba_target_flux': rp_pathway.get_fba_fraction()['value'],
         'global_score': None  # TODO: add method get_global_score
     }
 
@@ -500,9 +506,7 @@ def parse_one_pathway(
         'nb_steps': rp_pathway.get_nb_reactions(),
         'node_ids': [],  # To be filled later
         'edge_ids': [],  # To be filled later
-        'scores': _get_pathway_score(rp_pathway),
-        'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime()['value'],
-        'fba_target_flux': rp_pathway.get_fba_fraction()['value']
+        'scores': _get_pathway_score(rp_pathway)
     }
 
     # Node info: reactions
