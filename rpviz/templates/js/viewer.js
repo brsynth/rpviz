@@ -492,7 +492,7 @@ function panel_reaction_info(node, show=true){
         // Inject UniProt IDs
         $("div.reaction_info_uniprot_crosslinks").html('');  // Reset div content
         let nb_ids = 0;
-        for (uid in uniprot_ids) {
+        for (let uid in uniprot_ids) {
             ++nb_ids;
             let selenzy_score = parseFloat(uniprot_ids[uid]['score']).toFixed(1)
             $("div.reaction_info_uniprot_crosslinks").append(
