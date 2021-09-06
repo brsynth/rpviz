@@ -525,6 +525,7 @@ def parse_one_pathway(
             'ec_numbers': rxn.get_ec_numbers(),
             'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime()['value'],
             'rule_score': rxn.get_rule_score(),
+            'uniprot_ids': rxn.get_selenzy_infos(),
             # Only for compounds
             'smiles': None,
             'inchi': None,

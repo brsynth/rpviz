@@ -436,6 +436,7 @@ function panel_reaction_info(node, show=true){
         let xlinks = node.data('xlinks');
         let thermo_value = node.data('thermo_dg_m_gibbs');
         let rule_score = node.data('rule_score');
+        let uniprot_ids = node.data('uniprot_ids');
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
@@ -488,6 +489,23 @@ function panel_reaction_info(node, show=true){
             rule_score = parseFloat(rule_score).toFixed(3);
         }
         $("span.reaction_info_rule_score").html(rule_score);
+        // Inject UniProt IDs
+        $("div.reaction_info_uniprot_crosslinks").html('');  // Reset div content
+        let nb_ids = 0;
+        for (uid in uniprot_ids) {
+            ++nb_ids;
+            let selenzy_score = parseFloat(uniprot_ids[uid]['score']).toFixed(1)
+            $("div.reaction_info_uniprot_crosslinks").append(
+                '<a href="' + get_uniprot_xlink(uid) + '">'
+                + uid + ' (' + selenzy_score + ') </a>'
+                );
+            $("div.reaction_info_uniprot_crosslinks").append(
+                '<br/>'
+                );
+        }
+        if (nb_ids == 0){
+            $("div.reaction_info_uniprot_crosslinks").append('None<br/>');
+        }
         // Selenzyme crosslink
         $("span.reaction_info_selenzyme_crosslink").html('<a target="_blank" href="http://selenzyme.synbiochem.co.uk/results?smarts=' + encodeURIComponent( rsmiles ) + '">Crosslink to Selenzyme</a>');
         // Show
@@ -496,6 +514,16 @@ function panel_reaction_info(node, show=true){
         $("#panel_reaction_info").hide();
     }
 }
+
+
+/**
+ * Generate links to UniProt web site
+ * @param {uid} UniProt ID to be used 
+ */
+function get_uniprot_xlink(uid){
+    return 'https://www.uniprot.org/uniprot/' + uid
+}
+
 
 /**
  * Write some default text message on the info panel
