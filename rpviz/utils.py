@@ -690,20 +690,19 @@ def annotate_cofactors(network, cofactor_file):
     if not os.path.exists(cofactor_file):
         logging.error('Cofactor file not found: {}'.format(cofactor_file))
         return network
-    # Collect cofactor structures
+    # Collect cofactor IDs and structures
     cof_inchis = set()
+    cof_ids = set()
     with open(cofactor_file, 'r') as ifh:
         reader = csv.reader(ifh, delimiter='\t')
         for row in reader:
             if row[0].startswith('#'):  # Skip comments
                 continue
-            try:
-                assert row[0].startswith('InChI')
-            except AssertionError:
-                msg = 'Cofactor skipped, depiction is not a valid InChI for row: {}'.format(row)
-                logging.info(msg)
-                continue  # Skip row
-            cof_inchis.add(row[0])
+            if row[0].startswith('InChI'):  # inchi based
+                cof_inchis.add(row[0])
+            if row[2].startswith('MNXM'):
+                cof_ids |= set(row[2].split(','))  # id based
+            
     # Match and annotate network elements
     for node in network['elements']['nodes']:
         if node['data']['type'] == 'chemical' and node['data']['inchi'] is not None:
@@ -715,6 +714,16 @@ def annotate_cofactors(network, cofactor_file):
                     continue
             if match:
                 continue  # Optimisation
+        if node['data']['type'] == 'chemical' and len(node['data']['all_labels']) > 0:
+            match = False
+            for cof_id in cof_ids:
+                for label in node['data']['all_labels']:
+                    if label == cof_id:
+                        node['data']['cofactor'] = True
+                        match = True
+                        continue
+            if match:
+                continue
 
     return network
 
