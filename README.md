@@ -104,6 +104,7 @@ Below an overview of the `network` object expected by the JS viewer:
                     "ec_numbers": ["string"],
                     "thermo_dg_m_gibbs": float,
                     "rule_score": float,
+                    "uniprot_ids": [{"UID": {"score": float, "target_ID": "string"}}, ...],
                     "smiles": null,
                     "inchi": null,
                     "inchikey": null,
@@ -130,6 +131,7 @@ Below an overview of the `network` object expected by the JS viewer:
                     "ec_numbers": null,
                     "thermo_dg_m_gibbs": null,
                     "rule_score": null,
+                    "uniprot_ids": null,
                     "smiles": "string",
                     "inchi": "string",
                     "inchikey": "string",
@@ -246,14 +248,15 @@ the content:
 {
     "path_id1": {
         "path_id": "path_id1",
+        "nb_steps": interger,
         "node_ids": ["node_id1", "node_id2", ...],
         "edge_ids": ["edge_id1", "edge_id2", ...],
-        "thermo_dg_m_gibbs": float,
-        "fba_target_flux":  float,
-        "nb_steps": interger,
         "scores": {
-            "score_type_1": normalised integer,
-            "score_type_2": normalised integer,
+            "rule_score": float,
+            "steps": int,
+            "thermo_dg_m_gibbs": float,
+            "fba_target_flux": float,
+            "global_score": float,
             ...
         },
     },
