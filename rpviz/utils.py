@@ -211,7 +211,7 @@ def _get_reaction_labels_old(
     if len(_get_reaction_ecs(rxn_dict)):
         return [*_get_reaction_ecs(rxn_dict)]
     else:
-        return [rxn_dict['brsynth']['rule_id'],]
+        return [rxn_dict['brsynth']['rule_ids'],]
 
 
 def _get_reaction_labels(
@@ -417,7 +417,7 @@ def _nodes_seem_equal(
                 and node1['inchi'] == node2['inchi'] \
                 and node1['inchikey'] == node2['inchikey'] \
                 and node1['rsmiles'] == node2['rsmiles'] \
-                and node1['rule_id'] == node2['rule_id']:
+                and node1['rule_ids'] == node2['rule_ids']:
             return True
     return False
 
@@ -448,7 +448,7 @@ def _merge_nodes(
         # Both have a value
         else:
             # list of strings
-            if key in ['path_ids', 'rule_id', 'all_labels']:
+            if key in ['path_ids', 'rule_ids', 'all_labels']:
                 value = list(set(node1[key] + node2[key]))
             # important str values
             elif key in ['smiles', 'inchi', 'inchikey']:                
@@ -521,7 +521,7 @@ def parse_one_pathway(
             'xlinks': _get_reaction_xlinks(rxn),
             # Only for reaction, None for compounds
             'rsmiles': rxn.get_smiles(),
-            'rule_id': [rxn.get_rule_id(),],
+            'rule_ids': [rxn.get_rule_id(),],
             'ec_numbers': rxn.get_ec_numbers(),
             'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime()['value'],
             'rule_score': rxn.get_rule_score(),
@@ -560,7 +560,7 @@ def parse_one_pathway(
             'xlinks': _get_specie_xlinks(cmpd),  # TODO: fix me
             # Only for reaction, None for compounds
             'rsmiles': None,
-            'rule_id': None,
+            'rule_ids': None,
             'ec_numbers': None,
             'thermo_dg_m_gibbs': None,
             'rule_score': None,

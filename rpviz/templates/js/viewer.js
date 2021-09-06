@@ -430,7 +430,7 @@ function panel_reaction_info(node, show=true){
         // Collect
         let node_id = node.data('id');
         let rsmiles = node.data('rsmiles');
-        let rule_id = node.data('rule_id');  // TODO: handle list of rule IDs
+        let rule_ids = node.data('rule_ids');  // TODO: handle list of rule IDs
         let path_ids = node.data('path_ids');
         let ec_numbers = node.data('ec_numbers');
         let xlinks = node.data('xlinks');
@@ -441,12 +441,15 @@ function panel_reaction_info(node, show=true){
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
         if (ec_numbers == null || ec_numbers.length == 0){
-            $("span.reaction_info_name").html(rule_id);
+            $("span.reaction_info_name").html(rule_ids[0]);
         } else {
             $("span.reaction_info_name").html(ec_numbers[0]);
         }
         // Rule ID
-        $("div.reaction_info_ruleid").html(rule_id);
+        $("div.reaction_info_ruleids").html('');  // Reset div content
+        for (let i = 0; i < rule_ids.length; i++){
+            $("div.reaction_info_ruleids").append(rule_ids[i] + '<br/>');
+        }
         // EC numbers
         $("div.reaction_info_ecnumbers").html('');  // Reset div content
         if (ec_numbers == null || ec_numbers.length == 0){
