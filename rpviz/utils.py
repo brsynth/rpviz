@@ -758,21 +758,21 @@ def annotate_chemical_svg(network):
 
 def get_autonomous_html(ifolder):
     """Merge all needed file into a single HTML
-    
+
     :param ifolder: folder containing the files to be merged
     :return html_str: string, the HTML
     """
-    # find and open the index file 
+    # find and open the index file
     htmlString = open(ifolder + '/index.html', 'rb').read()
     # open and read JS files and replace them in the HTML
     jsReplace = [
         'js/chroma-2.1.0.min.js',
-        'js/cytoscape-3.12.1.min.js',
-        'js/cytoscape-dagre-2.2.1.js',
+        'js/cytoscape-3.19.0.min.js',
+        'js/cytoscape-dagre-2.3.2.js',
         'js/dagre-0.8.5.min.js',
-        'js/jquery-3.4.1.min.js',
+        'js/jquery-3.6.0.min.js',
         'js/jquery-ui-1.12.1.min.js',
-        'js/jquery.tablesorter-2.31.2.min.js',
+        'js/jquery.tablesorter-2.31.3.min.js',
         'js/viewer.js'
     ]
     for js in jsReplace:
