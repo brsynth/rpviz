@@ -84,26 +84,3 @@ class Viewer(object):
         html = soup.prettify('utf-8')
         with open(self.html_file, 'wb') as ofh:
             ofh.write(html)
-
-
-if __name__ == '__main__':
-
-    # For debug purpose
-    import pickle
-
-    with open('dict_paths.pickle', 'rb') as ifh:
-        dict_paths = pickle.load(ifh)
-
-    with open('scores.pickle', 'rb') as ifh:
-        scores = pickle.load(ifh)
-
-    out_folder = '/Users/tduigou/projects/2019.01__DBT_pipeline/code/data/outfolder_test10'
-    template_folder = '/Users/tduigou/projects/2019.01__DBT_pipeline/code/Rpviz/rpviz/templates'
-
-    if os.path.isdir(out_folder):
-        import shutil
-        shutil.rmtree(out_folder)
-
-    viewer = Viewer(out_folder=out_folder, template_folder=template_folder)
-    viewer.copy_templates()
-    viewer.write_json(dict_paths=dict_paths, scores=scores)
