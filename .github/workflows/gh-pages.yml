@@ -31,6 +31,11 @@ jobs:
           auto-activate-base: true
           activate-environment: ""
           environment-file: environment.yaml
+        - name: Bash
+          shell: bash -l {0}
+          run: |
+            conda info
+            conda list
 
       # 3. Installing Python dependencies (Sphinx)
 
