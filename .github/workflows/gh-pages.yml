@@ -28,8 +28,8 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-          auto-activate-base: true
-          activate-environment: ""
+          auto-activate-base: false
+          activate-environment: rpviz-dev
           environment-file: environment.yaml
       - name: Bash
         shell: bash -l {0}
