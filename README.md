@@ -64,7 +64,7 @@ Input file expected by the viewer:
 
 ## For developpers
 
-Installation, after a git clone:
+### Install
 ```sh
 cd <repository>
 conda env create -f environment.yaml -n <dev_env>
@@ -74,11 +74,24 @@ conda develop -n <dev_env> .
 
 Warning: if you do not specify an environment name with -n <dev_env>, then `rpviz-dev` will be used.
 
-To uninstall:
+### Uninstall
 ```sh
 conda deactivate
 conda env remove -n <dev_env>
 ```
+
+### Test
+```sh
+conda activate -n <dev_env>
+conda install pytest
+```
+
+### Generating documentation
+```sh
+conda activate -n <dev_env>
+conda install sphinx
+```
+
 
 ## JSON objects
 
