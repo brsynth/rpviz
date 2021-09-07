@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""cli.py: CLI for generating the JSON file expected by the pathway visualiser."""
+"""CLI for generating the JSON file expected by the pathway visualiser."""
  
 __author__ = 'Thomas Duigou'
 __license__ = 'MIT'
