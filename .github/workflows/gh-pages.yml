@@ -36,8 +36,8 @@ jobs:
 
       - name: "Install Python dependencies"
         run: |
-          conda install sphinx sphinx-rtd-theme
-          conda install --upgrade myst-parser
+          pip3 install sphinx sphinx-rtd-theme
+          pip3 install --upgrade myst-parser
 
       # 4. Building doc
 
