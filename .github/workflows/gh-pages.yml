@@ -1,0 +1,56 @@
+# workflow's name
+name: "Build and deploy Github pages"
+
+# This event triggers the workflow
+on:
+  push:         # <- on push
+    branches:
+      - master  # <- ... on the branch "master"
+
+jobs:
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    # Tasks to do:
+    steps:
+
+      # 1. Retrieving repository
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      # 2. Setting up conda env
+
+      - name: "Set up conda environment"
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: true
+          activate-environment: ""
+          environment-file: environment.yaml
+
+      # 3. Installing Python dependencies (Sphinx)
+
+      - name: "Install Python dependencies"
+        run: |
+          conda install sphinx sphinx-rtd-theme
+          conda install --upgrade myst-parser
+
+      # 4. Building doc
+
+      - name: "Build Sphinx Doc"
+        run: |
+          cd docsource
+          make html
+
+      # 5. Deploying doc on Github Pages
+
+      - name: "Deploy Github Pages"
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docsource/_build/html/
