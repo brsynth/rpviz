@@ -12,6 +12,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    # Set custom default shell to enable proper activation of conda env
+    #  see: https://github.com/conda-incubator/setup-miniconda#important
+    defaults:
+      run:
+        shell: bash -l {0}
+
     # Tasks to do:
     steps:
 
@@ -32,30 +38,15 @@ jobs:
           activate-environment: rpviz-dev
           environment-file: environment.yaml
 
-      # DEBUG
-      - name: Conda info
-        shell: bash -l {0}
-        run: |
-          conda info
-          conda list
-
       # 3. Installing Python dependencies (Sphinx)
 
       - name: "Install Python dependencies"
         run: |
-          conda install -c conda-forge sphinx sphinx_rtd_theme myst-parser -n rpviz-dev
-
-      # DEBUG
-      - name: Conda info
-        shell: bash -l {0}
-        run: |
-          conda info
-          conda list
+          conda install -c conda-forge sphinx sphinx_rtd_theme myst-parser
 
       # 4. Building doc
 
       - name: "Build Sphinx Doc"
-        shell: bash -l {0}
         run: |
           cd docsource
           make html
