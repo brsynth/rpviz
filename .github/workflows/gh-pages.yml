@@ -55,6 +55,7 @@ jobs:
       # 4. Building doc
 
       - name: "Build Sphinx Doc"
+        shell: bash -l {0}
         run: |
           cd docsource
           make html
