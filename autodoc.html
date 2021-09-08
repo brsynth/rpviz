@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>utils.py &mdash; rpviz  documentation</title>
@@ -92,7 +91,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">rpviz – Visualize pathways from the RetroPath Suite</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">utils.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#viewer-py">Viewer.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-Viewer">Viewer.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">Release history</a></li>
 </ul>
 
@@ -164,16 +163,109 @@
   <div class="contents topic" id="contents">
 <span id="autodoc"></span><p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#utils-py" id="id1">utils.py</a></p></li>
-<li><p><a class="reference internal" href="#viewer-py" id="id2">Viewer.py</a></p></li>
+<li><p><a class="reference internal" href="#module-utils" id="id1">utils.py</a></p></li>
+<li><p><a class="reference internal" href="#module-Viewer" id="id2">Viewer.py</a></p></li>
 </ul>
 </div>
-<section id="utils-py">
-<h1><a class="toc-backref" href="#id1">utils.py</a><a class="headerlink" href="#utils-py" title="Permalink to this headline">¶</a></h1>
-</section>
-<section id="viewer-py">
-<h1><a class="toc-backref" href="#id2">Viewer.py</a><a class="headerlink" href="#viewer-py" title="Permalink to this headline">¶</a></h1>
-</section>
+<div class="section" id="module-utils">
+<span id="utils-py"></span><h1><a class="toc-backref" href="#id1">utils.py</a><a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<p>Utility methods to build rpviz html pages.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.annotate_chemical_svg">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">annotate_chemical_svg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotate_chemical_svg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate chemical nodes with SVGs depiction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>network</strong> – dict, network of elements as outputted by the sbml_to_json method</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict, network annotated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.annotate_cofactors">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">annotate_cofactors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cofactor_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotate_cofactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate cofactors based on structures listed in the cofactor file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – dict, network of elements as outputted by the sbml_to_json method</p></li>
+<li><p><strong>cofactor_file</strong> – str, file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict, network annotated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.get_autonomous_html">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">get_autonomous_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifolder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.get_autonomous_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge all needed file into a single HTML</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ifolder</strong> – folder containing the files to be merged</p>
+</dd>
+<dt class="field-even">Return html_str</dt>
+<dd class="field-even"><p>string, the HTML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.parse_one_pathway">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">parse_one_pathway</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rp_pathway</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rptools.rplibs.rpPathway.rpPathway</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#utils.parse_one_pathway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract info from one rpSBML file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sbml_path</strong> – str, path to file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Viewer">
+<span id="viewer-py"></span><h1><a class="toc-backref" href="#id2">Viewer.py</a><a class="headerlink" href="#module-Viewer" title="Permalink to this headline">¶</a></h1>
+<p>Handle html generation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Viewer.Viewer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Viewer.</span></span><span class="sig-name descname"><span class="pre">Viewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viewer'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Viewer.Viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Viewer factory.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Viewer.Viewer.copy_templates">
+<span class="sig-name descname"><span class="pre">copy_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Viewer.Viewer.copy_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the complete template tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Viewer.Viewer.write_json_deprecated">
+<span class="sig-name descname"><span class="pre">write_json_deprecated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_paths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Viewer.Viewer.write_json_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the html file, according the html template.</p>
+<p>Not needed anymore as HTML edits are made by JS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_paths</strong> – dict of pathways</p></li>
+<li><p><strong>scores</strong> – {‘score_type_1’: {‘pathway_1’: int, ‘pathway_2’: int, …}, …}</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
            </div>

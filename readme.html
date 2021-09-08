@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>rpviz – Visualize pathways from the RetroPath Suite &mdash; rpviz  documentation</title>
@@ -121,7 +120,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">utils.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc.html#viewer-py">Viewer.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html#module-Viewer">Viewer.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">Release history</a></li>
 </ul>
 
@@ -190,9 +189,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="rpviz-visualize-pathways-from-the-retropath-suite">
+  <div class="tex2jax_ignore mathjax_ignore section" id="rpviz-visualize-pathways-from-the-retropath-suite">
 <h1>rpviz – Visualize pathways from the RetroPath Suite<a class="headerlink" href="#rpviz-visualize-pathways-from-the-retropath-suite" title="Permalink to this headline">¶</a></h1>
-<section id="installation">
+<div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda create --name &lt;myenv&gt;
 conda activate &lt;myenv&gt;
@@ -200,16 +199,16 @@ conda install -c brsynth -c conda-forge -c bioconda rpviz
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">&lt;myenv&gt;</span></code> has to be replaced by whatever meaningful name that will pleased the user.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Produce the HTML files</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m rpviz.cli &lt;input-folder&gt; &lt;output-folder&gt;
 </pre></div>
 </div>
 <p>To view the pathways, open the <code class="docutils literal notranslate"><span class="pre">index.html</span></code> file outputted in <code class="docutils literal notranslate"><span class="pre">&lt;out-folder&gt;</span></code> using any web browser.</p>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>Using a folder as input:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda activate &lt;myenv&gt;
@@ -221,8 +220,8 @@ python -m rpviz.cli sample/input/as_dir sample/output/as_dir
 python -m rpviz.cli sample/input/as_tar.tar sample/output/as_dir
 </pre></div>
 </div>
-</section>
-<section id="command-line-arguments">
+</div>
+<div class="section" id="command-line-arguments">
 <h2>Command line arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">positional</span> <span class="n">arguments</span><span class="p">:</span>
   <span class="n">input_rpSBMLs</span>         <span class="n">Input</span> <span class="n">file</span> <span class="n">containing</span> <span class="n">rpSBML</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">a</span> 
@@ -245,18 +244,18 @@ python -m rpviz.cli sample/input/as_tar.tar sample/output/as_dir
                         <span class="nb">all</span> <span class="n">dependancies</span><span class="o">.</span>
 </pre></div>
 </div>
-</section>
-<section id="input-expected-by-the-html-component">
+</div>
+<div class="section" id="input-expected-by-the-html-component">
 <h2>Input expected by the HTML component<a class="headerlink" href="#input-expected-by-the-html-component" title="Permalink to this headline">¶</a></h2>
 <p>Input file expected by the viewer:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">network.json</span></code>: should contains 2 variable, namely <code class="docutils literal notranslate"><span class="pre">network</span></code> and
 <code class="docutils literal notranslate"><span class="pre">pathways_info</span></code>.</p></li>
 </ul>
-</section>
-<section id="for-developpers">
+</div>
+<div class="section" id="for-developpers">
 <h2>For developpers<a class="headerlink" href="#for-developpers" title="Permalink to this headline">¶</a></h2>
-<section id="install">
+<div class="section" id="install">
 <h3>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;repository&gt;
 conda env create -f environment.yaml -n &lt;dev_env&gt;
@@ -265,32 +264,32 @@ conda develop -n &lt;dev_env&gt; .
 </pre></div>
 </div>
 <p>Warning: if you do not specify an environment name with -n &lt;dev_env&gt;, then <code class="docutils literal notranslate"><span class="pre">rpviz-dev</span></code> will be used.</p>
-</section>
-<section id="uninstall">
+</div>
+<div class="section" id="uninstall">
 <h3>Uninstall<a class="headerlink" href="#uninstall" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda deactivate
 conda env remove -n &lt;dev_env&gt;
 </pre></div>
 </div>
-</section>
-<section id="test">
+</div>
+<div class="section" id="test">
 <h3>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda activate -n &lt;dev_env&gt;
 conda install pytest
 </pre></div>
 </div>
-</section>
-<section id="generating-documentation">
+</div>
+<div class="section" id="generating-documentation">
 <h3>Generating documentation<a class="headerlink" href="#generating-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda activate -n &lt;dev_env&gt;
 conda install sphinx
 </pre></div>
 </div>
-</section>
-</section>
-<section id="json-objects">
+</div>
+</div>
+<div class="section" id="json-objects">
 <h2>JSON objects<a class="headerlink" href="#json-objects" title="Permalink to this headline">¶</a></h2>
-<section id="network">
+<div class="section" id="network">
 <h3>network<a class="headerlink" href="#network" title="Permalink to this headline">¶</a></h3>
 <p>Below an overview of the <code class="docutils literal notranslate"><span class="pre">network</span></code> object expected by the JS viewer:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
@@ -370,8 +369,8 @@ conda install sphinx
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">network</span></code> is composed of 2 types of nodes (“reaction” and “chemical”), and 1 type of edge. What ever the node type,
 all the keys (‘id’, ‘path_ids’, …) should be present in each node.</p>
-</section>
-<section id="reaction-node">
+</div>
+<div class="section" id="reaction-node">
 <h3>reaction node<a class="headerlink" href="#reaction-node" title="Permalink to this headline">¶</a></h3>
 <p>For reaction node, the content should be:</p>
 <ul class="simple">
@@ -399,8 +398,8 @@ be described in a dictionary having keys: “db_name”, “entity_id”, “url
 <li><p><code class="docutils literal notranslate"><span class="pre">thermo_dg_m_formation</span></code>, (string), <strong>not used</strong> – Value should be <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cofactor</span></code>, (string), <strong>not used</strong> – Value should be <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
 </ul>
-</section>
-<section id="chemical-node">
+</div>
+<div class="section" id="chemical-node">
 <h3>chemical node<a class="headerlink" href="#chemical-node" title="Permalink to this headline">¶</a></h3>
 <p>For chemical node, the content should be:</p>
 <ul class="simple">
@@ -430,8 +429,8 @@ should be either false (not in the sink) or true (it is).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cofactor</span></code>, (string), <strong>required</strong> – Flag to designate cofactor chemicals (eg: ATP, NADH, …). Value should
 be either 0 (not a cofactor) or 1 (it is).</p></li>
 </ul>
-</section>
-<section id="edge">
+</div>
+<div class="section" id="edge">
 <h3>edge<a class="headerlink" href="#edge" title="Permalink to this headline">¶</a></h3>
 <p>For edge, the content should be:</p>
 <ul class="simple">
@@ -443,8 +442,8 @@ involved in.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>: the source node ID.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">target</span></code>: the target node ID.</p></li>
 </ul>
-</section>
-<section id="pathways-info">
+</div>
+<div class="section" id="pathways-info">
 <h3>pathways_info<a class="headerlink" href="#pathways-info" title="Permalink to this headline">¶</a></h3>
 <p>The pathway_info JSON object purpose is to store information related to each pathways. Notice that order of
 pathway matter: the JS viewer will print the pathways in the order they are given in this object. Here is
@@ -480,9 +479,9 @@ the content:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">nb_steps</span></code> is the number of reactions involved in the pathway</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scores</span></code> gives the pathway scores.</p></li>
 </ul>
-</section>
-</section>
-<section id="implementation-choices">
+</div>
+</div>
+<div class="section" id="implementation-choices">
 <h2>Implementation choices<a class="headerlink" href="#implementation-choices" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>If a compound cannot be associated to an inchikey (typically, in the case of a generic compound like
@@ -491,10 +490,10 @@ error is logged and the execution is continued.</p></li>
 <li><p>rpSBML file name should end by <code class="docutils literal notranslate"><span class="pre">.xml</span></code></p></li>
 <li><p>Target chemical have a SBML ID starting by <code class="docutils literal notranslate"><span class="pre">TARGET</span></code></p></li>
 </ul>
-</section>
-<section id="known-bugs-and-feature-requests">
+</div>
+<div class="section" id="known-bugs-and-feature-requests">
 <h2>Known bugs and feature requests<a class="headerlink" href="#known-bugs-and-feature-requests" title="Permalink to this headline">¶</a></h2>
-<section id="future-release-todo">
+<div class="section" id="future-release-todo">
 <h3>Future release TODO<a class="headerlink" href="#future-release-todo" title="Permalink to this headline">¶</a></h3>
 <p>Fix information into the JSON:</p>
 <ul class="simple">
@@ -506,20 +505,20 @@ error is logged and the execution is continued.</p></li>
 <li><p>Add annotation about the rule diameter to reaction nodes</p></li>
 <li><p>Add crosslinks to template reactions used for the rules</p></li>
 </ul>
-</section>
-</section>
-<section id="authors">
+</div>
+</div>
+<div class="section" id="authors">
 <h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Thomas Duigou</p></li>
 <li><p>Melchior du Lac</p></li>
 </ul>
-</section>
-<section id="license">
+</div>
+<div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>This project is licensed under the MIT License - see the <span class="xref myst">LICENSE.txt</span> file for details</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
