@@ -31,7 +31,9 @@ jobs:
           auto-activate-base: false
           activate-environment: rpviz-dev
           environment-file: environment.yaml
-      - name: Bash
+
+      # DEBUG
+      - name: Conda info
         shell: bash -l {0}
         run: |
           conda info
@@ -41,8 +43,14 @@ jobs:
 
       - name: "Install Python dependencies"
         run: |
-          pip3 install sphinx sphinx-rtd-theme
-          pip3 install --upgrade myst-parser
+          conda install -c conda-forge sphinx sphinx_rtd_theme myst-parser
+
+      # DEBUG
+      - name: Conda info
+        shell: bash -l {0}
+        run: |
+          conda info
+          conda list
 
       # 4. Building doc
 
