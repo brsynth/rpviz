@@ -99,7 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#uninstall">Uninstall</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#test">Test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generating-documentation">Generating documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generating-local-documentation">Generating local documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#json-objects">JSON objects</a><ul>
@@ -217,7 +217,7 @@ python -m rpviz.cli sample/input/as_dir sample/output/as_dir
 </div>
 <p>Using a tar file as input:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda activate &lt;myenv&gt;
-python -m rpviz.cli sample/input/as_tar.tar sample/output/as_dir
+python -m rpviz.cli sample/input/as_tar.tgz sample/output/as_tar
 </pre></div>
 </div>
 </div>
@@ -279,10 +279,12 @@ conda install pytest
 </pre></div>
 </div>
 </div>
-<div class="section" id="generating-documentation">
-<h3>Generating documentation<a class="headerlink" href="#generating-documentation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="generating-local-documentation">
+<h3>Generating local documentation<a class="headerlink" href="#generating-local-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda activate -n &lt;dev_env&gt;
-conda install sphinx
+conda install -c conda-forge sphinx sphinx_rtd_theme myst-parser 
+<span class="nb">cd</span> docsource
+make clean <span class="o">&amp;&amp;</span> make html
 </pre></div>
 </div>
 </div>
