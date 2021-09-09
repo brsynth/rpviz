@@ -29,7 +29,7 @@ python -m rpviz.cli sample/input/as_dir sample/output/as_dir
 Using a tar file as input:
 ```sh
 conda activate <myenv>
-python -m rpviz.cli sample/input/as_tar.tar sample/output/as_dir
+python -m rpviz.cli sample/input/as_tar.tgz sample/output/as_tar
 ```
 
 ## Command line arguments
@@ -86,10 +86,12 @@ conda activate -n <dev_env>
 conda install pytest
 ```
 
-### Generating documentation
+### Generating local documentation
 ```sh
 conda activate -n <dev_env>
-conda install sphinx
+conda install -c conda-forge sphinx sphinx_rtd_theme myst-parser 
+cd docsource
+make clean && make html
 ```
 
 
