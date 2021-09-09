@@ -126,8 +126,16 @@ def _get_pathway_score(
         'steps': rp_pathway.get_nb_reactions(),
         'thermo_dg_m_gibbs': rp_pathway.get_thermo_dGm_prime()['value'],
         'fba_target_flux': rp_pathway.get_fba_fraction()['value'],
-        'global_score': rp_pathway.get_global_score()
+        'global_score': _get_pathway_global_score(rp_pathway)
     }
+
+
+def _get_pathway_global_score(
+    rp_pathway: rpPathway
+    ) -> dict:
+    if rp_pathway.get_global_score() == -1:
+        return None
+    return rp_pathway.get_global_score()
 
 
 def _get_pathway_thermo(
