@@ -83,7 +83,7 @@ conda env remove -n <dev_env>
 ### Test
 ```sh
 conda activate -n <dev_env>
-conda install pytest
+conda install pytest pytest-mock
 ```
 
 ### Generating local documentation
