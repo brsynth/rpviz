@@ -28,6 +28,7 @@ test:
     - {{ name|lower }}
   requires:
     - pytest
+    - pytest-mock
   commands:
     - python -m {{ name|lower }}.cli --help
     - cd tests ; pytest -v

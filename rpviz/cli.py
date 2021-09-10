@@ -20,10 +20,11 @@ from pathlib import Path
 from rpviz.utils import annotate_cofactors, annotate_chemical_svg, get_autonomous_html, parse_all_pathways
 from rpviz.Viewer import Viewer
 
-if __name__ == '__main__':
 
-    # Arguments
-    parser = argparse.ArgumentParser(description='Converting SBML RP file.')
+def __build_arg_parser(prog='python -m rpviz.cli'):
+    desc = 'Converting SBML RP file.'
+
+    parser = argparse.ArgumentParser(description=desc, prog=prog)
     parser.add_argument('input_rpSBMLs',
                         help='Input file containing rpSBML files in a tar archive or a folder.')
     parser.add_argument('output_folder',
@@ -31,9 +32,6 @@ if __name__ == '__main__':
                              'It the creation of the folder fails, IOError will be raised.')
     parser.add_argument('--debug', action='store_true',
                         help='Turn on debug instructions')
-    # parser.add_argument('--template_folder',
-    #                     default=os.path.join(os.path.dirname(__file__), 'templates'),
-    #                     help='Path to the folder containing templates')
     parser.add_argument('--cofactor',
                         default=os.path.join(os.path.dirname(__file__), 'data', 'cofactor_inchi_201811.tsv'),
                         help='File listing structures to consider as cofactors.')
@@ -41,14 +39,11 @@ if __name__ == '__main__':
                         default=None,
                         help="Optional file path, if provided will output an autonomous HTML containing all "
                              "dependencies.")
-    args = parser.parse_args()
 
-    # Logging
-    logging.basicConfig(stream=sys.stderr,
-                        level=logging.WARNING,
-                        datefmt='%d/%m/%Y %H:%M:%S',
-                        format='%(asctime)s -- %(levelname)s -- %(message)s')
+    return parser
 
+
+def __run(args):
     # Make out folder if needed
     if not os.path.isfile(args.output_folder):
         try:
@@ -117,3 +112,17 @@ if __name__ == '__main__':
         str_html = get_autonomous_html(args.output_folder)
         with open(args.autonomous_html, 'wb') as ofh:
             ofh.write(str_html)
+
+
+def __cli():
+    logging.basicConfig(stream=sys.stderr,
+                        level=logging.WARNING,
+                        datefmt='%d/%m/%Y %H:%M:%S',
+                        format='%(asctime)s -- %(levelname)s -- %(message)s')
+    parser = __build_arg_parser()
+    args = parser.parse_args()
+    __run(args)
+
+
+if __name__ == '__main__':
+    __cli()
