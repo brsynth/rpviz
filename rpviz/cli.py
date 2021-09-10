@@ -43,14 +43,7 @@ def __build_arg_parser(prog='python -m rpviz.cli'):
     return parser
 
 
-def __cli():
-    logging.basicConfig(stream=sys.stderr,
-                        level=logging.WARNING,
-                        datefmt='%d/%m/%Y %H:%M:%S',
-                        format='%(asctime)s -- %(levelname)s -- %(message)s')
-    parser = __build_arg_parser()
-    args = parser.parse_args()
-
+def __run(args):
     # Make out folder if needed
     if not os.path.isfile(args.output_folder):
         try:
@@ -119,6 +112,17 @@ def __cli():
         str_html = get_autonomous_html(args.output_folder)
         with open(args.autonomous_html, 'wb') as ofh:
             ofh.write(str_html)
+
+
+def __cli():
+    logging.basicConfig(stream=sys.stderr,
+                        level=logging.WARNING,
+                        datefmt='%d/%m/%Y %H:%M:%S',
+                        format='%(asctime)s -- %(levelname)s -- %(message)s')
+    parser = __build_arg_parser()
+    args = parser.parse_args()
+    __run(args)
+
 
 if __name__ == '__main__':
     __cli()
