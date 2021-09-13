@@ -1,5 +1,19 @@
 # Release history
 
+## 0.2.0
+- chore: put cli instructions into methods
+- fix: handle -1 global score as a specific case
+- feat: generate sphinx documentation
+- fix: also detect cofactor based on their IDs
+- feat: updating js librairies
+- fix: handle list of rule IDs
+- chore(test.mk): remove error when no test collected
+- fix: javascript variable scope
+- feat: add uniprot IDs
+- fix: rule score for pathways
+- fix(utils): get dict values instead of the dict itself
+- fix(utils): do not try to process empty inchi
+
 ## 0.1.3
 - fix(utils.py): update according to new rpSBML interface
 - fix(Viewer.py): update path to templates
