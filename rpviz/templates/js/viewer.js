@@ -499,8 +499,7 @@ function panel_reaction_info(node, show=true){
             ++nb_ids;
             let selenzy_score = parseFloat(uniprot_ids[uid]['score']).toFixed(1)
             $("div.reaction_info_uniprot_crosslinks").append(
-                '<a href="' + get_uniprot_xlink(uid) + '">'
-                + uid + ' (' + selenzy_score + ') </a>'
+                    '<a href="' + get_uniprot_xlink(uid) + '">' + uid + '</a> (' + selenzy_score + ')'
                 );
             $("div.reaction_info_uniprot_crosslinks").append(
                 '<br/>'
