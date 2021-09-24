@@ -429,6 +429,7 @@ function panel_reaction_info(node, show=true){
     if (show){
         // Collect
         let node_id = node.data('id');
+        let label = node.data('label')
         let rsmiles = node.data('rsmiles');
         let rule_ids = node.data('rule_ids');  // TODO: handle list of rule IDs
         let path_ids = node.data('path_ids');
@@ -440,11 +441,7 @@ function panel_reaction_info(node, show=true){
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
-        if (ec_numbers == null || ec_numbers.length == 0){
-            $("span.reaction_info_name").html(rule_ids[0]);
-        } else {
-            $("span.reaction_info_name").html(ec_numbers[0]);
-        }
+        $("span.reaction_info_name").html(label);
         // Rule ID
         $("div.reaction_info_ruleids").html('');  // Reset div content
         for (let i = 0; i < rule_ids.length; i++){
