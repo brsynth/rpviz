@@ -1,5 +1,13 @@
 # Release history
 
+## 0.2.1
+- fix: enable to de-zoom of 10%
+- fix: better display score for uniprot IDs
+- fix(viewer.js): reduce length of reaction labels
+- fix(viewer.js): reaction label is chosen only on python side
+- feat: use template reaction ID as label
+- feat: show reaction template ID in side panel
+
 ## 0.2.0
 - chore: put cli instructions into methods
 - fix: handle -1 global score as a specific case
