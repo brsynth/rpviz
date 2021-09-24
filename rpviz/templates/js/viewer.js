@@ -829,7 +829,7 @@ $(function(){
         // Playing with zoom to get the best fit
         cy.minZoom(1e-50);
         cy.on('layoutstop', function(e){
-            cy.minZoom(cy.zoom());
+            cy.minZoom(cy.zoom()*0.9);  // 0.9 to enable the user dezoom a little
         });
         // Layout
         let layout = element_collection.layout({
