@@ -429,8 +429,10 @@ function panel_reaction_info(node, show=true){
     if (show){
         // Collect
         let node_id = node.data('id');
+        let label = node.data('label')
         let rsmiles = node.data('rsmiles');
-        let rule_ids = node.data('rule_ids');  // TODO: handle list of rule IDs
+        let rule_ids = node.data('rule_ids');  // TODO: handle list of IDs
+        let rxn_template_id = node.data('rxn_template_id');  // TODO: handle list of IDs
         let path_ids = node.data('path_ids');
         let ec_numbers = node.data('ec_numbers');
         let xlinks = node.data('xlinks');
@@ -440,16 +442,15 @@ function panel_reaction_info(node, show=true){
         // Inject 
         $("span.reaction_info_rsmiles").html(rsmiles);
         // Reaction name
-        if (ec_numbers == null || ec_numbers.length == 0){
-            $("span.reaction_info_name").html(rule_ids[0]);
-        } else {
-            $("span.reaction_info_name").html(ec_numbers[0]);
-        }
+        $("span.reaction_info_name").html(label);
         // Rule ID
         $("div.reaction_info_ruleids").html('');  // Reset div content
         for (let i = 0; i < rule_ids.length; i++){
             $("div.reaction_info_ruleids").append(rule_ids[i] + '<br/>');
         }
+        // Reaction template ID
+        $("span.reaction_info_reaction_template_id").html('');  // Reset div content
+        $("span.reaction_info_reaction_template_id").html(rxn_template_id);
         // EC numbers
         $("div.reaction_info_ecnumbers").html('');  // Reset div content
         if (ec_numbers == null || ec_numbers.length == 0){
@@ -499,8 +500,7 @@ function panel_reaction_info(node, show=true){
             ++nb_ids;
             let selenzy_score = parseFloat(uniprot_ids[uid]['score']).toFixed(1)
             $("div.reaction_info_uniprot_crosslinks").append(
-                '<a href="' + get_uniprot_xlink(uid) + '">'
-                + uid + ' (' + selenzy_score + ') </a>'
+                    '<a href="' + get_uniprot_xlink(uid) + '">' + uid + '</a> (' + selenzy_score + ')'
                 );
             $("div.reaction_info_uniprot_crosslinks").append(
                 '<br/>'
@@ -698,7 +698,7 @@ $(function(){
         
         // Create node labels
         make_chemical_labels(6);
-        make_reaction_labels(12);
+        make_reaction_labels(9);
         
         // Hide them 'by default'
         if (! show_graph){
@@ -829,7 +829,7 @@ $(function(){
         // Playing with zoom to get the best fit
         cy.minZoom(1e-50);
         cy.on('layoutstop', function(e){
-            cy.minZoom(cy.zoom());
+            cy.minZoom(cy.zoom()*0.9);  // 0.9 to enable the user dezoom a little
         });
         // Layout
         let layout = element_collection.layout({
