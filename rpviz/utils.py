@@ -227,6 +227,8 @@ def _get_reaction_labels(
     ) -> list:
     if len(rxn.get_ec_numbers()):
         return rxn.get_ec_numbers()
+    elif rxn.get_tmpl_rxn_id() is not None:
+        return [rxn.get_tmpl_rxn_id(),]
     else:
         return [rxn.get_rule_id(),]
 
