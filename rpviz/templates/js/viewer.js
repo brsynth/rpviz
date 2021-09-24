@@ -697,7 +697,7 @@ $(function(){
         
         // Create node labels
         make_chemical_labels(6);
-        make_reaction_labels(12);
+        make_reaction_labels(9);
         
         // Hide them 'by default'
         if (! show_graph){
