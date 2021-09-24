@@ -431,7 +431,8 @@ function panel_reaction_info(node, show=true){
         let node_id = node.data('id');
         let label = node.data('label')
         let rsmiles = node.data('rsmiles');
-        let rule_ids = node.data('rule_ids');  // TODO: handle list of rule IDs
+        let rule_ids = node.data('rule_ids');  // TODO: handle list of IDs
+        let rxn_template_id = node.data('rxn_template_id');  // TODO: handle list of IDs
         let path_ids = node.data('path_ids');
         let ec_numbers = node.data('ec_numbers');
         let xlinks = node.data('xlinks');
@@ -447,6 +448,9 @@ function panel_reaction_info(node, show=true){
         for (let i = 0; i < rule_ids.length; i++){
             $("div.reaction_info_ruleids").append(rule_ids[i] + '<br/>');
         }
+        // Reaction template ID
+        $("span.reaction_info_reaction_template_id").html('');  // Reset div content
+        $("span.reaction_info_reaction_template_id").html(rxn_template_id);
         // EC numbers
         $("div.reaction_info_ecnumbers").html('');  // Reset div content
         if (ec_numbers == null || ec_numbers.length == 0){

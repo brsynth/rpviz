@@ -532,6 +532,7 @@ def parse_one_pathway(
             # Only for reaction, None for compounds
             'rsmiles': rxn.get_smiles(),
             'rule_ids': [rxn.get_rule_id(),],
+            'rxn_template_id': [rxn.get_tmpl_rxn_id(),],
             'ec_numbers': rxn.get_ec_numbers(),
             'thermo_dg_m_gibbs': rxn.get_thermo_dGm_prime()['value'],
             'rule_score': rxn.get_rule_score(),
@@ -571,6 +572,7 @@ def parse_one_pathway(
             # Only for reaction, None for compounds
             'rsmiles': None,
             'rule_ids': None,
+            'rxn_template_id': None,
             'ec_numbers': None,
             'thermo_dg_m_gibbs': None,
             'rule_score': None,
