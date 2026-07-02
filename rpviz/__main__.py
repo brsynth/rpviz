@@ -87,6 +87,7 @@ def __build_arg_parser(prog="python -m rpviz.cli"):
 
 
 def __run(args):
+
     # Make out folder if needed
     if not os.path.isfile(args.output_folder):
         try:
