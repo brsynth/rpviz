@@ -1,45 +1,104 @@
 name: Publish
 
 on:
-  push:
-    tags: releases/[1-9]+.[0-9]+.[0-9]+
-    branches: [ stable ]
+  pull_request:
+    branches:
+      - stable
+    types:
+      - closed
 
 jobs:
-
-  Publish:
+  Tag:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
-    env:
-      ANACONDA_TOKEN: ${{secrets.ANACONDA_TOKEN}}
-      ANACONDA_USER: ${{secrets.ANACONDA_USER}}
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: docker://continuumio/miniconda3
+      ############################################################
+      # Checkout stable branch
+      ############################################################
+      - name: Checkout stable
+        uses: actions/checkout@v3
+        with:
+          ref: stable
+          fetch-depth: 0
 
-    - name: Updating conda
-      run: conda update --all -y
+      ############################################################
+      # Create tag
+      ############################################################
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: stable
+          tag_prefix: ""
 
-    - name: Installing make
-      run: conda install -y make
+      ############################################################
+      # Create GitHub Release
+      ############################################################
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Building package
-      run: |
-        cd ci
-        make conda-build
+      ############################################################
+      # Generate CHANGELOG
+      ############################################################
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3
+          bundler-cache: true
 
-    - name: Testing package
-      run: |
-        cd ci
-        make conda-test
+      - name: Generate CHANGELOG
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gem install github_changelog_generator
+          AUTH=$(echo $GITHUB_REPOSITORY | sed -e 's/\// /g' | awk '{print "--user " $1 " --project " $2}')
+          github_changelog_generator $AUTH --no-unreleased
 
-    - name: Converting to other platforms
-      run: |
-        cd ci
-        make conda-convert
+      ############################################################
+      # Update _version.py
+      ############################################################
+      - name: Update _version.py
+        env:
+          TAG: ${{ steps.tag_version.outputs.new_tag }}
+        run: |
+          folder=$(dirname $(find . -name _version.py))
+          echo "__version__ = \"$TAG\"" > $folder/_version.py
 
-    - name: Uploading to anaconda
-      run: |
-        cd ci
-        make conda-publish
+      ############################################################
+      # Commit updated files
+      ############################################################
+      - name: Commit files
+        run: |
+          git config --local user.email "joan.herisson@univ-evry.fr"
+          git config --local user.name "breakthewall"
+          git add -A
+          git commit -m "chore(release): update changelog and version" || echo "No changes to commit"
+
+      ############################################################
+      # Push back to stable
+      ############################################################
+      - name: Push changes to stable
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: stable
+
+      ############################################################
+      # Update main branch
+      ############################################################
+      - name: Update main branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main

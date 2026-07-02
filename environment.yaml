@@ -1,9 +1,9 @@
-name: rpviz-dev
+name: rpviz
 channels:
-  - brsynth
   - conda-forge
-  - defaults
 dependencies:
-  - rptools
+  - python=3.11
+  - pandas
   - rdkit
-  - beautifulsoup4
+  - bs4
+  - rplibs>=6.9.5

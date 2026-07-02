@@ -1,45 +1,66 @@
+# coding: utf-8
 from setuptools import setup, find_packages
-import os
-import re
+from os import path as os_path
 
-_readme = 'README.md'
-_extras = 'extras'
+## INFOS ##
+package = "rpviz"
+descr = "Visualize pathways from the RetroPath Suite"
+url = "https://github.com/brsynth/rpViz"
+authors = "Joan Hérisson, Melchior du Lac, Thomas Duigou"
+corr_author = "joan.herisson@univ-evry.fr"
 
-with open(_readme, 'r', encoding='utf-8') as f:
-    _long_description = f.read()
+## LONG DESCRIPTION
+with open(
+    os_path.join(os_path.dirname(os_path.realpath(__file__)), "README.md"),
+    "r",
+    encoding="utf-8",
+) as f:
+    long_description = f.read()
 
-with open(os.path.join(_extras, '.env'), 'r', encoding='utf-8') as f:
-    for line in f:
-        if line.startswith('PACKAGE='):
-            _package = line.splitlines()[0].split('=')[1].lower()
-        if line.startswith('URL='):
-            _url = line.splitlines()[0].split('=')[1].lower()
-        if line.startswith('AUTHORS='):
-            _authors = line.splitlines()[0].split('=')[1].lower()
-        if line.startswith('DESCR='):
-            _descr = line.splitlines()[0].split('=')[1].lower()
-        if line.startswith('CORR_AUTHOR='):
-            _corr_author = line.splitlines()[0].split('=')[1].lower()
 
-with open(os.path.join(_package, '_version.py'), 'r') as ifh:
-    for line in ifh:
-        m = re.search('__version__.*=.*"(.+)"', line)
-        if m:
-            _version = m.group(1)
-            break
+def get_version():
+    with open(
+        os_path.join(
+            os_path.dirname(os_path.realpath(__file__)), package, "_version.py"
+        ),
+        "r",
+    ) as f:
+        lines = f.readlines()
+    for line in lines:
+        if line.startswith("__version__"):
+            from re import search
+
+            m = search(r'"(.+)"', line)
+            if m:
+                return m.group(1)
+
 
 setup(
-    name='rpviz',
-    version=_version,
-    description='Visualize pathways from the RetroPath Suite.',
-    license='MIT',
-    author='Thomas Duigou, Melchior du Lac',
-    author_email='thomas.duigou@inrae.fr',
+    name=package,
+    version=get_version(),
+    author=authors,
+    author_email=corr_author,
+    description=descr,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url=url,
     packages=find_packages(),
+    package_dir={package: package},
+    package_data={
+        package: [
+            "data/*",
+            "templates/*.html",
+            "templates/css/*",
+            "templates/js/*",
+        ]
+    },
     include_package_data=True,
-    keywords=['rpviz'],
-    url='https://github.com/brsynth/rpviz',
+    test_suite="pytest",
+    license="MIT",
     classifiers=[
-        'Topic :: Scientific/Engineering',
-    ]
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.7",
 )

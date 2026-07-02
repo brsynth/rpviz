@@ -1,14 +1,16 @@
-.DS_Store
 __pycache__
-*.pyc
-
-.vscode
-.idea
-
+.DS_Store
+.pypirc
+.pytest_cache
 package.json
 package-lock.json
 node_modules
+*.code-workspace
+.coverage*
+.vscode
+_exclude
+/docsource/_build/
+/docsource/_autosummary
+cicd-toolkit
 
-rpviz.egg-info
-
-sample/output
+*.egg-info

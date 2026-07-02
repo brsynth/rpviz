@@ -56,7 +56,55 @@ __license__ = 'MIT'
 <!--    <script src="js/cytoscape-cola-1.4.3.js"></script>-->
 
 </head>
+
+<!-- Controls for hiding panels -->
+<script>
+$(function () {
+
+    $('#toggle-panels').on('click', function () {
+    if (!window.cy) return;
+
+    const cyEl = document.getElementById('cy');
+
+    const oldPan = cy.pan();
+    const oldZoom = cy.zoom();
+    const oldLeft = cyEl.getBoundingClientRect().left;
+
+    $('#interaction, #info').toggleClass('panel-hidden');
+    $('#viewer').toggleClass('panels-hidden');
+
+    requestAnimationFrame(() => {
+        const newLeft = cyEl.getBoundingClientRect().left;
+
+        // Correct sign: compensate by how much the container shifted
+        const shift = oldLeft - newLeft;
+
+        cy.resize();
+        cy.zoom(oldZoom);
+        cy.pan({ x: oldPan.x + shift, y: oldPan.y });
+    });
+    });
+
+    function resizeCy() {
+    if (!window.cy) return;
+
+    // save current viewport
+    const z = cy.zoom();
+    const p = cy.pan();
+
+    cy.resize();          // let Cytoscape recompute its canvas size
+    cy.zoom(z);           // restore zoom
+    cy.pan(p);            // restore pan
+    // (no cy.fit())
+    }
+
+});
+</script>
+
 <body>
+    <div id="toggle-panels-container">
+        <button id="toggle-panels">Toggle panels</button>
+    </div>
 
     <div id="base">
 
@@ -194,8 +242,8 @@ __license__ = 'MIT'
                         </div>
                         <!-- Reaction template IDs -->
                         <div>
-                            <div class="info-subtitle">Reaction template ID</div>
-                            <div class="raw-text"><span class="reaction_info_reaction_template_id"></span>
+                            <div class="info-subtitle">Reaction template ID(s)</div>
+                            <div class="raw-text reaction_info_reaction_template_ids"></div>
                         </div>
                         <!-- Pathways involved in -->
                         <div>

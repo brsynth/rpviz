@@ -1,2 +1,3 @@
-graft rpviz/data
-graft rpviz/templates
+include README.md LICENSE CHANGELOG.md
+recursive-include rpviz/data *
+recursive-include rpviz/templates *
