@@ -5,8 +5,11 @@ __license__ = 'MIT'
 
 /* Basic layout ***************************************************************/
 
-body {
+html, body {
     margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
 }
 
 #base {
@@ -16,8 +19,39 @@ body {
 }
 
 #viewer {
-    height: 80%;
+    height: 100%;
     box-shadow: 0 0 5px 0px black;
+}
+
+/* Hide panels **************************************/
+#toggle-panels-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+
+#toggle-panels {
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Hide panels */
+.panel-hidden {
+    display: none !important;
+}
+
+/* Expanded view when panels are hidden */
+#viewer.panels-hidden #cy {
+    width: 100%;
+    margin-left: 0;
+}
+
+#viewer.panels-hidden #interaction,
+#viewer.panels-hidden #info {
+    display: none !important;
 }
 
 /* Left panel: pathway level interaction **************************************/
